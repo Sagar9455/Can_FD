@@ -1,0 +1,181 @@
+RTNETLINK answers: Device or resource busy
+2025-04-03 14:30:35,394 [DEBUG] can config: {'fd': True, 'channel': 'can0', 'interface': 'socketcan'}
+2025-04-03 14:30:35,477 [INFO] Created a socket
+2025-04-03 14:30:35,479 [DEBUG] Binding socket to channel=can0
+2025-04-03 14:30:35,482 [DEBUG] Bound socket.
+2025-04-03 14:30:35,487 [DEBUG] Given rxfn is considered blocking
+2025-04-03 14:30:35,490 [DEBUG] Starting CanStack
+2025-04-03 14:30:35,493 [DEBUG] Main thread has started
+2025-04-03 14:30:35,494 [DEBUG] Relay thread has started
+2025-04-03 14:30:35,499 [INFO] Connection opened
+2025-04-03 14:30:35,501 [INFO] TesterPresent<0x3e> - Sending TesterPresent request
+2025-04-03 14:30:35,502 [DEBUG] Sending request to server
+2025-04-03 14:30:35,503 [DEBUG] Sending 2 bytes : [3e00]
+2025-04-03 14:30:35,505 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
+2025-04-03 14:30:35,507 [DEBUG] Waiting for server response
+2025-04-03 14:30:35,510 [DEBUG] Tx: <7A0> (08) [ ]	 023e000000000000
+2025-04-03 14:30:35,512 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,513 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 3e 00 00 00 00 00 00
+2025-04-03 14:30:35,531 [DEBUG] Rx: <7A8> (08) [p]	 027e00aaaaaaaaaa
+2025-04-03 14:30:35,535 [DEBUG] Received 2 bytes : [7e00]
+2025-04-03 14:30:35,539 [DEBUG] Received response from server
+2025-04-03 14:30:35,540 [INFO] Received positive response for service TesterPresent (0x3e) from server.
+2025-04-03 14:30:35,541 [INFO] Tester Present sent successfully
+Switching to Default Session...
+2025-04-03 14:30:35,543 [INFO] DiagnosticSessionControl<0x10> - Switching session to defaultSession (0x01)
+2025-04-03 14:30:35,544 [DEBUG] Sending request to server
+2025-04-03 14:30:35,545 [DEBUG] Sending 2 bytes : [1001]
+2025-04-03 14:30:35,546 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
+2025-04-03 14:30:35,550 [DEBUG] Waiting for server response
+2025-04-03 14:30:35,552 [DEBUG] Tx: <7A0> (08) [ ]	 0210010000000000
+2025-04-03 14:30:35,553 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,554 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 01 00 00 00 00 00
+2025-04-03 14:30:35,580 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
+2025-04-03 14:30:35,581 [DEBUG] Received 6 bytes : [5001003201f4]
+2025-04-03 14:30:35,584 [DEBUG] Received response from server
+2025-04-03 14:30:35,585 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
+2025-04-03 14:30:35,585 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
+Switching to Extended Session...
+2025-04-03 14:30:35,687 [INFO] DiagnosticSessionControl<0x10> - Switching session to extendedDiagnosticSession (0x03)
+2025-04-03 14:30:35,688 [DEBUG] Sending request to server
+2025-04-03 14:30:35,689 [DEBUG] Sending 2 bytes : [1003]
+2025-04-03 14:30:35,690 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
+2025-04-03 14:30:35,691 [DEBUG] Waiting for server response
+2025-04-03 14:30:35,692 [DEBUG] Tx: <7A0> (08) [ ]	 0210030000000000
+2025-04-03 14:30:35,692 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,692 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 03 00 00 00 00 00
+2025-04-03 14:30:35,720 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
+2025-04-03 14:30:35,722 [DEBUG] Received 6 bytes : [5003003201f4]
+2025-04-03 14:30:35,726 [DEBUG] Received response from server
+2025-04-03 14:30:35,727 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
+2025-04-03 14:30:35,728 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
+2025-04-03 14:30:35,829 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf100 (IdentificationOptionVehicleManufacturerSpecificDataIdentifier)
+2025-04-03 14:30:35,830 [DEBUG] Sending request to server
+2025-04-03 14:30:35,831 [DEBUG] Sending 3 bytes : [22f100]
+2025-04-03 14:30:35,832 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:35,834 [DEBUG] Waiting for server response
+2025-04-03 14:30:35,835 [DEBUG] Tx: <7A0> (08) [ ]	 0322f10000000000
+2025-04-03 14:30:35,836 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,836 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 00 00 00 00 00
+2025-04-03 14:30:35,861 [DEBUG] Rx: <7A8> (08) [p]	 0762f100302e3600
+2025-04-03 14:30:35,865 [DEBUG] Received 7 bytes : [62f100302e3600]
+2025-04-03 14:30:35,872 [DEBUG] Received response from server
+2025-04-03 14:30:35,874 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 14:30:35,876 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf100 was incomplete according to definition in configuration
+2025-04-03 14:30:35,881 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf101 (IdentificationOptionVehicleManufacturerSpecificDataIdentifier)
+2025-04-03 14:30:35,882 [DEBUG] Sending request to server
+2025-04-03 14:30:35,882 [DEBUG] Sending 3 bytes : [22f101]
+2025-04-03 14:30:35,883 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:35,884 [DEBUG] Waiting for server response
+2025-04-03 14:30:35,887 [DEBUG] Tx: <7A0> (08) [ ]	 0322f10100000000
+2025-04-03 14:30:35,890 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,892 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 01 00 00 00 00
+2025-04-03 14:30:35,920 [DEBUG] Rx: <7A8> (08) [p]	 0762f101302e3600
+2025-04-03 14:30:35,922 [DEBUG] Received 7 bytes : [62f101302e3600]
+2025-04-03 14:30:35,926 [DEBUG] Received response from server
+2025-04-03 14:30:35,928 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 14:30:35,931 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf101 was incomplete according to definition in configuration
+2025-04-03 14:30:35,932 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf187 (VehicleManufacturerSparePartNumberDataIdentifier)
+2025-04-03 14:30:35,933 [DEBUG] Sending request to server
+2025-04-03 14:30:35,934 [DEBUG] Sending 3 bytes : [22f187]
+2025-04-03 14:30:35,936 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:35,936 [DEBUG] Waiting for server response
+2025-04-03 14:30:35,937 [DEBUG] Tx: <7A0> (08) [ ]	 0322f18700000000
+2025-04-03 14:30:35,939 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,939 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 87 00 00 00 00
+2025-04-03 14:30:35,970 [DEBUG] Rx: <7A8> (08) [p]	 100d62f187393534
+2025-04-03 14:30:35,971 [DEBUG] Tx: <7A0> (08) [ ]	 3008200000000000
+2025-04-03 14:30:35,972 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,973 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    30 08 20 00 00 00 00 00
+2025-04-03 14:30:35,974 [DEBUG] TxState=IDLE - RxState=WAIT_CF
+2025-04-03 14:30:35,982 [DEBUG] Rx: <7A8> (08) [p]	 2130304757303030
+2025-04-03 14:30:35,984 [DEBUG] Received 13 bytes : [62f18739353430304757303030]
+2025-04-03 14:30:35,985 [DEBUG] Received response from server
+2025-04-03 14:30:35,986 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 14:30:35,987 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf187 was incomplete according to definition in configuration
+2025-04-03 14:30:35,988 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf1aa (IdentificationOptionVehicleManufacturerSpecific)
+2025-04-03 14:30:35,989 [DEBUG] Sending request to server
+2025-04-03 14:30:35,990 [DEBUG] Sending 3 bytes : [22f1aa]
+2025-04-03 14:30:35,990 [DEBUG] TxState=IDLE - RxState=IDLE
+2025-04-03 14:30:35,991 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:35,993 [DEBUG] Waiting for server response
+2025-04-03 14:30:35,995 [DEBUG] Tx: <7A0> (08) [ ]	 0322f1aa00000000
+2025-04-03 14:30:35,996 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:35,997 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 aa 00 00 00 00
+2025-04-03 14:30:36,020 [DEBUG] Rx: <7A8> (08) [p]	 0762f1aa322e3433
+2025-04-03 14:30:36,021 [DEBUG] Received 7 bytes : [62f1aa322e3433]
+2025-04-03 14:30:36,024 [DEBUG] Received response from server
+2025-04-03 14:30:36,025 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 14:30:36,026 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf1aa was incomplete according to definition in configuration
+2025-04-03 14:30:36,027 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf1b1 (IdentificationOptionVehicleManufacturerSpecific)
+2025-04-03 14:30:36,028 [DEBUG] Sending request to server
+2025-04-03 14:30:36,030 [DEBUG] Sending 3 bytes : [22f1b1]
+2025-04-03 14:30:36,031 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:36,032 [DEBUG] Waiting for server response
+2025-04-03 14:30:36,034 [DEBUG] Tx: <7A0> (08) [ ]	 0322f1b100000000
+2025-04-03 14:30:36,035 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:36,035 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 b1 00 00 00 00
+2025-04-03 14:30:36,061 [DEBUG] Rx: <7A8> (08) [p]	 0762f1b132343332
+2025-04-03 14:30:36,062 [DEBUG] Received 7 bytes : [62f1b132343332]
+2025-04-03 14:30:36,065 [DEBUG] Received response from server
+2025-04-03 14:30:36,066 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 14:30:36,067 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf1b1 was incomplete according to definition in configuration
+2025-04-03 14:30:36,068 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf193 (SystemSupplierECUHardwareVersionNumberDataIdentifier)
+2025-04-03 14:30:36,069 [DEBUG] Sending request to server
+2025-04-03 14:30:36,070 [DEBUG] Sending 3 bytes : [22f193]
+2025-04-03 14:30:36,071 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:36,072 [DEBUG] Waiting for server response
+2025-04-03 14:30:36,073 [DEBUG] Tx: <7A0> (08) [ ]	 0322f19300000000
+2025-04-03 14:30:36,074 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:36,075 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 93 00 00 00 00
+2025-04-03 14:30:36,101 [DEBUG] Rx: <7A8> (08) [p]	 0762f193422e3030
+2025-04-03 14:30:36,102 [DEBUG] Received 7 bytes : [62f193422e3030]
+2025-04-03 14:30:36,103 [DEBUG] Received response from server
+2025-04-03 14:30:36,104 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 14:30:36,105 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf193 was incomplete according to definition in configuration
+2025-04-03 14:30:36,106 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf120 (IdentificationOptionVehicleManufacturerSpecificDataIdentifier)
+2025-04-03 14:30:36,107 [DEBUG] Sending request to server
+2025-04-03 14:30:36,108 [DEBUG] Sending 3 bytes : [22f120]
+2025-04-03 14:30:36,108 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:36,110 [DEBUG] Waiting for server response
+2025-04-03 14:30:36,111 [DEBUG] Tx: <7A0> (08) [ ]	 0322f12000000000
+2025-04-03 14:30:36,116 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:36,116 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 20 00 00 00 00
+2025-04-03 14:30:36,143 [DEBUG] Rx: <7A8> (08) [p]	 100f62f120422e32
+2025-04-03 14:30:36,145 [DEBUG] Tx: <7A0> (08) [ ]	 3008200000000000
+2025-04-03 14:30:36,145 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:36,146 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    30 08 20 00 00 00 00 00
+2025-04-03 14:30:36,147 [DEBUG] TxState=IDLE - RxState=WAIT_CF
+2025-04-03 14:30:36,151 [DEBUG] Rx: <7A8> (08) [p]	 213430332e30302e
+2025-04-03 14:30:36,163 [DEBUG] No data received: [TimeoutException] - Did not receive IsoTP frame from the Transport layer in time (timeout=0.05 sec) 
+2025-04-03 14:30:36,164 [ERROR] [TimeoutException] : Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)
+2025-04-03 14:30:36,165 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf18b (ECUManufacturingDateDataIdentifier)
+2025-04-03 14:30:36,167 [DEBUG] Sending request to server
+2025-04-03 14:30:36,169 [DEBUG] Sending 3 bytes : [22f18b]
+2025-04-03 14:30:36,170 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:36,170 [DEBUG] Waiting for server response
+2025-04-03 14:30:36,171 [DEBUG] Tx: <7A0> (08) [ ]	 0322f18b00000000
+2025-04-03 14:30:36,172 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:36,173 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 8b 00 00 00 00
+2025-04-03 14:30:36,176 [DEBUG] TxState=IDLE - RxState=IDLE
+2025-04-03 14:30:36,201 [DEBUG] Rx: <7A8> (08) [p]	 223031aaaaaaaaaa
+2025-04-03 14:30:36,202 [WARNING] Received a ConsecutiveFrame while reception was idle. Ignoring
+2025-04-03 14:30:36,222 [DEBUG] No data received: [TimeoutException] - Did not receive IsoTP frame from the Transport layer in time (timeout=0.05 sec) 
+2025-04-03 14:30:36,223 [ERROR] [TimeoutException] : Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)
+2025-04-03 14:30:36,223 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf102 (IdentificationOptionVehicleManufacturerSpecificDataIdentifier)
+2025-04-03 14:30:36,224 [DEBUG] Sending request to server
+2025-04-03 14:30:36,225 [DEBUG] Sending 3 bytes : [22f102]
+2025-04-03 14:30:36,226 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 14:30:36,227 [DEBUG] Waiting for server response
+2025-04-03 14:30:36,228 [DEBUG] Tx: <7A0> (08) [ ]	 0322f10200000000
+2025-04-03 14:30:36,230 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:36,232 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 02 00 00 00 00
+2025-04-03 14:30:36,260 [DEBUG] Rx: <7A8> (08) [p]	 100b62f102800505
+2025-04-03 14:30:36,263 [DEBUG] Tx: <7A0> (08) [ ]	 3008200000000000
+2025-04-03 14:30:36,265 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 14:30:36,266 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    30 08 20 00 00 00 00 00
+2025-04-03 14:30:36,269 [DEBUG] TxState=IDLE - RxState=WAIT_CF
+2025-04-03 14:30:36,281 [DEBUG] No data received: [TimeoutException] - Did not receive IsoTP frame from the Transport layer in time (timeout=0.05 sec) 
+2025-04-03 14:30:36,284 [ERROR] [TimeoutException] : Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)
+2025-04-03 14:30:36,285 [DEBUG] Rx: <7A8> (08) [p]	 210e620c0600aaaa
+Report generated: UDS_Report.html
