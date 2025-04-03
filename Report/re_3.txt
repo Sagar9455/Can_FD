@@ -1,0 +1,92 @@
+RTNETLINK answers: Device or resource busy
+2025-04-03 17:49:18,458 [DEBUG] can config: {'fd': True, 'channel': 'can0', 'interface': 'socketcan'}
+2025-04-03 17:49:18,575 [INFO] Created a socket
+2025-04-03 17:49:18,576 [DEBUG] Binding socket to channel=can0
+2025-04-03 17:49:18,580 [DEBUG] Bound socket.
+2025-04-03 17:49:18,589 [DEBUG] Given rxfn is considered blocking
+2025-04-03 17:49:18,592 [DEBUG] Starting CanStack
+2025-04-03 17:49:18,596 [DEBUG] Main thread has started
+2025-04-03 17:49:18,598 [DEBUG] Relay thread has started
+2025-04-03 17:49:18,603 [INFO] Connection opened
+Waiting for button press...
+Button pressed! Sending UDS requests...
+Sending UDS request:Default Session (0x10 0x01) at 17:49:20
+2025-04-03 17:49:20,691 [INFO] DiagnosticSessionControl<0x10> - Switching session to defaultSession (0x01)
+2025-04-03 17:49:20,693 [DEBUG] Sending request to server
+2025-04-03 17:49:20,694 [DEBUG] Sending 2 bytes : [1001]
+2025-04-03 17:49:20,695 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
+2025-04-03 17:49:20,695 [DEBUG] Waiting for server response
+2025-04-03 17:49:20,696 [DEBUG] Tx: <7A0> (08) [ ]	 0210010000000000
+2025-04-03 17:49:20,697 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 17:49:20,698 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 01 00 00 00 00 00
+2025-04-03 17:49:20,734 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
+2025-04-03 17:49:20,737 [DEBUG] Received 6 bytes : [5001003201f4]
+2025-04-03 17:49:20,739 [DEBUG] Received response from server
+2025-04-03 17:49:20,740 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
+2025-04-03 17:49:20,741 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
+Sending UDS request:<PositiveResponse: [DiagnosticSessionControl] - 5 data bytes at 0x7fb3168110> for Default Session (0x10 0x01)
+Appending to report data: Default Session (0x10 0x01),Pass,Pass,-
+Sending UDS request:Extended Session (0x10 0x03) at 17:49:21
+2025-04-03 17:49:21,245 [INFO] DiagnosticSessionControl<0x10> - Switching session to extendedDiagnosticSession (0x03)
+2025-04-03 17:49:21,246 [DEBUG] Sending request to server
+2025-04-03 17:49:21,246 [DEBUG] Sending 2 bytes : [1003]
+2025-04-03 17:49:21,247 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
+2025-04-03 17:49:21,248 [DEBUG] Waiting for server response
+2025-04-03 17:49:21,249 [DEBUG] Tx: <7A0> (08) [ ]	 0210030000000000
+2025-04-03 17:49:21,250 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 17:49:21,250 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 03 00 00 00 00 00
+2025-04-03 17:49:21,272 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
+2025-04-03 17:49:21,273 [DEBUG] Received 6 bytes : [5003003201f4]
+2025-04-03 17:49:21,275 [DEBUG] Received response from server
+2025-04-03 17:49:21,276 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
+2025-04-03 17:49:21,277 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
+Sending UDS request:<PositiveResponse: [DiagnosticSessionControl] - 5 data bytes at 0x7fb3064890> for Extended Session (0x10 0x03)
+Appending to report data: Extended Session (0x10 0x03),Pass,Pass,-
+Sending UDS request:Read DID (0xF100) at 17:49:21
+2025-04-03 17:49:21,779 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf100 (IdentificationOptionVehicleManufacturerSpecificDataIdentifier)
+2025-04-03 17:49:21,780 [DEBUG] Sending request to server
+2025-04-03 17:49:21,780 [DEBUG] Sending 3 bytes : [22f100]
+2025-04-03 17:49:21,781 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 17:49:21,782 [DEBUG] Waiting for server response
+2025-04-03 17:49:21,783 [DEBUG] Tx: <7A0> (08) [ ]	 0322f10000000000
+2025-04-03 17:49:21,784 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 17:49:21,784 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 00 00 00 00 00
+2025-04-03 17:49:21,812 [DEBUG] Rx: <7A8> (08) [p]	 0762f100302e3600
+2025-04-03 17:49:21,813 [DEBUG] Received 7 bytes : [62f100302e3600]
+2025-04-03 17:49:21,815 [DEBUG] Received response from server
+2025-04-03 17:49:21,815 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 17:49:21,816 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf100 was incomplete according to definition in configuration
+Error on Read DID (0xF100): ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf100 was incomplete according to definition in configuration
+Appending to report data: Read DID (0xF100),Fail,Fail,ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf100 was incomplete according to definition in configuration
+Sending UDS request:Read DID (0xF18B) at 17:49:22
+2025-04-03 17:49:22,318 [INFO] ReadDataByIdentifier<0x22> - Reading data identifier : 0xf18b (ECUManufacturingDateDataIdentifier)
+2025-04-03 17:49:22,319 [DEBUG] Sending request to server
+2025-04-03 17:49:22,320 [DEBUG] Sending 3 bytes : [22f18b]
+2025-04-03 17:49:22,321 [DEBUG] Enqueuing a SendRequest for 3 bytes and TAT=Physical
+2025-04-03 17:49:22,322 [DEBUG] Waiting for server response
+2025-04-03 17:49:22,323 [DEBUG] Tx: <7A0> (08) [ ]	 0322f18b00000000
+2025-04-03 17:49:22,324 [DEBUG] We've been asked to write a message to the bus
+2025-04-03 17:49:22,325 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    03 22 f1 8b 00 00 00 00
+2025-04-03 17:49:22,357 [DEBUG] Rx: <7A8> (08) [p]	 0762f18b20240822
+2025-04-03 17:49:22,359 [DEBUG] Received 7 bytes : [62f18b20240822]
+2025-04-03 17:49:22,361 [DEBUG] Received response from server
+2025-04-03 17:49:22,362 [INFO] Received positive response for service ReadDataByIdentifier (0x22) from server.
+2025-04-03 17:49:22,363 [ERROR] [InvalidResponseException] : ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf18b was incomplete according to definition in configuration
+Error on Read DID (0xF18B): ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf18b was incomplete according to definition in configuration
+Appending to report data: Read DID (0xF18B),Fail,Fail,ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf18b was incomplete according to definition in configuration
+Report generated: UDS_Report.html
+2025-04-03 17:49:25,538 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
+2025-04-03 17:49:25,643 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
+2025-04-03 17:49:26,087 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
+2025-04-03 17:49:26,136 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
+2025-04-03 17:49:26,368 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
+2025-04-03 17:49:26,448 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
+2025-04-03 17:49:26,510 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
+2025-04-03 17:49:27,059 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
+2025-04-03 17:49:27,402 [DEBUG] Rx: <7A8> (08) [p]	 0762f100302e3600
+2025-04-03 17:49:27,914 [DEBUG] Rx: <7A8> (08) [p]	 0762f100302e3600
+2025-04-03 17:49:27,961 [DEBUG] Rx: <7A8> (08) [p]	 0762f18b20240822
+2025-04-03 17:49:28,024 [DEBUG] Rx: <7A8> (08) [p]	 037f2231aaaaaaaa
+2025-04-03 17:49:28,474 [DEBUG] Rx: <7A8> (08) [p]	 0762f18b20240822
+2025-04-03 17:49:28,531 [DEBUG] Rx: <7A8> (08) [p]	 0762f18b20240822
+
