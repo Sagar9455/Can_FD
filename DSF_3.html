@@ -1,0 +1,215 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>UDS Diagnostic Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+            .container { text-align: center; }
+            h1 { text-align: center; margin-bottom: 20px; font-weight: bold; }
+            table { width: 100%; border-collapse: collapse; background: white; }
+            th, td { border: 1px solid black; padding: 10px; text-align: center; }
+            th { background-color: #b0b0b0; color: black; font-weight: bold; }
+            .pass { background-color: #c8e6c9; color: green; }
+            .fail { background-color: #ffcdd2; color: red; }
+            .section-title { background-color: #f0f0f0; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>UDS Diagnostic Report</h1>
+            <table>
+                <tr>
+                    <th>S.No</th>
+                    <th>Description</th>
+                    <th>Timestamp</th>
+                    <th>Step</th>
+                    <th>Status</th>
+                    <th>Failure Reason</th>
+                </tr>
+    
+            <tr class="section-title">
+                <td rowspan="2">1</td>
+                <td rowspan="2">Default Session (0x10 0x01)</td>
+                <td>5.907027</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.945850</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">2</td>
+                <td rowspan="2">Default Session (0x10 0x03)</td>
+                <td>6.446412</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>6.487476</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">3</td>
+                <td rowspan="2">Read DID 0xf101</td>
+                <td>6.988556</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>7.027231</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">4</td>
+                <td rowspan="2">Read DID 0xf100</td>
+                <td>7.027397</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>7.065726</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">5</td>
+                <td rowspan="2">Read DID 0xf1dd</td>
+                <td>7.065938</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">6</td>
+                <td rowspan="2">Read DID 0xf187</td>
+                <td>7.123529</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">7</td>
+                <td rowspan="2">Read DID 0xf1aa</td>
+                <td>7.179107</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">8</td>
+                <td rowspan="2">Read DID 0xf1b1</td>
+                <td>7.215358</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>7.256888</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">9</td>
+                <td rowspan="2">Read DID 0xf193</td>
+                <td>7.257084</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>7.294647</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">10</td>
+                <td rowspan="2">Read DID 0xf120</td>
+                <td>7.294872</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">11</td>
+                <td rowspan="2">Read DID 0xf18b</td>
+                <td>7.354373</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">12</td>
+                <td rowspan="2">Read DID 0xf102</td>
+                <td>7.411152</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            </table>
+        </div>
+    </body>
+    </html>
+    
