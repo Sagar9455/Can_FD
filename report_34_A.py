@@ -142,10 +142,7 @@ try:
                 report_data = []
                 
                 # Capture start time for CANoe-like timestamp
-                start_time = time.time()
-                
-                 # Step 1: Default Session Control (0x10 0x01)
-                timestamp = get_canoe_timestamp()
+               
                 try:
                     print("Switching to Default Session...")
                     start_time = time.time()
