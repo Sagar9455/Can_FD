@@ -148,6 +148,9 @@ try:
                 timestamp = get_canoe_timestamp()
                 try:
                     print("Switching to Default Session...")
+                    start_time = time.time()
+                    timestamp = get_canoe_timestamp()
+                    
                     
                     response = client.change_session(0x01)  # 0x01: Default Session
                     if response.positive:
