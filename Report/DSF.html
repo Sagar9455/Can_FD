@@ -1,0 +1,230 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>UDS Diagnostic Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+            .container { text-align: center; }
+            h1 { text-align: center; margin-bottom: 20px; font-weight: bold; }
+            table { width: 100%; border-collapse: collapse; background: white; }
+            th, td { border: 1px solid black; padding: 10px; text-align: center; }
+            th { background-color: #b0b0b0; color: black; font-weight: bold; }
+            .pass { background-color: #c8e6c9; color: green; }
+            .fail { background-color: #ffcdd2; color: red; }
+            .section-title { background-color: #f0f0f0; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>UDS Diagnostic Report</h1>
+            <table>
+                <tr>
+                    <th>S.No</th>
+                    <th>Description</th>
+                    <th>Timestamp</th>
+                    <th>Step</th>
+                    <th>Status</th>
+                    <th>Failure Reason</th>
+                </tr>
+    
+            <tr class="section-title">
+                <td rowspan="2">1</td>
+                <td rowspan="2">Tester Present (0x3E)</td>
+                <td>5.557153</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.583451</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">2</td>
+                <td rowspan="2">Default Session (0x10 0x01)</td>
+                <td>5.583532</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.613755</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">3</td>
+                <td rowspan="2">Extended Session (0x10 0x03)</td>
+                <td>5.613801</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.655469</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">4</td>
+                <td rowspan="2">Read DID 0xf101</td>
+                <td>5.655529</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.693066</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">5</td>
+                <td rowspan="2">Read DID 0xf100</td>
+                <td>5.693116</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.722951</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">6</td>
+                <td rowspan="2">Read DID 0xf1dd</td>
+                <td>5.722999</td>
+                <td>Request Sent</td>
+                <td class="fail">Fail</td>
+                <td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">7</td>
+                <td rowspan="2">Read DID 0xf187</td>
+                <td>5.778557</td>
+                <td>Request Sent</td>
+                <td class="fail">Fail</td>
+                <td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">8</td>
+                <td rowspan="2">Read DID 0xf1aa</td>
+                <td>5.837639</td>
+                <td>Request Sent</td>
+                <td class="fail">Fail</td>
+                <td>ReadDataByIdentifier service execution returned an invalid response. Value for data identifier 0xf1aa was incomplete according to definition in configuration</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">9</td>
+                <td rowspan="2">Read DID 0xf1b1</td>
+                <td>5.878258</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.913796</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">10</td>
+                <td rowspan="2">Read DID 0xf193</td>
+                <td>5.913857</td>
+                <td>Request Sent</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>5.943644</td>
+                <td>Response Received</td>
+                <td class="pass">Pass</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">11</td>
+                <td rowspan="2">Read DID 0xf120</td>
+                <td>5.943708</td>
+                <td>Request Sent</td>
+                <td class="fail">Fail</td>
+                <td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">12</td>
+                <td rowspan="2">Read DID 0xf18b</td>
+                <td>6.001153</td>
+                <td>Request Sent</td>
+                <td class="fail">Fail</td>
+                <td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            <tr class="section-title">
+                <td rowspan="2">13</td>
+                <td rowspan="2">Read DID 0xf102</td>
+                <td>6.058614</td>
+                <td>Request Sent</td>
+                <td class="fail">Fail</td>
+                <td>'ascii' codec can't decode byte 0x80 in position 0: ordinal not in range(128)</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>Response Received</td>
+                <td class="fail">Fail</td>
+                <td>-</td>
+            </tr>
+        
+            </table>
+        </div>
+    </body>
+    </html>
+    
