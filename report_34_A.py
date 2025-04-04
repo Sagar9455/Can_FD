@@ -109,16 +109,16 @@ isotp_params = {
 config = dict(udsoncan.configs.default_client_config)
 config["ignore_server_timing_requirements"] = True
 config["data_identifiers"] = {
-        0xF101: udsoncan.AsciiCodec(8),
-        0xF100: udsoncan.AsciiCodec(8),
-        0xF1DD: udsoncan.AsciiCodec(8),
-        0xF187: udsoncan.AsciiCodec(13),
+        0xF101: udsoncan.AsciiCodec(4),
+        0xF100: udsoncan.AsciiCodec(4),
+        0xF1DD: udsoncan.AsciiCodec(4),
+        0xF187: udsoncan.AsciiCodec(9),
         0xF1AA: udsoncan.AsciiCodec(13),
-        0xF1B1: udsoncan.AsciiCodec(13),
-        0xF193: udsoncan.AsciiCodec(13),
+        0xF1B1: udsoncan.AsciiCodec(4),
+        0xF193: udsoncan.AsciiCodec(4),
         0xF120: udsoncan.AsciiCodec(16),
-        0xF18B: udsoncan.AsciiCodec(8),
-        0xF102: udsoncan.AsciiCodec(13) 
+        0xF18B: udsoncan.AsciiCodec(4),
+        0xF102: udsoncan.AsciiCodec(8) 
 }
 
 # Define CAN interface
