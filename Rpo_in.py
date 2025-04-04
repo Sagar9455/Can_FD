@@ -212,7 +212,7 @@ def get_ecu_information():
             timestamp = get_canoe_timestamp()
             
             response = client.change_session(0x01)
-            response_timestamp = get_canoe_timestamp
+            response_timestamp = get_canoe_timestamp()
             if response.positive:
                 logging.info("Switched to Default Session")
                 request_status = "Pass"
@@ -246,7 +246,7 @@ def get_ecu_information():
             print("Switching to Extended Session...")
             timestamp = get_canoe_timestamp()
             response = client.change_session(0x03)
-            response_timestamp = get_canoe_timestamp
+            response_timestamp = get_canoe_timestamp()
             if response.positive:
                 logging.info("Switched to Extended Session")
                 request_status = "Pass"
@@ -281,7 +281,7 @@ def get_ecu_information():
                 print(f"Reading DID 0x{did:04X}...", flush=True)
                 timestamp = get_canoe_timestamp()
                 response = client.read_data_by_identifier(did)
-                response_timestamp = get_canoe_timestamp
+                response_timestamp = get_canoe_timestamp()
                 request_status = "Pass"
                 if response.positive:
                         response_status = "Pass"
@@ -316,7 +316,8 @@ def get_ecu_information():
 
 variable=0
 varFinal=0
-display_text("Welcome     \nto      \nDiagnostic")
+display_text("            Welcome\n                   to\n           Diagnostic")
+
 time.sleep(1.5)
 try:
     while True:
