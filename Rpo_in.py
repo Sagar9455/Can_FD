@@ -71,7 +71,7 @@ def generate_report(data):
     </html>
     """
     
-    with open("DSF.html", "w") as file:
+    with open("DSF_10.html", "w") as file:
         file.write(html_content)
     print("Report generated: UDS_Report.html")
     
@@ -169,7 +169,7 @@ def get_ecu_information():
         0xF1DD: udsoncan.AsciiCodec(4),
         0xF187: udsoncan.AsciiCodec(9),
         0xF1AA: udsoncan.AsciiCodec(13),
-        0xF1B1: udsoncan.AsciiCodec(4),
+        0xF1BA: udsoncan.AsciiCodec(4),
         0xF193: udsoncan.AsciiCodec(4),
         0xF120: udsoncan.AsciiCodec(16),
         0xF18B: udsoncan.AsciiCodec(4),
@@ -294,10 +294,10 @@ def get_ecu_information():
                     logging.warning(f" Failed to read DID 0x{did:04X}...")
                     request_status = "Fail" 
                     response_status = "Fail" 
-                    failure_reason = f"NRC:{hex(response.code)}"
+                    #failure_reason = "{hex(response.code)}"
                              
             except Exception as e:
-                logging.error(f"Error in Extended Session: {e}")
+                logging.error(f"Error in DID {hex(did)}: {e}")
                 request_status = "Pass"
                 response_status = "Fail"
                 failure_reason = str(e)
