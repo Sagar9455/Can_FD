@@ -75,8 +75,6 @@ def generate_report(data):
 
 
 
-# Capture start time for CANoe-like timestamp
-start_time = time.time()
 
 def get_canoe_timestamp():
     return f"{time.time() - start_time:.9f}"  # Seconds with nanoseconds
@@ -142,6 +140,9 @@ try:
             if GPIO.input(BUTTON_PIN) == GPIO.LOW:
                 print("Button pressed! Sending UDS requests...")
                 report_data = []
+                
+                # Capture start time for CANoe-like timestamp
+                start_time = time.time()
                 
                  # Step 1: Default Session Control (0x10 0x01)
                 timestamp = get_canoe_timestamp()
