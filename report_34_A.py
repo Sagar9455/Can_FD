@@ -69,11 +69,17 @@ def generate_report(data):
     </html>
     """
     
-    with open("NEWREPO.html", "w") as file:
+    with open("RT.html", "w") as file:
         file.write(html_content)
     print("Report generated: UDS_Report.html")
 
 
+
+# Capture start time for CANoe-like timestamp
+start_time = time.time()
+
+def get_canoe_timestamp():
+    return f"{time.time() - start_time:.9f}"  # Seconds with nanoseconds
 
 
 # Setup GPIO button
@@ -138,7 +144,7 @@ try:
                 report_data = []
                 
                  # Step 1: Default Session Control (0x10 0x01)
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                timestamp = get_canoe_timestamp()
                 try:
                     print("Switching to Default Session...")
                     
@@ -156,7 +162,7 @@ try:
                     
                     response_status = "Fail"
                     failure_reason = str(e)
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                response_timestamp = get_canoe_timestamp()
                 report_data.append({
                         "timestamp": timestamp,
                         "response_timestamp": response_timestamp,
@@ -168,7 +174,7 @@ try:
                 time.sleep(0.5)
 
                 # Step 2: Extended Session Control (0x10 0x03)
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                timestamp = get_canoe_timestamp()
                 try:
                     print("Switching to Extended Session...")
                     
@@ -186,7 +192,7 @@ try:
                     
                     response_status = "Fail"
                     failure_reason = str(e)
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]    
+                response_timestamp = get_canoe_timestamp()  
                 report_data.append({
                         "timestamp": timestamp,
                         "response_timestamp": response_timestamp,
@@ -198,7 +204,7 @@ try:
                 time.sleep(0.5)
 
                 # Step 3: Read DID (0xF100)
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                timestamp = get_canoe_timestamp()
                 try:
                     print("Reading DID 0xF100...")
                     response = client.read_data_by_identifier(0xF100)
@@ -212,7 +218,7 @@ try:
                 except Exception as e:
                     print(f"Error: {e}")
                     failure_reason = str(e)
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                response_timestamp = get_canoe_timestamp()
                 report_data.append({
                         "timestamp": timestamp,
                         "response_timestamp": response_timestamp,
@@ -223,7 +229,7 @@ try:
                     })
                 
                 # Step 3: Read DID (0xF101)
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                timestamp = get_canoe_timestamp()
                 try:
                     print("Reading DID 0xF101...")
                     response = client.read_data_by_identifier(0xF101)
@@ -237,7 +243,7 @@ try:
                 except Exception as e:
                     print(f"Error: {e}")
                     failure_reason = str(e)
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                response_timestamp = get_canoe_timestamp()
                 report_data.append({
                         "timestamp": timestamp,
                         "response_timestamp": response_timestamp,
@@ -249,7 +255,7 @@ try:
                 
                 
                 # Step 3: Read DID (0xF1DD)
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                timestamp = get_canoe_timestamp()
                 try:
                     print("Reading DID 0xF1DD...")
                     response = client.read_data_by_identifier(0xF1DD)
@@ -263,7 +269,7 @@ try:
                 except Exception as e:
                     print(f"Error: {e}")
                     failure_reason = str(e)
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                response_timestamp = get_canoe_timestamp()
                 report_data.append({
                         "timestamp": timestamp,
                         "response_timestamp": response_timestamp,
@@ -275,7 +281,7 @@ try:
                    
                 
                 # Step 3: Read DID (0xF187)
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                timestamp = get_canoe_timestamp()
                 try:
                     print("Reading DID 0xF187...")
                     response = client.read_data_by_identifier(0xF187)
@@ -289,7 +295,7 @@ try:
                 except Exception as e:
                     print(f"Error: {e}")
                     failure_reason = str(e)
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]
+                response_timestamp = get_canoe_timestamp()
                 report_data.append({
                         "timestamp": timestamp,
                         "response_timestamp": response_timestamp,
@@ -300,7 +306,7 @@ try:
                     })
                  
                 # Step 3: Read DID (0xF1AA) 
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3] 
+                timestamp = get_canoe_timestamp()
                 try: 
                     print("Reading DID 0xF1AA...") 
                     response = client.read_data_by_identifier(0xF1AA) 
@@ -314,7 +320,7 @@ try:
                 except Exception as e:   
                     print(f"Error: {e}")   
                     failure_reason = str(e)   
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]   
+                response_timestamp = get_canoe_timestamp()   
                 report_data.append({   
                         "timestamp": timestamp,   
                         "response_timestamp": response_timestamp,   
@@ -327,7 +333,7 @@ try:
                 
                 
                 # Step 3: Read DID (0xF1B1) 
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3] 
+                timestamp = get_canoe_timestamp() 
                 try: 
                     print("Reading DID 0xF1B1...") 
                     response = client.read_data_by_identifier(0xF1B1) 
@@ -341,7 +347,7 @@ try:
                 except Exception as e:   
                     print(f"Error: {e}")   
                     failure_reason = str(e)   
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]   
+                response_timestamp = get_canoe_timestamp()   
                 report_data.append({   
                         "timestamp": timestamp,   
                         "response_timestamp": response_timestamp,   
@@ -353,7 +359,7 @@ try:
                 
                 
                 # Step 3: Read DID (0xF193) 
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3] 
+                timestamp = get_canoe_timestamp()
                 try: 
                     print("Reading DID 0xF193...") 
                     response = client.read_data_by_identifier(0xF193) 
@@ -367,7 +373,7 @@ try:
                 except Exception as e:   
                     print(f"Error: {e}")   
                     failure_reason = str(e)   
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]   
+                response_timestamp = get_canoe_timestamp()  
                 report_data.append({   
                         "timestamp": timestamp,   
                         "response_timestamp": response_timestamp,   
@@ -378,7 +384,7 @@ try:
                     })
                 
                 # Step 3: Read DID (0xF120) 
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3] 
+                timestamp = get_canoe_timestamp()
                 try: 
                     print("Reading DID 0xF120...") 
                     response = client.read_data_by_identifier(0xF120) 
@@ -392,7 +398,7 @@ try:
                 except Exception as e:   
                     print(f"Error: {e}")   
                     failure_reason = str(e)   
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]   
+                response_timestamp = get_canoe_timestamp()  
                 report_data.append({   
                         "timestamp": timestamp,   
                         "response_timestamp": response_timestamp,   
@@ -403,7 +409,7 @@ try:
                     })
                 
                 # Step 3: Read DID (0xF18B) 
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3] 
+                timestamp = get_canoe_timestamp()
                 try: 
                     print("Reading DID 0xF18B...") 
                     response = client.read_data_by_identifier(0xF18B) 
@@ -417,7 +423,7 @@ try:
                 except Exception as e:   
                     print(f"Error: {e}")   
                     failure_reason = str(e)   
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]   
+                response_timestamp = get_canoe_timestamp()
                 report_data.append({   
                         "timestamp": timestamp,   
                         "response_timestamp": response_timestamp,   
@@ -428,7 +434,7 @@ try:
                     })
                 
                 # Step 3: Read DID (0xF102) 
-                timestamp = time.strftime('%H:%M:%S.%f')[:-3] 
+                timestamp = get_canoe_timestamp()
                 try: 
                     print("Reading DID 0xF102...") 
                     response = client.read_data_by_identifier(0xF102) 
@@ -442,7 +448,7 @@ try:
                 except Exception as e:   
                     print(f"Error: {e}")   
                     failure_reason = str(e)   
-                response_timestamp = time.strftime('%H:%M:%S.%f')[:-3]   
+                response_timestamp = get_canoe_timestamp()
                 report_data.append({   
                         "timestamp": timestamp,   
                         "response_timestamp": response_timestamp,   
