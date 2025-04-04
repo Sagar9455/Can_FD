@@ -71,13 +71,16 @@ def generate_report(data):
     </html>
     """
     
-    with open("RT.html", "w") as file:
+    with open("DSF.html", "w") as file:
         file.write(html_content)
     print("Report generated: UDS_Report.html")
-
+    
+    
+    
+start_time = time.time()
 
 def get_canoe_timestamp():
-    return f"{time.time() - start_time:.9f}"  # Seconds with nanoseconds
+    return f"{time.time() - start_time:.6f}"  # Seconds with nanoseconds
 
 # Set up GPIO mode
 GPIO.setmode(GPIO.BCM)
@@ -115,8 +118,9 @@ selected_sequence = []
 selected_option = None
 last_displayed_text = ""
 
-def display_text(text):
-    """Function to display text on OLED only if changed"""
+# Function to display text on OLED
+def display_text(text, y=10):
+    """Function to display text on OLED"""
     global last_displayed_text
     if text != last_displayed_text:
         oled.fill(0)  # Clear screen
@@ -124,14 +128,15 @@ def display_text(text):
         
         image = Image.new("1", (oled.width, oled.height))
         draw = ImageDraw.Draw(image)
-        draw.text((5, 25), text, font=font, fill=255)
         
+        # Draw text on OLED
+        draw.text((5, y), text, font=font, fill=255)
+        
+        # Display image on OLED
         oled.image(image)
         oled.show()
         last_displayed_text = text
-
-display_text("Give input")
-time.sleep(0.2)
+       
 
 def get_ecu_information():
     """Retrieve and display ECU information."""
@@ -180,7 +185,7 @@ def get_ecu_information():
     bus.set_filters([{"can_id":0x7A8,"can_mask":0xFFF}])
 
     # Define ISO-TP addressing for 11-bit CAN IDs
-    tp_addr = isotp.Address(isotp.AddressingMode.Normal_11bits, txid=0x8A0, rxid=0x6A8)
+    tp_addr = isotp.Address(isotp.AddressingMode.Normal_11bits, txid=0x7A0, rxid=0x7A8)
 
     # Create ISO-TP stack
     stack = isotp.CanStack(bus=bus, address=tp_addr, params=isotp_params)
@@ -195,6 +200,7 @@ def get_ecu_information():
 
         # Tester Present (0x3E)
         try:
+            start_time = time.time()
             client.tester_present()
             logging.info("Tester Present sent successfully")
         except Exception as e:
@@ -202,10 +208,11 @@ def get_ecu_information():
 
         # Default Session (0x10 0x01)
         try:
-            start_time = time.time()
+            
             timestamp = get_canoe_timestamp()
             
             response = client.change_session(0x01)
+            response_timestamp = get_canoe_timestamp
             if response.positive:
                 logging.info("Switched to Default Session")
                 request_status = "Pass"
@@ -222,7 +229,7 @@ def get_ecu_information():
             failure_reason = str(e)
         
         
-        response_timestamp = get_canoe_timestamp()
+        
         report_data.append({
                 "timestamp": timestamp,
                 "response_timestamp": response_timestamp,
@@ -239,6 +246,7 @@ def get_ecu_information():
             print("Switching to Extended Session...")
             timestamp = get_canoe_timestamp()
             response = client.change_session(0x03)
+            response_timestamp = get_canoe_timestamp
             if response.positive:
                 logging.info("Switched to Extended Session")
                 request_status = "Pass"
@@ -255,7 +263,7 @@ def get_ecu_information():
             response_status = "Fail"
             failure_reason = str(e)
         
-        response_timestamp = get_canoe_timestamp()  
+         
         report_data.append({
                 "timestamp": timestamp,
                 "response_timestamp": response_timestamp,
@@ -268,10 +276,12 @@ def get_ecu_information():
 
 
         for did in config["data_identifiers"]:
-            timestamp = get_canoe_timestamp()
+            
             try:
                 print(f"Reading DID 0x{did:04X}...", flush=True)
+                timestamp = get_canoe_timestamp()
                 response = client.read_data_by_identifier(did)
+                response_timestamp = get_canoe_timestamp
                 request_status = "Pass"
                 if response.positive:
                         response_status = "Pass"
@@ -281,14 +291,14 @@ def get_ecu_information():
                     logging.warning(f" Failed to read DID 0x{did:04X}...")
                     request_status = "Fail" 
                     response_status = "Fail" 
-                    failure_reason = str(e)
+                   #failure_reason = str(e)
                              
-            except Exception:
+            except Exception as e:
                 logging.error(f"Error in Extended Session: {e}")
                 response_status = "Fail"
                 failure_reason = str(e)
             
-            response_timestamp = get_canoe_timestamp()  
+            
             report_data.append({
                     "timestamp": timestamp,
                     "response_timestamp": response_timestamp,
@@ -298,7 +308,7 @@ def get_ecu_information():
                     "failure_reason": failure_reason
                 })
             
-            generate_report(report_data)
+        generate_report(report_data)
          
         display_text("Report Generated")
         logging.info("UDS Client Closed")
@@ -306,47 +316,55 @@ def get_ecu_information():
 
 variable=0
 varFinal=0
+display_text("Welcome     \nto      \nDiagnostic")
+time.sleep(1.5)
 try:
     while True:
-        if GPIO.input(BTN_FIRST) == GPIO.LOW:
-            variable=(variable*10)+1
-            selected_sequence.append(BTN_FIRST)
-            b = str(variable)
-            display_text(b)
-            #time.sleep(0.2)
-
-        if GPIO.input(BTN_SECOND) == GPIO.LOW:
-            variable=(variable*10)+2
-            selected_sequence.append(BTN_SECOND)
-            a = str(variable)
-            display_text(a)
-            #time.sleep(0.2)      
-
-        if GPIO.input(BTN_ENTER) == GPIO.LOW:
-            varFinal=variable
-            variable=0
-            selected_sequence.append(BTN_ENTER)
-                
-            selected_option = menu_combinations.get(tuple(selected_sequence), "Invalid Input")
-            display_text(f"{selected_option}")
-
-            if selected_option == "ECU Information":
-                time.sleep(0.5)
-                display_text("Fetching\nECU Information...")
-                get_ecu_information()
-                display_text("Completed")
-           
-            if selected_option == "Exit":
-                os.system("exit")
-            selected_sequence.clear()  # Reset sequence after confirmation
-            #time.sleep(0.1)
-
-        if GPIO.input(BTN_THANKS) == GPIO.LOW:
-            display_text("Shutting Down")
+        oled.fill(0)  # Clear screen
+        oled.show()
+        display_text("Select a option:\n1. ECU Information\n2. Testcase Execution\n3. ECU Flashing\n4. File Transfer into USB device\n5. Reserved",y=0)
+        
+        while True:
+                        
+            if GPIO.input(BTN_FIRST) == GPIO.LOW:
+                variable=(variable*10)+1
+                selected_sequence.append(BTN_FIRST)
+                b = str(variable)
+                display_text(b)
+                #time.sleep(0.2)
+        
+            if GPIO.input(BTN_SECOND) == GPIO.LOW:
+                variable=(variable*10)+2
+                selected_sequence.append(BTN_SECOND)
+                a = str(variable)
+                display_text(a)
+                #time.sleep(0.2)      
+        
+            if GPIO.input(BTN_ENTER) == GPIO.LOW:
+                varFinal=variable
+                variable=0
+                selected_sequence.append(BTN_ENTER)
+                    
+                selected_option = menu_combinations.get(tuple(selected_sequence), "Invalid Input")
+                display_text(f"{selected_option}")
+        
+                if selected_option == "ECU Information":
+                    time.sleep(0.5)
+                    display_text("Fetching\nECU Information...")
+                    get_ecu_information()
+                    display_text("Completed")
+               
+                if selected_option == "Exit":
+                    os.system("exit")
+                selected_sequence.clear()  # Reset sequence after confirmation
+                #time.sleep(0.1)
+        
+            if GPIO.input(BTN_THANKS) == GPIO.LOW:
+                display_text("Shutting Down")
+                time.sleep(0.1)
+                os.system('sudo poweroff')
+        
             time.sleep(0.1)
-            os.system('sudo poweroff')
-
-        time.sleep(0.1)
 
 except KeyboardInterrupt:
     print("\nExiting...")
