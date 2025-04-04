@@ -222,9 +222,10 @@ def get_ecu_information():
             else:
                 logging.warning("Failed to switch to Default Session")
                 response_status = "Fail"
-                failure_reason = str(e)
+                failure_reason = f"NRC:{hex(response.code)}"
         except Exception as e:
             logging.error(f"Error in Default Session: {e}")
+            request_status = "Pass"
             response_status = "Fail"
             failure_reason = str(e)
         
@@ -256,10 +257,12 @@ def get_ecu_information():
             else:
                 logging.warning("Failed to switch to Extended Session")
                 response_status = "Fail"
+                failure_reason = f"NRC:{hex(response.code)}"
                 
                 
         except Exception as e:
             logging.error(f"Error in Extended Session: {e}")
+            request_status = "Pass"
             response_status = "Fail"
             failure_reason = str(e)
         
@@ -291,10 +294,11 @@ def get_ecu_information():
                     logging.warning(f" Failed to read DID 0x{did:04X}...")
                     request_status = "Fail" 
                     response_status = "Fail" 
-                   #failure_reason = str(e)
+                    failure_reason = f"NRC:{hex(response.code)}"
                              
             except Exception as e:
                 logging.error(f"Error in Extended Session: {e}")
+                request_status = "Pass"
                 response_status = "Fail"
                 failure_reason = str(e)
             
