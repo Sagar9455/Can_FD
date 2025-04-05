@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UDS Diagnostic Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 40px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #e0e0e0; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .fail { color: red; font-weight: bold; }
+        .pass { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>UDS Diagnostic Report</h1>
+    <table>
+        <tr>
+            <th>Timestamp</th>
+            <th>Response Timestamp</th>
+            <th>Action</th>
+            <th>Request Status</th>
+            <th>Response Status</th>
+            <th>Failure Reason</th>
+        </tr>
+        <tr>
+            <td>2025-04-05 17:03:24.672</td>
+            <td>2025-04-05 17:03:25.676</td>
+            <td>Default Session</td>
+            <td class="fail">Fail</td>
+            <td class="fail">Fail</td>
+            <td>Did not receive response in time. P2 timeout time has expired (timeout=1.000 sec)</td>
+        </tr>
+        <tr>
+            <td>2025-04-05 17:03:25.676</td>
+            <td>2025-04-05 17:03:26.679</td>
+            <td>Extended Session</td>
+            <td class="fail">Fail</td>
+            <td class="fail">Fail</td>
+            <td>Did not receive response in time. P2 timeout time has expired (timeout=1.000 sec)</td>
+        </tr>
+        <tr>
+            <td>2025-04-05 17:03:26.679</td>
+            <td>2025-04-05 17:03:26.680</td>
+            <td>Read DID (0xF100)</td>
+            <td class="fail">Fail</td>
+            <td class="fail">Fail</td>
+            <td>Actual data identifier configuration contains no definition for data identifier 0xf100</td>
+        </tr>
+        <tr>
+            <td>2025-04-05 17:03:26.680</td>
+            <td>2025-04-05 17:03:26.680</td>
+            <td>Read DID (0xF101)</td>
+            <td class="fail">Fail</td>
+            <td class="fail">Fail</td>
+            <td>Actual data identifier configuration contains no definition for data identifier 0xf101</td>
+        </tr>
+        <tr>
+            <td>2025-04-05 17:03:26.680</td>
+            <td>2025-04-05 17:03:26.681</td>
+            <td>Read DID (0xF1DD)</td>
+            <td class="fail">Fail</td>
+            <td class="fail">Fail</td>
+            <td>Actual data identifier configuration contains no definition for data identifier 0xf1dd</td>
+        </tr>
+        <tr>
+            <td>2025-04-05 17:03:26.681</td>
+            <td>2025-04-05 17:03:26.681</td>
+            <td>Read DID (0xF113)</td>
+            <td class="fail">Fail</td>
+            <td class="fail">Fail</td>
+            <td>Actual data identifier configuration contains no definition for data identifier 0xf113</td>
+        </tr>
+        <tr>
+            <td>2025-04-05 17:03:26.681</td>
+            <td>2025-04-05 17:03:26.682</td>
+            <td>Read DID (0xF187)</td>
+            <td class="fail">Fail</td>
+            <td class="fail">Fail</td>
+            <td>Actual data identifier configuration contains no definition for data identifier 0xf187</td>
+        </tr>
+    </table>
+</body>
+</html>
