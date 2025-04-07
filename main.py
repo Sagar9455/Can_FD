@@ -1,106 +1,116 @@
-import json
-import csv
+from modules import button_input, oled_display, uds_client, config_loader
+import logging
 import time
-import threading
-import can
-from udsoncan.client import Client
-from udsoncan.connections import PythonIsoTpConnection
-import isotp
 
-# Load config
-with open('config.json') as f:
-    config = json.load(f)
+# Load configuration
+config = config_loader.load_config("config.json")
+oled = oled_display.OLED()
 
-data_identifiers = {int(k, 16): v for k, v in config["data_identifiers"].items()}
-stmin_config = {k.upper(): v for k, v in config["stmin_config"].items()}
+logging.info("Waiting for button press to start diagnostics...")
 
-latest_stmin_info = {"did": None, "stmin": None}
+# Load configuration
+config = ConfigLoader()
+menu_combinations = config.get('menu_combinations')
+oled_config = config.get('display')
+can_config = config.get('can')
+uds_config = config.get('uds')
+isotp_config = uds_config.get('isotp')
+report_filename = config.get('report.filename')
 
-# Setup CAN and ISOTP
-can_bus = can.interface.Bus(channel='can0', bustype='socketcan')
+# Initialize components
+oled = OLEDDisplay(oled_config)
+buttons = ButtonInput(config.get('gpio.button_pins'))
+uds = UDSClient(can_config)
+report = ReportGenerator(report_filename)
 
-tp_addr = isotp.Address(isotp.AddressingMode.Normal_11bits, txid=0x7E0, rxid=0x7E8)
-tp_layer = isotp.CanStack(bus=can_bus, address=tp_addr)
-conn = PythonIsoTpConnection(tp_layer)
+def load_testcases(file_path):
+    testcases = []
+    with open(file_path, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            testcase = {
+                "id": row["TestCaseID"],
+                "description": row["Step"],
+                "service_id": int(row["ServiceID"], 16),
+                "sub_id": int(row["SubFunction/ID"], 16),
+                "expected_response": int(row["ExpectedResponse"], 16)
+            }
+            testcases.append(testcase)
+    return testcases
 
-# Monitor Flow Control frames
-def interpret_stmin(byte_val):
-    if byte_val <= 0x7F:
-        return byte_val
-    elif 0xF1 <= byte_val <= 0xF9:
-        return (byte_val - 0xF0) * 0.1
-    else:
-        return 0
+def display_text(text, y=0):
+    oled.clear()
+    oled.display_text(text, y)
 
-def monitor_stmin():
-    monitor_bus = can.interface.Bus(channel='can0', bustype='socketcan')
-    while True:
-        msg = monitor_bus.recv()
-        if msg and len(msg.data) >= 3:
-            if msg.data[0] == 0x30:  # Flow Control
-                stmin_val = interpret_stmin(msg.data[2])
-                latest_stmin_info["stmin"] = stmin_val
-                print(f"[Monitor] FC frame from 0x{msg.arbitration_id:X}: STmin={stmin_val} ms (0x{msg.data[2]:02X})")
+# Display welcome screen
+display_text("            Welcome\n                   to\n           Diagnostic")
+time.sleep(2)
 
-# Start monitor thread
-threading.Thread(target=monitor_stmin, daemon=True).start()
+variable = 0
+varFinal = 0
+selected_sequence = []
+selected_option = None
 
-# Diagnostic session
-def perform_diagnostics():
-    results = []
-    with Client(conn, request_timeout=2) as client:
-        client.config["data_identifiers"] = {
-            did: lambda x: x.decode("ascii") for did in data_identifiers
-        }
+# GPIO pin numbers
+BTN_FIRST = config.get('gpio.button_pins')[0]
+BTN_SECOND = config.get('gpio.button_pins')[1]
+BTN_ENTER = config.get('gpio.button_pins')[2]
+BTN_THANKS = config.get('gpio.button_pins')[3]
 
-        # Enter extended diagnostic session (optional)
-        try:
-            client.change_session(0x03)
-        except Exception as e:
-            print(f"[!] Failed to enter extended session: {e}")
+while True:
+        oled.clear()
+        display_text("Select a option:\n1. ECU Information\n2. Testcase Execution\n3. ECU Flashing\n4. File Transfer into USB device\n5. Reserved", y=0)
 
-        for did_hex, expected_stmin in stmin_config.items():
-            did = int(did_hex, 16)
-            latest_stmin_info["did"] = did_hex
-            latest_stmin_info["stmin"] = None
+        while True:
+            if GPIO.input(BTN_FIRST) == GPIO.LOW:
+                variable = (variable * 10) + 1
+                selected_sequence.append(BTN_FIRST)
+                display_text(str(variable))
 
-            print(f"\n[Request] Reading DID 0x{did_hex}")
-            try:
-                response = client.read_data_by_identifier(did)
-                time.sleep(1.0)  # Wait for FC if any
-                actual_stmin = latest_stmin_info["stmin"]
+            if GPIO.input(BTN_SECOND) == GPIO.LOW:
+                variable = (variable * 10) + 2
+                selected_sequence.append(BTN_SECOND)
+                display_text(str(variable))
 
-                result = {
-                    "DID": did_hex,
-                    "Value": response.service_data.values.get(did),
-                    "Expected_STmin": expected_stmin,
-                    "Actual_STmin": actual_stmin,
-                    "Status": "PASS" if actual_stmin == expected_stmin else "FAIL"
-                }
+            if GPIO.input(BTN_ENTER) == GPIO.LOW:
+                varFinal = variable
+                variable = 0
+                selected_sequence.append(BTN_ENTER)
 
-            except Exception as e:
-                result = {
-                    "DID": did_hex,
-                    "Value": None,
-                    "Expected_STmin": expected_stmin,
-                    "Actual_STmin": None,
-                    "Status": f"ERROR: {str(e)}"
-                }
+                selected_option = menu_combinations.get(tuple(selected_sequence), "Invalid Input")
+                display_text(f"{selected_option}")
 
-            results.append(result)
-            print(result)
+                if selected_option == "ECU Information":
+                    time.sleep(0.5)
+                    display_text("Fetching\nECU Information...")
+                    uds.get_ecu_information()
+                    display_text("Completed")
 
-    return results
+                elif selected_option == "Testcase Execution":
+                    time.sleep(0.5)
+                    display_text("Executing\nUDS Testcases...")
+                    runner = UDSTestRunner(
+                        can_config=can_config,
+                        uds_config=uds_config,
+                        isotp_config=isotp_config,
+                        testcase_file="uds_testcases.txt"
+                    )
+                    results = runner.run_all()
+                    generate_report(results)
+                    display_text("Report\nGenerated")
 
-# Write to CSV
-def write_report(results):
-    with open("stmin_report.csv", "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["DID", "Value", "Expected_STmin", "Actual_STmin", "Status"])
-        writer.writeheader()
-        writer.writerows(results)
-    print("\n✅ Report written to stmin_report.csv")
+                elif selected_option == "Exit":
+                    os.system("exit")
 
-# Main execution
-if __name__ == "__main__":
-    results = perform_diagnostics()
-    write_report(results)
+                selected_sequence.clear()
+
+            if GPIO.input(BTN_THANKS) == GPIO.LOW:
+                display_text("Shutting Down")
+                time.sleep(0.1)
+                os.system('sudo poweroff')
+
+            time.sleep(0.1)
+
+        logging.info(f"Diagnostic completed. Report saved at: {report_path}")
+        time.sleep(2)
+        oled.clear_display()

@@ -1,0 +1,15 @@
+# TestCaseID,Step,ServiceID,SubFunction/ID,ExpectedResponse
+TC_001,Enter Extended Session,0x10,0x01,0x50
+TC_002,Enter programming Session,0x10,0x03,0x50
+TC_003,Body CAN Data Base Version Number Data Identifier Read,0x22,0xF100,0x62
+TC_004,Chassis CAN Data Base Version Number Data Identifier Read,0x22,0xF101,0x62
+TC_005,Vehicle Manufacturer Spare Part Number Data Identifier Read,0x22,0xF187,0x62
+TC_006,System Supplier ECU Hardware Version Number Read,0x22,0xF193,0x62
+TC_007,ECU Manufacturing Data Read,0x22,0xF18B,0x62
+TC_008,Vehicle Manufacturer SMK Software Version Number Data Identifier Read,0x22,0xF1AA,0x62
+TC_009,ECU Software UNIT BDC Version Data Identifier Read,0x22,0xF1B1,0x62
+TC_010,BDC Platform Software Version Number Read,0x22,0xF120,0x62
+TC_011,System Name Or Engine Type Data Identifier Read,0x22,0xF197,0x62
+TC_012,ECU Supplier Code Data Identifier Read,0x22,0xF1A1,0x62
+TC_013,ECU Serial Number Data Identifier Read,0x22,0xF18C,0x62
+TC_014,Learnt FOB PartNumber Read,0x22,0xF188,0x62

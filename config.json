@@ -1,0 +1,61 @@
+{
+  "can": {
+    "channel": "can0",
+    "interface": "socketcan",
+    "bitrate": 500000,
+    "dbitrate": 1000000,
+    "tx_id": "0x8A0",
+    "rx_id": "0x8A8",
+    "is_extended": true,
+    "can_fd": true
+  },
+  "gpio": {
+    "buttons": {
+      "first": 12,
+      "second": 16,
+      "enter": 20,
+      "thanks": 21
+    }
+  },
+  "display": {
+    "width": 128,
+    "height": 64,
+    "i2c_bus": 1,
+    "i2c_address": "0x3C",
+    "font_path": "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "font_size": 9
+  },
+  "uds": {
+    "isotp": {
+      "stmin": 10,
+      "blocksize": 8,
+      "wftmax": 0,
+      "tx_padding": 0,
+      "rx_flowcontrol_timeout": 1000,
+      "rx_consecutive_frame_timeout": 1000,
+      "max_frame_size": 4095,
+      "can_fd": true,
+      "bitrate_switch": true,
+      "fc_delay": 10
+    },
+    "timing": {
+      "s3_client": 3000,
+      "s3_server": 5000,
+      "p2_client": 150,
+      "p2_extended_client": 5000,
+      "p2_server": 100,
+      "p2_extended_server": 5000
+    }
+  },
+  "menu_combinations": {
+    "(12, 20)": "ECU Information",
+    "(16, 20)": "Testcase Execution",
+    "(12, 16, 20)": "ECU Flashing",
+    "(16, 12, 20)": "File Transfer\ncopying log files\nto USB device",
+    "(12, 12, 20)": "Reserved1\nfor future versions",
+    "(16, 16, 20)": "Reserved2\nfor future versions"
+  },
+  "report": {
+    "filename": "uds_report.html"
+  }
+}
