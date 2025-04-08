@@ -1,0 +1,54 @@
+# TestCaseID,Step,ServiceID,SubFunction/ID,ExpectedResponse
+TC_001,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_001,Step 2 - Enter Extended Session,0x10,0x03,0x50
+
+TC_002,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_002,Step 2 - Enter Programming Session,0x10,0x03,0x50
+
+TC_003,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_003,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_003,Step 3 - Read Body CAN Data Base Version Number,0x22,0xF100,0x62
+
+TC_004,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_004,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_004,Step 3 - Read Chassis CAN Data Base Version Number,0x22,0xF101,0x62
+
+TC_005,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_005,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_005,Step 3 - Read Vehicle Manufacturer Spare Part Number,0x22,0xF187,0x62
+
+TC_006,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_006,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_006,Step 3 - Read ECU Hardware Version Number,0x22,0xF193,0x62
+
+TC_007,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_007,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_007,Step 3 - Read ECU Manufacturing Data,0x22,0xF18B,0x62
+
+TC_008,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_008,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_008,Step 3 - Read SMK Software Version Number,0x22,0xF1AA,0x62
+
+TC_009,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_009,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_009,Step 3 - Read BDC Version Identifier,0x22,0xF1B1,0x62
+
+TC_010,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_010,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_010,Step 3 - Read Platform Software Version Number,0x22,0xF120,0x62
+
+TC_011,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_011,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_011,Step 3 - Read System Name or Engine Type,0x22,0xF197,0x62
+
+TC_012,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_012,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_012,Step 3 - Read ECU Supplier Code,0x22,0xF1A1,0x62
+
+TC_013,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_013,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_013,Step 3 - Read ECU Serial Number,0x22,0xF18C,0x62
+
+TC_014,Step 1 - Enter Diagnostic Session,0x10,0x01,0x50
+TC_014,Step 2 - Enter Extended Session,0x10,0x03,0x50
+TC_014,Step 3 - Read Learnt FOB Part Number,0x22,0xF188,0x62
