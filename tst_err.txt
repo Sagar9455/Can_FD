@@ -1,0 +1,30 @@
+import csv
+
+test_cases = []
+
+with open("test_cases.txt", "r") as f:
+    reader = csv.reader(f)
+    next(reader)  # Skip header
+    for line_number, row in enumerate(reader, start=2):  # line 2 is first after header
+        try:
+            row = [col.strip() for col in row]
+
+            # Skip empty, short or comment lines
+            if not row or len(row) < 5:
+                print(f"Skipping line {line_number}: Too short or empty - {row}")
+                continue
+            if row[0].startswith("#"):
+                print(f"Skipping line {line_number}: Comment - {row}")
+                continue
+
+            test_cases.append(row)
+
+        except Exception as e:
+            print(f"Error reading line {line_number}: {row} -> {e}")
+
+# Verify all test cases have 5 elements
+for i, row in enumerate(test_cases):
+    if len(row) != 5:
+        print(f"Malformed test case at index {i}: {row}")
+    else:
+        pass  # You can add debug logging here if needed
