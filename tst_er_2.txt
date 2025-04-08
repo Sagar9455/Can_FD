@@ -1,0 +1,90 @@
+def generate_report(report):
+    html_template = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>UDS Diagnostic Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+            h1 { text-align: center; }
+            button.accordion {
+                background-color: #ddd;
+                color: black;
+                cursor: pointer;
+                padding: 10px;
+                width: 100%;
+                border: none;
+                text-align: left;
+                outline: none;
+                font-size: 16px;
+                border-radius: 5px;
+                margin-bottom: 5px;
+            }
+            .pass { color: green; font-weight: bold; }
+            .fail { color: red; font-weight: bold; }
+            .panel {
+                display: none;
+                overflow: hidden;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                background: white;
+            }
+            th, td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+            th { background-color: #eee; }
+            .step-pass { background-color: #c8e6c9; } /* Green background for pass */
+            .step-fail { background-color: #ffcdd2; } /* Red background for fail */
+            .step-wait { background-color: #fff3e0; } /* Light yellow for waiting steps */
+            .step-sent { background-color: #bbdefb; } /* Light blue for request sent steps */
+            .step-received { background-color: #e1bee7; } /* Light purple for response received steps */
+        </style>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const acc = document.getElementsByClassName("accordion");
+                for (let i = 0; i < acc.length; i++) {
+                    acc[i].addEventListener("click", function () {
+                        this.classList.toggle("active");
+                        const panel = this.nextElementSibling;
+                        panel.style.display = (panel.style.display === "block") ? "none" : "block";
+                    });
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <h1>UDS Diagnostic Report</h1>
+        {{test_cases}}
+    </body>
+    </html>
+    '''
+    html_content = ''
+    for tc_id, steps in grouped_cases.items():
+        html_content += f'<button class="accordion">Test Case {tc_id}</button><div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>'
+        
+        for step in report:
+            if step["id"] == tc_id:
+                status_class = "pass" if step["status"] == "PASS" else "fail"
+                
+                # Apply specific classes for request/response
+                step_type_class = "step-sent" if step["type"] == "Request Sent" else "step-received" if step["type"] == "Response Received" else "step-wait"
+                
+                # For Request Sent
+                if step["type"] == "Request Sent":
+                    html_content += f'<tr class="{status_class} {step_type_class}"><td>{step["step"]}</td><td>{step["description"]}</td><td>{step["timestamp"]}</td><td>Request Sent</td><td class="{status_class}">{step["status"]}</td><td>{step["failure_reason"]}</td></tr>'
+                # For Response Received
+                elif step["type"] == "Response Received":
+                    html_content += f'<tr class="{status_class} {step_type_class}"><td>{step["step"]}</td><td>{step["description"]}</td><td>{step["response_timestamp"]}</td><td>Response Received</td><td class="{status_class}">{step["status"]}</td><td>{step["failure_reason"]}</td></tr>'
+        
+        html_content += "</table></div>"
+
+    html_content += "</body></html>"
+
+    with open("UDS_Report.html", "w") as file:
+        file.write(html_content)
+    print("Report generated: UDS_Report.html")
