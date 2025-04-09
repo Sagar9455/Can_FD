@@ -1,0 +1,26 @@
+
+ {
+   "version": "2.0.0",
+   "tasks": [
+       {
+           "label": "Build 64-bit DLL",
+           "type": "shell",
+           "command": "gcc",
+           "args": [
+               "-shared",                // Generate shared library (DLL)
+               "-o", "${workspaceFolder}/math_operations.dll",  // Output DLL path
+               "math_operations.c",      // Source file
+               "-m64",                   // Target 64-bit architecture
+               "-O2",                    // Optimization level
+               "-Wall",                  // Enable all warnings
+               "-fPIC"                   // Position-independent code for DLL
+           ],
+           "group": {
+               "kind": "build",
+               "isDefault": true
+           },
+           "problemMatcher": [],
+           "detail": "Build a 64-bit DLL with MinGW-w64"
+       }
+   ]
+}

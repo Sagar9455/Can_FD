@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UDS Diagnostic Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        h1 { text-align: center; }
+        button.accordion {
+            background-color: #ddd;
+            color: black;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        .panel {
+            display: none;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th { background-color: #eee; }
+        .step-pass { background-color: #c8e6c9; }
+        .step-fail { background-color: #ffcdd2; }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const acc = document.getElementsByClassName("accordion");
+            for (let i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    const panel = this.nextElementSibling;
+                    panel.style.display = (panel.style.display === "block") ? "none" : "block";
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>UDS Diagnostic Report</h1>
+    <button class="accordion">▶ TC_001 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_002 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Programming Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_003 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read Body CAN Data Base Version Number</td><td>09:35:03</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf100</td></tr>
+</table></div>
+<button class="accordion">▶ TC_004 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read Chassis CAN Data Base Version Number</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_005 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read Vehicle Manufacturer Spare Part Number</td><td>09:35:03</td><td>Request Sent</td><td class="fail">Fail</td><td>ReadDataByIdentifier service execution returned an invalid response. Response given by server is incomplete.</td></tr>
+</table></div>
+<button class="accordion">▶ TC_006 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read ECU Hardware Version Number</td><td>09:35:03</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf193</td></tr>
+</table></div>
+<button class="accordion">▶ TC_007 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read ECU Manufacturing Data</td><td>09:35:03</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf18b</td></tr>
+</table></div>
+<button class="accordion">▶ TC_008 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:03</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read SMK Software Version Number</td><td>09:35:04</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1aa</td></tr>
+</table></div>
+<button class="accordion">▶ TC_009 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read BDC Version Identifier</td><td>09:35:04</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1b1</td></tr>
+</table></div>
+<button class="accordion">▶ TC_010 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read Platform Software Version Number</td><td>09:35:04</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf120</td></tr>
+</table></div>
+<button class="accordion">▶ TC_011 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read System Name or Engine Type</td><td>09:35:04</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf197</td></tr>
+</table></div>
+<button class="accordion">▶ TC_012 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read ECU Supplier Code</td><td>09:35:04</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1a1</td></tr>
+</table></div>
+<button class="accordion">▶ TC_013 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read ECU Serial Number</td><td>09:35:04</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf18c</td></tr>
+</table></div>
+<button class="accordion">▶ TC_014 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="1">1</td><td rowspan="1">Step 1 - Enter Diagnostic Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="1">2</td><td rowspan="1">Step 2 - Enter Extended Session</td><td>09:35:04</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="1">3</td><td rowspan="1">Step 3 - Read Learnt FOB Part Number</td><td>09:35:04</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf188</td></tr>
+</table></div>
+
+</body>
+</html>
