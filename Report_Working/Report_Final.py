@@ -330,7 +330,7 @@ def get_ecu_information():
                     failure_reason = str(e)
 
                 # OLED display update
-                display_msg = f"{tc_id}\n{step_desc[:16]}\n{status}"
+                display_msg = f"{tc_id}\n{step_desc[:50]}\n{status}"
                 display_text(display_msg)
                 time.sleep(2)
 
