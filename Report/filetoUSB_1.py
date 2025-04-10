@@ -15,18 +15,7 @@ from udsoncan.client import Client
 import udsoncan.configs
 from collections import defaultdict
 
-# === Load Test Cases from CSV ===
-test_cases = []
-with open("test_cases.txt", "r") as f:
-    reader = csv.reader(f)
-    next(reader)
-    for row in reader:
-        if row and not row[0].startswith("#"):
-            test_cases.append(row)
 
-grouped_cases = defaultdict(list)
-for row in test_cases:
-    grouped_cases[row[0]].append(row)
 
 # === Updated Report Formatter ===
 def convert_report(report):
@@ -72,6 +61,18 @@ def convert_report(report):
         })
 
     return test_cases
+ 
+
+# === GPIO Setup ===
+BTN_FIRST = 12
+BTN_SECOND = 16
+BTN_ENTER = 20
+BTN_THANKS = 21
+buttons = [BTN_FIRST, BTN_SECOND, BTN_ENTER, BTN_THANKS]
+
+GPIO.setmode(GPIO.BCM)
+for btn in buttons:
+    GPIO.setup(btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # === OLED Display Setup ===
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -176,12 +177,16 @@ def get_ecu_information():
         logging.info("UDS Client Closed")
         
 def transfer_files_to_usb():
-    log_folder = "/home/pi/diagnostic_logs"
-    usb_root = "/media/pi"
+    log_folder = "/home/mobase/Can_FD/Report"
+    usb_root = "/media/mobase"
 
     try:
         # Step 1: Check for USB mount
+        display_text("USB Found")
+        time.sleep(8.5)
         devices = [d for d in os.listdir(usb_root) if os.path.ismount(os.path.join(usb_root, d))]
+        display_text("USB Found")
+        time.sleep(4.5)
         if not devices:
             display_text("No USB Found")
             return
@@ -192,6 +197,7 @@ def transfer_files_to_usb():
 
         # Step 2: Compress logs to ZIP
         display_text("Zipping files...")
+        time.sleep(0.5)
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
             for root, _, files in os.walk(log_folder):
                 for file in files:
@@ -203,6 +209,8 @@ def transfer_files_to_usb():
 
         # Step 3: Check USB free space
         usage = psutil.disk_usage(usb_path)
+        display_text("enough space USB")
+        time.sleep(0.5)
         if usage.free < zip_size:
             display_text("Not enough space\non USB")
             os.remove(zip_path)
@@ -210,6 +218,7 @@ def transfer_files_to_usb():
 
         # Step 4: Copy ZIP to USB
         display_text("Copying to USB...")
+        time.sleep(0.5)
         shutil.copy2(zip_path, usb_path)
         os.remove(zip_path)
 
@@ -217,6 +226,7 @@ def transfer_files_to_usb():
 
     except Exception as e:
         display_text(f"Error:\n{str(e)[:20]}")
+        time.sleep(8.5)
 
 def run_testcases():
     os.system('sudo ip link set can0 down')
@@ -358,7 +368,7 @@ try:
             time.sleep(1)
             
             
-             if selected_option == "File Transfer\ncopying log files\nto USB device":
+            if selected_option == "File Transfer\ncopying log files\nto USB device":
                 time.sleep(1)
                 display_text("File Transfer...")
                 transfer_files_to_usb()
