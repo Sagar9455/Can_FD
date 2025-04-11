@@ -1,0 +1,227 @@
+{
+  "tester_present": "0x3E",
+  "default_session": "0x01",
+  "extended_session": "0x03",
+  "uds": {
+    "can": {
+      "channel": "can0",
+      "interface": "socketcan",
+      "bitrate": 500000,
+      "dbitrate": 1000000,
+      "tx_id": "0x8A0",
+      "rx_id": "0x8A8",
+      "is_extended": true,
+      "can_fd": true
+    },
+    "isotp": {
+      "stmin": 10,
+      "blocksize": 8,
+      "wftmax": 0,
+      "tx_padding": 0,
+      "rx_flowcontrol_timeout": 1000,
+      "rx_consecutive_frame_timeout": 1000,
+      "max_frame_size": 4095,
+      "can_fd": true,
+      "bitrate_switch": true
+    },
+    "timing": {
+      "s3_client": 3000,
+      "s3_server": 5000,
+      "p2_client": 500,
+      "p2_extended_client": 5000,
+      "p2_server": 100,
+      "p2_extended_server": 5000
+    },
+    "ecu_information_dids": {
+      "0xF100": { "label": "VIN", "length": 8 },
+      "0xF101": { "label": "SoftwareVersion", "length": 8 },
+      "0xF187": { "label": "VIN2", "length": 13 },
+      "0xF1AA": { "label": "Part Number", "length": 13 }
+    },
+    "decoding_dids": {
+      "0xF100": 8,
+      "0xF101": 8,
+      "0xF187": 13,
+      "0xF1AA": 13,
+      "0xF1B1": 13,
+      "0xF193": 13,
+      "0xF120": 16,
+      "0xF18B": 8,
+      "0xF102": 13
+    }
+  },
+  "gpio": {
+    "buttons": {
+      "first": 12,
+      "second": 16,
+      "enter": 20,
+      "thanks": 21
+    }
+  },
+  "display": {
+    "width": 128,
+    "height": 64,
+    "i2c_bus": 1,
+    "i2c_address": "0x3C",
+    "font_path": "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "font_size": 9
+  },
+  "menu_combinations": {
+    "(12, 20)": "ECU Information",
+    "(16, 20)": "Testcase Execution",
+    "(12, 16, 20)": "ECU Flashing",
+    "(16, 12, 20)": "File Transfer\ncopying log files\nto USB device",
+    "(12, 12, 20)": "Reserved1\nfor future versions",
+    "(16, 16, 20)": "Reserved2\nfor future versions"
+  },
+  "report": {
+    "filename": "uds_report.html"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+import can
+import isotp
+import time
+import logging
+from udsoncan.client import Client
+from udsoncan.connections import PythonIsoTpConnection
+from udsoncan.configs import default_client_config
+from udsoncan import AsciiCodec
+from modules.Parse_handler import grouped_cases
+from modules.report_generator import generate_report, convert_report
+
+class UDSClient:
+    def __init__(self, config):
+        can_cfg = config["uds"]["can"]
+        isotp_cfg = config["uds"]["isotp"]
+        timing_cfg = config["uds"]["timing"]
+        self.uds_config = config["uds"]
+
+        self.tx_id = int(can_cfg["tx_id"], 16)
+        self.rx_id = int(can_cfg["rx_id"], 16)
+        is_extended = can_cfg.get("is_extended", False)
+
+        addr_mode = isotp.AddressingMode.Extended_29bits if is_extended else isotp.AddressingMode.Normal_11bits
+        address = isotp.Address(addr_mode, txid=self.tx_id, rxid=self.rx_id)
+
+        self.bus = can.interface.Bus(
+            channel=can_cfg["channel"],
+            bustype=can_cfg["interface"],
+            fd=can_cfg.get("can_fd", False)
+        )
+
+        self.stack = isotp.CanStack(
+            bus=self.bus,
+            address=address,
+            params=isotp_cfg
+        )
+
+        self.conn = PythonIsoTpConnection(self.stack)
+
+        self.client_config = default_client_config.copy()
+        self.client_config["p2_timeout"] = timing_cfg["p2_client"] / 1000.0
+        self.client_config["p2_star_timeout"] = timing_cfg["p2_extended_client"] / 1000.0
+        self.client_config["s3_client_timeout"] = timing_cfg["s3_client"] / 1000.0
+
+        # ✅ Split config blocks
+        self.info_dids = self.uds_config["ecu_information_dids"]
+        self.decode_dids = self.uds_config["decoding_dids"]
+
+        # ✅ Register AsciiCodec for all decoding
+        self.client_config["data_identifiers"] = {
+            int(did_str, 16): AsciiCodec(length)
+            for did_str, length in self.decode_dids.items()
+        }
+
+    def get_ecu_information(self, oled):
+        session_default = int(self.uds_config["default_session"], 16)
+        session_extended = int(self.uds_config["extended_session"], 16)
+
+        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+            client.change_session(session_default)
+            time.sleep(0.2)
+            client.change_session(session_extended)
+            time.sleep(0.2)
+
+            for did_hex, info in self.info_dids.items():
+                label = info["label"]
+                did = int(did_hex, 16)
+                try:
+                    response = client.read_data_by_identifier(did)
+                    if response.positive:
+                        value = response.service_data.values[did]
+                        oled.display_text(f"{label}:\n{value}")
+                        print(f"[ECU Info] {label} ({did_hex}) = {value}")
+                    else:
+                        oled.display_text(f"{label}: NRC {hex(response.code)}")
+                except Exception as e:
+                    oled.display_text(f"{label}: {str(e)[:16]}")
+                time.sleep(2)
+
+    def run_testcase(self, oled):
+        report = []
+        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+            client.change_session(0x03)
+
+            for tc_id, steps in grouped_cases.items():
+                for step in steps:
+                    _, step_desc, service, subfunc, expected = step
+                    try:
+                        service_int = int(service, 16)
+                        subfunc_int = int(subfunc, 16)
+                        expected_bytes = [int(b, 16) for b in expected.strip().split()]
+
+                        response = None
+                        if service_int == 0x10:
+                            response = client.change_session(subfunc_int)
+                        elif service_int == 0x11:
+                            response = client.ecu_reset(subfunc_int)
+                        elif service_int == 0x22:
+                            response = client.read_data_by_identifier(subfunc_int)
+                        else:
+                            raise ValueError(f"Unsupported service: {service}")
+
+                        status = "Fail"
+                        failure_reason = "-"
+                        if response.positive:
+                            actual = list(response.original_payload)
+                            if actual[:len(expected_bytes)] == expected_bytes:
+                                status = "Pass"
+                            else:
+                                failure_reason = f"Expected {expected_bytes}, got {actual}"
+                        else:
+                            failure_reason = f"NRC: {hex(response.code)}"
+
+                    except Exception as e:
+                        status = "Fail"
+                        failure_reason = str(e)
+
+                    oled.display_text(f"{tc_id}\n{step_desc[:20]}\n{status}")
+                    time.sleep(2)
+                    if status == "Fail":
+                        oled.display_text(f"FAIL\n{failure_reason[:20]}")
+                        time.sleep(2)
+
+                    report.append({
+                        "id": tc_id,
+                        "timestamp": time.strftime('%H:%M:%S'),
+                        "response_timestamp": time.strftime('%H:%M:%S'),
+                        "description": step_desc,
+                        "type": "Request Sent",
+                        "status": status,
+                        "failure_reason": failure_reason
+                    })
+
+        report_file = f"UDS_Report_{int(time.time())}.html"
+        html_report = convert_report(report)
+        generate_report(html_report, filename=report_file)
+        oled.display_text("Report Done!\n" + report_file[:16])
