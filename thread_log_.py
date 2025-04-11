@@ -9,15 +9,14 @@ from udsoncan.client import Client
 from udsoncan.connections import PythonIsoTpConnection
 import logging
 
-# ---------- CAN Interface Setup ----------
+# Initialize CAN interface
 os.system('sudo ip link set can0 up type can bitrate 500000 dbitrate 1000000 restart-ms 1000 berr-reporting on fd on')
 os.system('sudo ifconfig can0 up')
 
-log_file = 'can_log_threads_01.asc'
+log_file = 'can_communication_log_threaded.asc'
 log_lock = threading.Lock()
-start_time = None  # Global reference for relative timestamps
 
-# ---------- Load Test Cases ----------
+# Load test cases from CSV
 test_cases = []
 with open("test_cases_.txt", "r") as f:
     reader = csv.reader(f)
@@ -26,7 +25,7 @@ with open("test_cases_.txt", "r") as f:
         if not row[0].startswith("#"):
             test_cases.append(row)
 
-# ---------- ISO-TP and UDS Configuration ----------
+# ISO-TP and UDS setup
 isotp_params = {
     'stmin': 32,
     'blocksize': 8,
@@ -57,20 +56,21 @@ uds_config["data_identifiers"] = {
     0xF1A1: udsoncan.AsciiCodec(16)
 }
 
-# ---------- CAN and UDS Stack Setup ----------
+# Set up CAN bus and ISO-TP stack
 bus = can.interface.Bus(channel="can0", bustype="socketcan", fd=True)
 tp_addr = isotp.Address(isotp.AddressingMode.Normal_11bits, txid=0x7A0, rxid=0x7A8)
 stack = isotp.CanStack(bus=bus, address=tp_addr, params=isotp_params)
 conn = PythonIsoTpConnection(stack)
 
-# ---------- Write ASC Log Header ----------
+# Create log file and write headers
 with open(log_file, 'w') as f:
     f.write(f'date: {time.strftime("%Y-%m-%d")}\n')
-    f.write('base hex timestamps relative\n')
+    f.write('base hex timestamps absolute\n')
     f.write('comment: Logging CAN communication with UDS service\n')
     f.write('begin of logfile\n')
 
-# ---------- Thread Functions ----------
+# -------------------- Threaded Logging --------------------
+
 def tx_thread_func():
     with open(log_file, 'a') as f, Client(conn, request_timeout=2, config=uds_config) as client:
         for case in test_cases:
@@ -86,12 +86,11 @@ def tx_thread_func():
                 elif service_id == 0x22:
                     response = client.read_data_by_identifier(subfunction)
                 else:
-                    continue
+                    continue  # Skip unsupported services
 
-                relative_ts = time.time() - start_time
                 with log_lock:
                     f.write('{:.4f} Tx 0 8 0x000007A0  {:02X} {:02X} 00 00 00 00 00 00\n'.format(
-                        relative_ts, service_id, subfunction))
+                        time.time(), service_id, subfunction))
                     f.flush()
             except Exception as e:
                 logging.error(f"Tx Error [{step}]: {e}")
@@ -101,18 +100,16 @@ def rx_thread_func():
         while True:
             message = bus.recv(timeout=1.0)
             if message:
-                relative_ts = time.time() - start_time
+                msg_type = 'Rx'
                 with log_lock:
-                    f.write('{:.4f} Rx 0 8 {:#010x} {}\n'.format(
-                        relative_ts, message.arbitration_id,
-                        ' '.join(f'{x:02X}' for x in message.data) +
+                    f.write('{:.4f} {} 0 8 {:#010x} {}\n'.format(
+                        time.time(), msg_type, message.arbitration_id,
+                        ' '.join(f'{x:02X}' for x in message.data) + 
                         ' 00 00 00 00 00 00'[len(message.data)*3:]
                     ))
                     f.flush()
 
-# ---------- Start Threads ----------
-start_time = time.time()  # Set the global reference timestamp
-
+# Start both threads
 tx_thread = threading.Thread(target=tx_thread_func, daemon=True)
 rx_thread = threading.Thread(target=rx_thread_func, daemon=True)
 
@@ -120,8 +117,9 @@ try:
     rx_thread.start()
     tx_thread.start()
 
+    # Let the threads run for a reasonable period or until Tx is done
     tx_thread.join(timeout=15)
-    time.sleep(2)  # Allow Rx thread a bit more time to finish
+    time.sleep(2)  # Give Rx a bit more time to finish listening
 
 finally:
     with open(log_file, 'a') as f:
