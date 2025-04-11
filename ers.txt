@@ -1,0 +1,23 @@
+x_consecutive_frame_timeout': 1000, 'max_frame_size': 4095, 'can_fd': True, 'bitrate_switch': True}, 'timing': {'s3_client': 3000, 's3_server': 5000, 'p2_client': 150, 'p2_extended_client': 5000, 'p2_server': 100, 'p2_extended_server': 5000}, 'data_identifiers': {'0xF100': 'VIN', '0xF101': 'rty', '0xF187': 'vcv', '0xF1AA': 'rtydd', '0xF1B1': 'kkhg', '0xF188': 'erwbv', '0xF193': 'lhjads', '0xF120': 'vbdfs', '0xF18B': 'ewrjh', '0xF102': 'bcv'}, 'tester_present': '0x3E', 'default_session': '0x01', 'extended_session': '0x03'}
+Captured sequence: [12, 16, 20]
+key string used : (12, 16, 20)
+Captured sequence: [12, 16, 20]
+key string used : (12, 16, 20)
+Captured sequence: [16, 20]
+key string used : (16, 20)
+[TimeoutException] : Did not receive response in time. P2 timeout time has expired (timeout=0.150 sec)
+Traceback (most recent call last):
+  File "/home/mobase/Testz/Project/Project3/ty/pro2/main.py", line 81, in <module>
+    uds.run_testcase(oled)
+  File "/home/mobase/Testz/Project/Project3/ty/pro2/modules/uds_client.py", line 83, in run_testcase
+    client.change_session(0x03)
+  File "/usr/local/lib/python3.11/dist-packages/udsoncan/client.py", line 167, in decorated
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/udsoncan/client.py", line 225, in change_session
+    response = self.send_request(req)
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/udsoncan/client.py", line 2216, in send_request
+    raise TimeoutException('Did not receive response in time. %s time has expired (timeout=%.3f sec)' %
+udsoncan.exceptions.TimeoutException: Did not receive response in time. P2 timeout time has expired (timeout=0.150 sec)
+
