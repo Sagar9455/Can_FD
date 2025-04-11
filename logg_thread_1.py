@@ -4,7 +4,7 @@ import queue
 import time
 
 # ==== Configuration ====
-LOG_FILE = "/home/pi/can_log.asc"
+LOG_FILE = "/home/mobase/Can_FD/Tcan_communication_0.asc"
 CAN_INTERFACE = "can0"
 QUEUE_SIZE = 10000  # Limit for the message queue to avoid memory issues
 
