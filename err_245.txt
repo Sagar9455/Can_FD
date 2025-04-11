@@ -1,0 +1,162 @@
+  return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 445, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+TypeError: not enough arguments for format string
+Call stack:
+  File "/usr/lib/python3.11/threading.py", line 995, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib/python3.11/threading.py", line 1038, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.11/threading.py", line 975, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 1632, in _main_thread_fn
+    super().process(rx_timeout)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 838, in process
+    self.logger.debug("Rx: <%s> (%02d) [%s]\t %s" % (addr,
+Message: 'Rx: <351> (32) [i]\t ffff000000000000000000000000000000000000000000000000000000000000'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/logging/__init__.py", line 1110, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 953, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 690, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 659, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 449, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 445, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+TypeError: not enough arguments for format string
+Call stack:
+  File "/usr/lib/python3.11/threading.py", line 995, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib/python3.11/threading.py", line 1038, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.11/threading.py", line 975, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 1632, in _main_thread_fn
+    super().process(rx_timeout)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 838, in process
+    self.logger.debug("Rx: <%s> (%02d) [%s]\t %s" % (addr,
+Message: 'Rx: <17FC0080> (32) [i]\t 8050000400000000000000000000000100000081000000000000000000000000'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/logging/__init__.py", line 1110, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 953, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 690, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 659, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 449, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 445, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+TypeError: not enough arguments for format string
+Call stack:
+  File "/usr/lib/python3.11/threading.py", line 995, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib/python3.11/threading.py", line 1038, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.11/threading.py", line 975, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 1632, in _main_thread_fn
+    super().process(rx_timeout)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 838, in process
+    self.logger.debug("Rx: <%s> (%02d) [%s]\t %s" % (addr,
+Message: 'Rx: <17FC0080> (32) [i]\t 8050000400000000000000000000000100000081000000000000000000000000'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/logging/__init__.py", line 1110, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 953, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 690, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 659, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 449, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 445, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+TypeError: not enough arguments for format string
+Call stack:
+  File "/usr/lib/python3.11/threading.py", line 995, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib/python3.11/threading.py", line 1038, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.11/threading.py", line 975, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 1632, in _main_thread_fn
+    super().process(rx_timeout)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 838, in process
+    self.logger.debug("Rx: <%s> (%02d) [%s]\t %s" % (addr,
+Message: 'Rx: <3D1> (32) [i]\t 320e01004100202221020f000000000000000000000000000000000000000000'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/logging/__init__.py", line 1110, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 953, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 690, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 659, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 449, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 445, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+TypeError: not enough arguments for format string
+Call stack:
+  File "/usr/lib/python3.11/threading.py", line 995, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib/python3.11/threading.py", line 1038, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.11/threading.py", line 975, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 1632, in _main_thread_fn
+    super().process(rx_timeout)
+  File "/usr/local/lib/python3.11/dist-packages/can_isotp-2.0.6-py3.11.egg/isotp/protocol.py", line 838, in process
+    self.logger.debug("Rx: <%s> (%02d) [%s]\t %s" % (addr,
+Message: 'Rx: <3D1> (32) [i]\t 320e01004100202221020f000000000000000000000000000000000000000000'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/logging/__init__.py", line 1110, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/logging/__init__.py", line 953, in format
+    return fmt.format(record)
