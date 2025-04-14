@@ -1,157 +1,41 @@
-import can
-import isotp
-import time
-import logging
-from udsoncan.client import Client
-from udsoncan.connections import PythonIsoTpConnection
-from udsoncan.configs import default_client_config
-from udsoncan import AsciiCodec
-from modules.Parse_handler import grouped_cases
-from modules.report_generator import generate_report, convert_report
-
-class UDSClient:
-    def __init__(self, config):
-        can_cfg = config["uds"]["can"]
-        isotp_cfg = config["uds"]["isotp"]
-        timing_cfg = config["uds"]["timing"]
-        self.uds_config = config["uds"]
-        logging.debug("UDS Config loaded: %s", self.uds_config)
-
-        self.tx_id = int(can_cfg["tx_id"], 16)
-        self.rx_id = int(can_cfg["rx_id"], 16)
-        is_extended = can_cfg.get("is_extended", False)
-        addr_mode = isotp.AddressingMode.Extended_29bits if is_extended else isotp.AddressingMode.Normal_11bits
-        address = isotp.Address(addr_mode, txid=self.tx_id, rxid=self.rx_id)
-
-        self.bus = can.interface.Bus(
-            channel=can_cfg["channel"],
-            bustype=can_cfg["interface"],
-            fd=can_cfg.get("can_fd", False)
-        )
-        self.stack = isotp.CanStack(bus=self.bus, address=address, params=isotp_cfg)
-        self.conn = PythonIsoTpConnection(self.stack)
-
-        self.client_config = default_client_config.copy()
-        self.client_config["p2_timeout"] = timing_cfg["p2_client"] / 1000.0
-        self.client_config["p2_star_timeout"] = timing_cfg["p2_extended_client"] / 1000.0
-        self.client_config["s3_client_timeout"] = timing_cfg["s3_client"] / 1000.0
-
-        self.info_dids = self.uds_config["ecu_information_dids"]
-        self.decode_dids = self.uds_config["decoding_dids"]
-        self.client_config["data_identifiers"] = {
-            int(did_str, 16): AsciiCodec(length)
-            for did_str, length in self.decode_dids.items()
-        }
-
-    def get_ecu_information(self, oled):
-        session_default = int(self.uds_config["default_session"], 16)
-        session_extended = int(self.uds_config["extended_session"], 16)
-
-        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
-            logging.info("Switching to default session...")
-            client.change_session(session_default)
-            time.sleep(0.2)
-            logging.info("Switching to extended session...")
-            client.change_session(session_extended)
-            time.sleep(0.2)
-
-            for did_hex, info in self.info_dids.items():
-                label = info["label"]
-                did = int(did_hex, 16)
-                try:
-                    logging.info(f"Reading DID {did_hex} - {label}")
-                    response = client.read_data_by_identifier(did)
-                    if response.positive:
-                        value = response.service_data.values[did]
-                        oled.display_text(f"{label}:\n{value}")
-                        logging.info(f"{label} ({did_hex}) = {value}")
-                    else:
-                        msg = f"{label}: NRC {hex(response.code)}"
-                        oled.display_text(msg)
-                        logging.warning(msg)
-                except Exception as e:
-                    logging.error(f"Exception reading {did_hex}: {e}")
-                    oled.display_text(f"{label}: {str(e)[:16]}")
-                time.sleep(2)
-
-    def run_testcase(self, oled):
-        report = []
-        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
-            logging.info("Switching to extended session for test cases...")
-            try:
-                client.change_session(0x03)
-            except Exception as e:
-                logging.error(f"Failed to enter extended session: {e}")
-                oled.display_text("Session Fail")
-                return
-
-            for tc_id, steps in grouped_cases.items():
-                logging.info(f"Running Test Case: {tc_id}")
-                for step in steps:
-                    _, step_desc, service, subfunc, expected = step
-                    try:
-                        service_int = int(service, 16)
-                        subfunc_int = int(subfunc, 16)
-                        expected_bytes = [int(b, 16) for b in expected.strip().split()]
-                        logging.info(f"{tc_id} - {step_desc}: SID={service}, Sub={subfunc}, Expected={expected_bytes}")
-
-                        response = None
-                        if service_int == 0x10:
-                            response = client.change_session(subfunc_int)
-                        elif service_int == 0x11:
-                            response = client.ecu_reset(subfunc_int)
-                        elif service_int == 0x22:
-                            response = client.read_data_by_identifier(subfunc_int)
-                        else:
-                            raise ValueError(f"Unsupported service: {service}")
-
-                        status = "Fail"
-                        failure_reason = "-"
-                        if response.positive:
-                            actual = list(response.original_payload)
-                            if actual[:len(expected_bytes)] == expected_bytes:
-                                status = "Pass"
-                                logging.info(f"{tc_id} {step_desc} -> PASS")
-                            else:
-                                failure_reason = f"Expected {expected_bytes}, got {actual}"
-                                logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason}")
-                        else:
-                            failure_reason = f"NRC: {hex(response.code)}"
-                            logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason}")
-
-                    except Exception as e:
-                        status = "Fail"
-                        failure_reason = str(e)
-                        logging.error(f"{tc_id} {step_desc} -> EXCEPTION - {failure_reason}")
-
-                    oled.display_text(f"{tc_id}\n{step_desc[:20]}\n{status}")
-                    time.sleep(2)
-                    if status == "Fail":
-                        oled.display_text(f"FAIL\n{failure_reason[:20]}")
-                        time.sleep(2)
-
-                    report.append({
-                        "id": tc_id,
-                        "timestamp": time.strftime('%H:%M:%S'),
-                        "response_timestamp": time.strftime('%H:%M:%S'),
-                        "description": step_desc,
-                        "type": "Request Sent",
-                        "status": status,
-                        "failure_reason": failure_reason
-                    })
-
-        report_file = f"UDS_Report_{int(time.time())}.html"
-        html_report = convert_report(report)
-        generate_report(html_report, filename=report_file)
-        oled.display_text("Report Done!\n" + report_file[:16])
-        logging.info(f"Test report saved: {report_file}")
-
-
-
-
-import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    handlers=[logging.FileHandler("uds_debug.log"), logging.StreamHandler()]
-)
+2025-04-14 10:46:26,802 [INFO] Connection closed
+Captured sequence: [16, 20]
+key string used : (16, 20)
+2025-04-14 10:46:33,205 [DEBUG] Starting CanStack
+2025-04-14 10:46:33,206 [DEBUG] Main thread has started
+2025-04-14 10:46:33,207 [DEBUG] Relay thread has started
+2025-04-14 10:46:33,208 [INFO] Connection opened
+2025-04-14 10:46:33,209 [INFO] Switching to Default session for test cases...
+2025-04-14 10:46:33,211 [INFO] DiagnosticSessionControl<0x10> - Switching session to defaultSession (0x01)
+2025-04-14 10:46:33,212 [DEBUG] Sending request to server
+2025-04-14 10:46:33,213 [DEBUG] Sending 2 bytes : [1001]
+2025-04-14 10:46:33,214 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
+2025-04-14 10:46:33,214 [DEBUG] Waiting for server response
+2025-04-14 10:46:33,215 [DEBUG] Tx: <7A0> (08) [ ]	 0210010000000000
+2025-04-14 10:46:33,216 [DEBUG] We've been asked to write a message to the bus
+2025-04-14 10:46:33,216 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 01 00 00 00 00 00
+2025-04-14 10:46:33,246 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
+2025-04-14 10:46:33,247 [DEBUG] Received 6 bytes : [5001003201f4]
+2025-04-14 10:46:33,249 [DEBUG] Received response from server
+2025-04-14 10:46:33,250 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
+2025-04-14 10:46:33,251 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
+2025-04-14 10:46:33,252 [INFO] Switching to Default session for test cases...
+2025-04-14 10:46:33,255 [INFO] DiagnosticSessionControl<0x10> - Switching session to extendedDiagnosticSession (0x03)
+2025-04-14 10:46:33,256 [DEBUG] Sending request to server
+2025-04-14 10:46:33,259 [DEBUG] Sending 2 bytes : [1003]
+2025-04-14 10:46:33,260 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
+2025-04-14 10:46:33,262 [DEBUG] Waiting for server response
+2025-04-14 10:46:33,263 [DEBUG] Tx: <7A0> (08) [ ]	 0210030000000000
+2025-04-14 10:46:33,266 [DEBUG] We've been asked to write a message to the bus
+2025-04-14 10:46:33,267 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 03 00 00 00 00 00
+2025-04-14 10:46:33,296 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
+2025-04-14 10:46:33,297 [DEBUG] Received 6 bytes : [5003003201f4]
+2025-04-14 10:46:33,300 [DEBUG] Received response from server
+2025-04-14 10:46:33,301 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
+2025-04-14 10:46:33,302 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
+2025-04-14 10:46:33,303 [DEBUG] Stopping CanStack
+2025-04-14 10:46:33,305 [DEBUG] Main thread is exiting
+2025-04-14 10:46:33,346 [DEBUG] CanStack Stopped
+2025-04-14 10:46:33,347 [INFO] Connection closed
+Report generated: UDS_Report_1744607793.html
+2025-04-14 10:46:33,446 [INFO] Test report saved: UDS_Report_1744607793.html
