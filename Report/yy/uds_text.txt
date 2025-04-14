@@ -1,10 +1,11 @@
-import sys
-import os
+# Set fixed path
+report_dir = "reports/html_reports"
+os.makedirs(report_dir, exist_ok=True)
 
-# Add the root project directory to the path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+report_filename = f"UDS_Report_{int(time.time())}.html"
+report_path = os.path.join(report_dir, report_filename)
 
-from drivers import oled_display, button_input, config_loader, uds_client
-from drivers.report_generator import ReportGenerator
+html_report = convert_report(report)
+generate_report(html_report, filename=report_path)
 
-# Your main logic follows...
+oled.display_text("Report Done!\n" + report_filename[:16])
