@@ -1,5 +1,10 @@
-Traceback (most recent call last):
-  File "/home/mobase/Inte_Project/application/main.py", line 1, in <module>
-    from drivers import oled_display, button_input, config_loader, uds_client
-ModuleNotFoundError: No module named 'drivers'
+import sys
+import os
 
+# Add the root project directory to the path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from drivers import oled_display, button_input, config_loader, uds_client
+from drivers.report_generator import ReportGenerator
+
+# Your main logic follows...
