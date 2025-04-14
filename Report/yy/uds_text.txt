@@ -1,41 +1,5 @@
-2025-04-14 10:46:26,802 [INFO] Connection closed
-Captured sequence: [16, 20]
-key string used : (16, 20)
-2025-04-14 10:46:33,205 [DEBUG] Starting CanStack
-2025-04-14 10:46:33,206 [DEBUG] Main thread has started
-2025-04-14 10:46:33,207 [DEBUG] Relay thread has started
-2025-04-14 10:46:33,208 [INFO] Connection opened
-2025-04-14 10:46:33,209 [INFO] Switching to Default session for test cases...
-2025-04-14 10:46:33,211 [INFO] DiagnosticSessionControl<0x10> - Switching session to defaultSession (0x01)
-2025-04-14 10:46:33,212 [DEBUG] Sending request to server
-2025-04-14 10:46:33,213 [DEBUG] Sending 2 bytes : [1001]
-2025-04-14 10:46:33,214 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-14 10:46:33,214 [DEBUG] Waiting for server response
-2025-04-14 10:46:33,215 [DEBUG] Tx: <7A0> (08) [ ]	 0210010000000000
-2025-04-14 10:46:33,216 [DEBUG] We've been asked to write a message to the bus
-2025-04-14 10:46:33,216 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 01 00 00 00 00 00
-2025-04-14 10:46:33,246 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
-2025-04-14 10:46:33,247 [DEBUG] Received 6 bytes : [5001003201f4]
-2025-04-14 10:46:33,249 [DEBUG] Received response from server
-2025-04-14 10:46:33,250 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-14 10:46:33,251 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-14 10:46:33,252 [INFO] Switching to Default session for test cases...
-2025-04-14 10:46:33,255 [INFO] DiagnosticSessionControl<0x10> - Switching session to extendedDiagnosticSession (0x03)
-2025-04-14 10:46:33,256 [DEBUG] Sending request to server
-2025-04-14 10:46:33,259 [DEBUG] Sending 2 bytes : [1003]
-2025-04-14 10:46:33,260 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-14 10:46:33,262 [DEBUG] Waiting for server response
-2025-04-14 10:46:33,263 [DEBUG] Tx: <7A0> (08) [ ]	 0210030000000000
-2025-04-14 10:46:33,266 [DEBUG] We've been asked to write a message to the bus
-2025-04-14 10:46:33,267 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 03 00 00 00 00 00
-2025-04-14 10:46:33,296 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
-2025-04-14 10:46:33,297 [DEBUG] Received 6 bytes : [5003003201f4]
-2025-04-14 10:46:33,300 [DEBUG] Received response from server
-2025-04-14 10:46:33,301 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-14 10:46:33,302 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-14 10:46:33,303 [DEBUG] Stopping CanStack
-2025-04-14 10:46:33,305 [DEBUG] Main thread is exiting
-2025-04-14 10:46:33,346 [DEBUG] CanStack Stopped
-2025-04-14 10:46:33,347 [INFO] Connection closed
-Report generated: UDS_Report_1744607793.html
-2025-04-14 10:46:33,446 [INFO] Test report saved: UDS_Report_1744607793.html
+Traceback (most recent call last):
+  File "/home/mobase/Inte_Project/application/main.py", line 1, in <module>
+    from drivers import oled_display, button_input, config_loader, uds_client
+ModuleNotFoundError: No module named 'drivers'
+
