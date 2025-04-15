@@ -1,11 +1,18 @@
-# Set fixed path
-report_dir = "reports/html_reports"
-os.makedirs(report_dir, exist_ok=True)
+def display_centered_text(self, text):
+    self.clear()
+    lines = text.split('\n')
+    
+    # Use textbbox for more accurate sizing
+    line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
+    total_text_height = line_height * len(lines)
+    y_offset = (self.height - total_text_height) // 2
 
-report_filename = f"UDS_Report_{int(time.time())}.html"
-report_path = os.path.join(report_dir, report_filename)
+    for i, line in enumerate(lines):
+        bbox = self.draw.textbbox((0, 0), line, font=self.font)
+        line_width = bbox[2] - bbox[0]
+        x = (self.width - line_width) // 2
+        y = y_offset + i * line_height
+        self.draw.text((x, y), line, font=self.font, fill=255)
 
-html_report = convert_report(report)
-generate_report(html_report, filename=report_path)
-
-oled.display_text("Report Done!\n" + report_filename[:16])
+    self.display.image(self.image)
+    self.display.show()
