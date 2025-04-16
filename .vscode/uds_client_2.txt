@@ -12,6 +12,13 @@ from drivers.Parse_handler import load_testcases
 from drivers.can_logger import CANLogger
 from drivers.report_generator import generate_report, convert_report
 
+# Safe ASCII Codec with fallback for Unicode decode errors
+class SafeAsciiCodec(AsciiCodec):
+    def decode(self, data):
+        try:
+            return data.decode('ascii')
+        except UnicodeDecodeError:
+            return data.hex()
 
 class UDSClient:
     def __init__(self, config):
@@ -26,16 +33,9 @@ class UDSClient:
         self.rx_id = int(can_cfg["rx_id"], 16)
         is_extended = can_cfg.get("is_extended", False)
 
-        if is_extended:
-            addr_mode = isotp.AddressingMode.Normal_29bits
-        else:
-            addr_mode = isotp.AddressingMode.Normal_11bits
+        addr_mode = isotp.AddressingMode.Normal_29bits if is_extended else isotp.AddressingMode.Normal_11bits
 
-        address = isotp.Address(
-            addr_mode,
-            txid=self.tx_id,
-            rxid=self.rx_id
-        )
+        address = isotp.Address(addr_mode, txid=self.tx_id, rxid=self.rx_id)
 
         self.bus = can.interface.Bus(
             channel=can_cfg["channel"],
@@ -56,8 +56,6 @@ class UDSClient:
         self.client_config["p2_timeout"] = timing_cfg["p2_client"] / 1000.0
         self.client_config["p2_star_timeout"] = timing_cfg["p2_extended_client"] / 1000.0
         self.client_config["s3_client_timeout"] = timing_cfg["s3_client"] / 1000.0
-
-        # Disable exceptions for better error handling
         self.client_config["exception_on_negative_response"] = False
         self.client_config["exception_on_unexpected_response"] = False
         self.client_config["exception_on_invalid_response"] = False
@@ -65,8 +63,9 @@ class UDSClient:
         self.info_dids = self.uds_config["ecu_information_dids"]
         self.decode_dids = self.uds_config["decoding_dids"]
 
+        # Use SafeAsciiCodec to prevent UnicodeDecodeError
         self.client_config["data_identifiers"] = {
-            int(did_str, 16): AsciiCodec(length)
+            int(did_str, 16): SafeAsciiCodec(length)
             for did_str, length in self.decode_dids.items()
         }
 
@@ -83,11 +82,11 @@ class UDSClient:
         session_default = int(self.uds_config["default_session"], 16)
         session_extended = int(self.uds_config["extended_session"], 16)
 
-        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+        with Client(self.conn, request_timeout=3, config=self.client_config) as client:
             client.change_session(session_default)
-            time.sleep(0.2)
+            time.sleep(0.3)
             client.change_session(session_extended)
-            time.sleep(0.2)
+            time.sleep(0.3)
 
             for did_hex, info in self.info_dids.items():
                 label = info["label"]
@@ -95,13 +94,18 @@ class UDSClient:
                 try:
                     response = client.read_data_by_identifier(did)
                     if response.positive:
-                        values = response.service_data.values[did]
-                        oled.display_text(f"{label}:\n{' '.join(f'{b:02X}' for b in values)}")
-                        print(f"[ECU Info] {label} ({did_hex}) = {values}")
+                        decoded = response.service_data.values.get(did)
+                        if isinstance(decoded, str):
+                            oled.display_text(f"{label}:\n{decoded[:16]}")
+                        else:
+                            oled.display_text(f"{label}:\n{' '.join(f'{b:02X}' for b in decoded)}")
+                        print(f"[ECU Info] {label} ({did_hex}) = {decoded}")
                     else:
                         oled.display_text(f"{label}: NRC {hex(response.code)}")
                 except Exception as e:
                     oled.display_text(f"{label}: {str(e)[:16]}")
+                    logging.exception(f"Error reading {label} (DID {did_hex})")
+
                 time.sleep(2)
 
         self.stop_logging()
@@ -111,7 +115,7 @@ class UDSClient:
         grouped_cases = load_testcases()
         report_entries = []
 
-        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+        with Client(self.conn, request_timeout=3, config=self.client_config) as client:
             for tc_id, steps in grouped_cases.items():
                 logging.info(f"Running Test Case: {tc_id}")
                 for step in steps:
@@ -194,3 +198,172 @@ class UDSClient:
         logging.info(f"Test report saved: {report_filename}")
         self.stop_logging()
         oled.display_text("Log Generated!\n")
+
+
+
+######
+
+
+def run_testcase(self, oled):
+    self.start_logging()
+    grouped_cases = load_testcases()
+    report_entries = []
+
+    with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+        for tc_id, steps in grouped_cases.items():
+            logging.info(f"Running Test Case: {tc_id}")
+            for step in steps:
+                _, step_desc, service, subfunc, expected = step
+                request_status = "Fail"
+                response_status = "Fail"
+                failure_reason_req = "-"
+                failure_reason_resp = "-"
+
+                try:
+                    service_int = int(service, 16)
+                    subfunc_int = int(subfunc, 16)
+                    expected_bytes = [int(b, 16) for b in expected.strip().split()]
+                    logging.info(f"{tc_id} - {step_desc}: SID={service}, Sub={subfunc}, Expected={expected_bytes}")
+
+                    # Attempt to send request
+                    response = None
+                    if service_int == 0x10:
+                        response = client.change_session(subfunc_int)
+                    elif service_int == 0x11:
+                        response = client.ecu_reset(subfunc_int)
+                    elif service_int == 0x22:
+                        response = client.read_data_by_identifier(subfunc_int)
+                    else:
+                        raise ValueError(f"Unsupported service: {service}")
+
+                    request_status = "Pass"  # request went through without exception
+
+                    # Now process the response
+                    if response and response.positive:
+                        actual = list(response.original_payload)
+                        if actual[:len(expected_bytes)] == expected_bytes:
+                            response_status = "Pass"
+                            logging.info(f"{tc_id} {step_desc} -> PASS")
+                        else:
+                            failure_reason_resp = f"Expected {expected_bytes}, got {actual}"
+                            logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason_resp}")
+                    else:
+                        failure_reason_resp = f"NRC: {hex(response.code)}"
+                        logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason_resp}")
+
+                except Exception as e:
+                    failure_reason_req = str(e)
+                    logging.error(f"{tc_id} {step_desc} -> EXCEPTION - {failure_reason_req}")
+
+                oled.display_text(f"{tc_id}\n{step_desc[:20]}\n{response_status}")
+                time.sleep(2)
+
+                # Show FAIL visually if either request or response failed
+                if request_status == "Fail" or response_status == "Fail":
+                    oled.display_text("FAIL")
+                    time.sleep(2)
+
+                # Log Request Sent entry
+                report_entries.append({
+                    "id": tc_id,
+                    "timestamp": time.strftime('%H:%M:%S'),
+                    "response_timestamp": "-",
+                    "description": step_desc,
+                    "type": "Request Sent",
+                    "status": request_status,
+                    "failure_reason": failure_reason_req
+                })
+
+                # Log Response Received entry
+                report_entries.append({
+                    "id": tc_id,
+                    "timestamp": "-",
+                    "response_timestamp": time.strftime('%H:%M:%S'),
+                    "description": step_desc,
+                    "type": "Response Received",
+                    "status": response_status,
+                    "failure_reason": failure_reason_resp
+                })
+
+    # Save report
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    report_dir = os.path.join(project_root, 'output', 'html_reports')
+    os.makedirs(report_dir, exist_ok=True)
+    report_filename = f"UDS_Report_{int(time.time())}.html"
+    report_path = os.path.join(report_dir, report_filename)
+
+    html_report = convert_report(report_entries)
+    full_log_path = self.can_logger.get_log_path() or "N/A"
+    can_log_file = os.path.basename(full_log_path)
+    report_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    print(f"Full path: {full_log_path}")
+    print(f"File name: {can_log_file}")
+
+    generate_report(
+        test_cases=html_report,
+        filename=report_path,
+        log_filename=can_log_file,
+        generated_time=report_timestamp
+    )
+
+    oled.display_text("Report Done!\n" + report_filename[:16])
+    logging.info(f"Test report saved: {report_filename}")
+    self.stop_logging()
+    oled.display_text("Log Generated!\n")
+
+
+###
+#covert
+
+def convert_report(report):
+    from itertools import zip_longest
+
+    grouped = defaultdict(list)
+    for entry in report:
+        grouped[entry['id']].append(entry)
+
+    test_cases = []
+    for tc_id, steps in grouped.items():
+        overall_status = "Pass"
+        step_entries = []
+
+        # Ensure entries are paired correctly
+        requests = [s for s in steps if s["type"] == "Request Sent"]
+        responses = [s for s in steps if s["type"] == "Response Received"]
+
+        for i, (req, resp) in enumerate(zip_longest(requests, responses)):
+            step_num = i + 1
+            description = req["description"] if req else (resp["description"] if resp else "N/A")
+
+            # If either part fails, overall test case fails
+            if (req and req["status"] != "Pass") or (resp and resp["status"] != "Pass"):
+                overall_status = "Fail"
+
+            # First row: Request Sent
+            step_entries.append({
+                "step": step_num,
+                "description": description,
+                "timestamp": req["timestamp"] if req else "-",
+                "type": "Request Sent",
+                "status": req["status"] if req else "Fail",
+                "reason": req["failure_reason"] if req else "Missing Request",
+                "rowspan": 2
+            })
+
+            # Second row: Response Received
+            step_entries.append({
+                "timestamp": resp["response_timestamp"] if resp else "-",
+                "type": "Response Received",
+                "status": resp["status"] if resp else "Fail",
+                "reason": resp["failure_reason"] if resp else "Missing Response"
+            })
+
+        test_cases.append({
+            "name": tc_id,
+            "status": overall_status,
+            "steps": step_entries
+        })
+
+    return test_cases
+
