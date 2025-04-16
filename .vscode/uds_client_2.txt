@@ -1,12 +1,15 @@
 import os
 import can
-import time
 import logging
 from datetime import datetime
 from can.io.asc import ASCWriter
 
 class CANLogger:
     def __init__(self, channel='can0', interface='socketcan', can_fd=True, log_dir='/home/mobase/Inte_Project/output/can_logs'):
+        """
+        Initializes the CANLogger with the provided CAN interface settings
+        and log directory.
+        """
         self.channel = channel
         self.interface = interface
         self.can_fd = can_fd
@@ -15,45 +18,74 @@ class CANLogger:
         self.bus = None
         self.notifier = None
         self.writer = None
+        self.file = None
         self.log_path = None
 
     def start(self):
         """
-        Start CAN bus logging to a .asc file.
+        Start CAN bus logging with ASCWriter attached to notifier.
+        Writes ASC log header manually to match Vector format.
         """
+        if self.notifier or self.writer:
+            self.stop()
+
         os.makedirs(self.log_dir, exist_ok=True)
 
+        # Create timestamped log file
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.log_path = os.path.join(self.log_dir, f"can_log_{timestamp}.asc")
 
         try:
+            # Open log file for writing
+            self.file = open(self.log_path, 'w')
+
+            # Write ASC-style header
+            self.file.write(f'date {datetime.now().strftime("%Y-%m-%d")}\n')
+            self.file.write('base hex timestamps absolute\n')
+            self.file.write('comment: Logging CAN communication\n')
+            self.file.write('begin of logfile\n')
+
+            # Create CAN bus interface
             self.bus = can.interface.Bus(channel=self.channel, bustype=self.interface, fd=self.can_fd)
 
-            # Open ASC file writer
-            self.writer = ASCWriter(open(self.log_path, 'w'))
-
-            # Attach a Listener to handle both RX and TX messages
+            # Attach ASCWriter to bus via Notifier
+            self.writer = ASCWriter(self.file)
             self.notifier = can.Notifier(self.bus, [self.writer])
 
             logging.info(f"CAN logging started: {self.log_path}")
+
         except Exception as e:
-            logging.error(f"Failed to start CAN logger: {e}")
+            logging.error(f"[CANLogger] Failed to start: {e}")
 
     def stop(self):
         """
-        Stop CAN logging and release resources.
+        Stops logging and writes ASC footer.
         """
-        if self.notifier:
-            self.notifier.stop()
+        try:
+            if self.notifier:
+                self.notifier.stop()
 
-        if self.writer:
-            self.writer.stop()
+            if self.writer:
+                self.writer.stop()
+
+            if self.file:
+                self.file.write('end of logfile\n')
+                self.file.close()
+
             logging.info(f"CAN logging stopped: {self.log_path}")
             print(f"[CANLogger] Log file saved to: {self.log_path}")
 
+        except Exception as e:
+            logging.error(f"[CANLogger] Error during stop: {e}")
+
+        # Reset
         self.bus = None
-        self.writer = None
         self.notifier = None
+        self.writer = None
+        self.file = None
 
     def get_log_path(self):
+        """
+        Returns the path to the current log file.
+        """
         return self.log_path
