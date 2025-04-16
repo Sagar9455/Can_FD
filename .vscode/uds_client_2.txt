@@ -1,3 +1,119 @@
+######
+def run_testcase(self, oled):
+    self.start_logging()
+    grouped_cases = load_testcases()
+    report_entries = []
+
+    with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+        for tc_id, steps in grouped_cases.items():
+            logging.info(f"Running Test Case: {tc_id}")
+            for step_index, step in enumerate(steps, 1):
+                _, step_desc, service, subfunc, expected = step
+                request_status = "Fail"
+                response_status = "Fail"
+                failure_reason_req = "-"
+                failure_reason_resp = "-"
+                request_timestamp = time.strftime('%H:%M:%S')
+                response_timestamp = "-"
+
+                try:
+                    service_int = int(service, 16)
+                    subfunc_int = int(subfunc, 16)
+                    expected_bytes = [int(b, 16) for b in expected.strip().split()]
+                    logging.info(f"{tc_id} - {step_desc}: SID={service}, Sub={subfunc}, Expected={expected_bytes}")
+
+                    response = None
+
+                    # Attempt to send request
+                    if service_int == 0x10:
+                        response = client.change_session(subfunc_int)
+                    elif service_int == 0x11:
+                        response = client.ecu_reset(subfunc_int)
+                    elif service_int == 0x22:
+                        response = client.read_data_by_identifier(subfunc_int)
+                    else:
+                        raise ValueError(f"Unsupported service: {service}")
+
+                    request_status = "Pass"  # request succeeded
+                    response_timestamp = time.strftime('%H:%M:%S')
+
+                    # Process the response
+                    if response and response.positive:
+                        actual = list(response.original_payload)
+                        if actual[:len(expected_bytes)] == expected_bytes:
+                            response_status = "Pass"
+                            logging.info(f"{tc_id} {step_desc} -> PASS")
+                        else:
+                            response_status = "Fail"
+                            failure_reason_resp = f"Expected {expected_bytes}, got {actual}"
+                            logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason_resp}")
+                    else:
+                        response_status = "Fail"
+                        failure_reason_resp = f"NRC: {hex(response.code)}"
+                        logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason_resp}")
+
+                except Exception as e:
+                    failure_reason_req = str(e)
+                    logging.error(f"{tc_id} {step_desc} -> EXCEPTION - {failure_reason_req}")
+
+                # OLED Status
+                oled.display_text(f"{tc_id}\n{step_desc[:20]}\n{response_status}")
+                time.sleep(2)
+                if request_status == "Fail" or response_status == "Fail":
+                    oled.display_text("FAIL")
+                    time.sleep(2)
+
+                # Log Request Sent
+                report_entries.append({
+                    "id": tc_id,
+                    "step_index": step_index,
+                    "timestamp": request_timestamp,
+                    "response_timestamp": "-",
+                    "description": step_desc,
+                    "type": "Request Sent",
+                    "status": request_status,
+                    "failure_reason": failure_reason_req
+                })
+
+                # Log Response Received
+                report_entries.append({
+                    "id": tc_id,
+                    "step_index": step_index,
+                    "timestamp": "-",
+                    "response_timestamp": response_timestamp,
+                    "description": step_desc,
+                    "type": "Response Received",
+                    "status": response_status,
+                    "failure_reason": failure_reason_resp
+                })
+
+    # Save report
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    report_dir = os.path.join(project_root, 'output', 'html_reports')
+    os.makedirs(report_dir, exist_ok=True)
+    report_filename = f"UDS_Report_{int(time.time())}.html"
+    report_path = os.path.join(report_dir, report_filename)
+
+    html_report = convert_report(report_entries)
+    full_log_path = self.can_logger.get_log_path() or "N/A"
+    can_log_file = os.path.basename(full_log_path)
+    report_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    generate_report(
+        test_cases=html_report,
+        filename=report_path,
+        log_filename=can_log_file,
+        generated_time=report_timestamp
+    )
+
+    oled.display_text("Report Done!\n" + report_filename[:16])
+    logging.info(f"Test report saved: {report_filename}")
+    self.stop_logging()
+    oled.display_text("Log Generated!\n")
+
+
+
+####
 import can
 import os
 import isotp
