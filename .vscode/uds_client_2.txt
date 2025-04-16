@@ -1,0 +1,189 @@
+import can
+import os
+import isotp
+import time
+import logging
+from udsoncan.client import Client
+from udsoncan.connections import PythonIsoTpConnection
+from udsoncan.configs import default_client_config
+from drivers.Parse_handler import load_testcases
+from drivers.can_logger import CANLogger
+from udsoncan import AsciiCodec
+from drivers.report_generator import generate_report, convert_report, ReportGenerator
+
+class UDSClient:
+    def __init__(self, config):
+        can_cfg = config["uds"]["can"]
+        isotp_cfg = config["uds"]["isotp"]
+        timing_cfg = config["uds"]["timing"]
+       
+        self.uds_config = config["uds"]
+        print("UDS Config loaded:", self.uds_config)
+        
+        self.tx_id = int(can_cfg["tx_id"], 16)
+        self.rx_id = int(can_cfg["rx_id"], 16)
+        is_extended = can_cfg.get("is_extended", False)
+        
+        if is_extended:
+            addr_mode = isotp.AddressingMode.Normal_29bits
+        else:
+            addr_mode = isotp.AddressingMode.Normal_11bits
+        
+        address = isotp.Address(
+            addr_mode,
+            txid=self.tx_id,
+            rxid=self.rx_id
+        )
+        
+        self.bus = can.interface.Bus(
+            channel=can_cfg["channel"],
+            bustype=can_cfg["interface"],
+            fd=can_cfg.get("can_fd", True),
+            can_filters=[{"can_id": self.rx_id, "can_mask": 0x7FF, "extended": False}]
+        )
+        
+        self.stack = isotp.CanStack(
+            bus=self.bus,
+            address=address,
+            params=isotp_cfg
+        )
+        
+        self.conn = PythonIsoTpConnection(self.stack)
+        
+        self.client_config = default_client_config.copy()
+        self.client_config["p2_timeout"] = timing_cfg["p2_client"] / 1000.0
+        self.client_config["p2_star_timeout"] = timing_cfg["p2_extended_client"] / 1000.0
+        self.client_config["s3_client_timeout"] = timing_cfg["s3_client"] / 1000.0
+        
+        self.info_dids = self.uds_config["ecu_information_dids"]
+        self.decode_dids = self.uds_config["decoding_dids"]
+        # Register AsciiCodec for all decoding
+        self.client_config["data_identifiers"] = {
+            int(did_str, 16): AsciiCodec(length)
+            for did_str, length in self.decode_dids.items()
+        }
+        
+        self.can_logger = CANLogger(channel=can_cfg["channel"], interface=can_cfg["interface"])
+    
+    def start_logging(self):
+        self.can_logger.start()
+        
+    def stop_logging(self):
+        self.can_logger.stop()
+        
+    def get_ecu_information(self, oled):
+        self.start_logging()
+        session_default = int(self.uds_config["default_session"], 16)
+        session_extended = int(self.uds_config["extended_session"], 16)
+
+        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+            client.change_session(session_default)
+            time.sleep(0.2)
+            client.change_session(session_extended)
+            time.sleep(0.2)
+
+            for did_hex, info in self.info_dids.items():
+                label = info["label"]
+                did = int(did_hex, 16)
+                try:
+                    response = client.read_data_by_identifier(did)
+                    if response.positive:
+                        values = response.service_data.values[did]
+                        # Ensure you format the result as desired
+                        oled.display_text(f"{label}:\n{' '.join(f'{b:02X}' for b in values)}")
+                        print(f"[ECU Info] {label} ({did_hex}) = {values}")
+                    else:
+                        oled.display_text(f"{label}: NRC {hex(response.code)}")
+                except Exception as e:
+                    oled.display_text(f"{label}: {str(e)[:16]}")
+                time.sleep(2)
+        
+        self.stop_logging()
+
+    def run_testcase(self, oled):
+        self.start_logging()
+        grouped_cases = load_testcases()  # This returns a dict of test cases from a .txt file.
+        report_entries = []
+        with Client(self.conn, request_timeout=2, config=self.client_config) as client:
+            for tc_id, steps in grouped_cases.items():
+                logging.info(f"Running Test Case: {tc_id}")
+                for step in steps:
+                    _, step_desc, service, subfunc, expected = step
+                    try:
+                        service_int = int(service, 16)
+                        subfunc_int = int(subfunc, 16)
+                        expected_bytes = [int(b, 16) for b in expected.strip().split()]
+                        logging.info(f"{tc_id} - {step_desc}: SID={service}, Sub={subfunc}, Expected={expected_bytes}")
+
+                        response = None
+                        if service_int == 0x10:
+                            response = client.change_session(subfunc_int)
+                        elif service_int == 0x11:
+                            response = client.ecu_reset(subfunc_int)
+                        elif service_int == 0x22:
+                            response = client.read_data_by_identifier(subfunc_int)
+                        else:
+                            raise ValueError(f"Unsupported service: {service}")
+
+                        status = "Fail"
+                        failure_reason = "-"
+                        if response.positive:
+                            actual = list(response.original_payload)
+                            if actual[:len(expected_bytes)] == expected_bytes:
+                                status = "Pass"
+                                logging.info(f"{tc_id} {step_desc} -> PASS")
+                            else:
+                                failure_reason = f"Expected {expected_bytes}, got {actual}"
+                                logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason}")
+                        else:
+                            failure_reason = f"NRC: {hex(response.code)}"
+                            logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason}")
+                    except Exception as e:
+                        status = "Fail"
+                        failure_reason = str(e)
+                        logging.error(f"{tc_id} {step_desc} -> EXCEPTION - {failure_reason}")
+
+                    # Display brief feedback on OLED
+                    oled.display_text(f"{tc_id}\n{step_desc[:20]}\n{status}")
+                    time.sleep(2)
+                    if status == "Fail":
+                        oled.display_text("FAIL")
+                        time.sleep(2)
+
+                    # Append test result for reporting (timestamps as HH:MM:SS for example)
+                    report_entries.append({
+                        "id": tc_id,
+                        "timestamp": time.strftime('%H:%M:%S'),
+                        "response_timestamp": time.strftime('%H:%M:%S'),
+                        "description": step_desc,
+                        "type": "Request Sent",
+                        "status": status,
+                        "failure_reason": failure_reason
+                    })
+
+        # Determine report output folder and filename dynamically
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        report_dir = os.path.join(project_root, 'output', 'html_reports')
+        os.makedirs(report_dir, exist_ok=True)
+        report_filename = f"UDS_Report_{int(time.time())}.html"
+        report_path = os.path.join(report_dir, report_filename)
+
+        # Convert the report entries for HTML generation
+        html_report = convert_report(report_entries)
+
+        # Get dynamic metadata for report:
+        can_log_file = self.can_logger.get_log_path() or "N/A"
+        report_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Generate the HTML report
+        generate_report(
+            test_cases=html_report,
+            filename=report_path,
+            log_filename=can_log_file,
+            generated_time=report_timestamp
+        )
+        
+        oled.display_text("Report Done!\n" + report_filename[:16])
+        logging.info(f"Test report saved: {report_filename}")
+        self.stop_logging()
+        oled.display_text("Log Generated!\n")
