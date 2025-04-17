@@ -146,6 +146,294 @@ def generate_report(test_cases, total_duration, filename="UDS_Report.html", log_
             body += f'<tr class="{row_class}">'
             if "step" in step:
                 body += f'<td {rowspan}>{step["step"]}</td>'
+                body += f'<td {rowspan}>{step["description"]}</td>' 
+            body += f'<td>{step["timestamp"]}</td><td>{step["type"]}</td>'
+            body += f'<td class="{step["status"].lower()}">{step["status"]}</td><td>{step.get("reason", "-")}</td></tr>\n'
+        body += '</table></div>\n'
+
+    total = len(test_cases)
+    passed = sum(1 for tc in test_cases if tc["status"] == "Pass")
+    failed = total - passed
+
+    html_template = """<!DOCTYPE html>
+<html>
+<head>
+    <title>UDS Diagnostic Report</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }}
+        h1 {{
+            text-align: center;
+        }}
+        button.accordion {{
+            background-color: #ddd;
+            color: black;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }}
+        .pass {{
+            color: green;
+            font-weight: bold;
+        }}
+        .fail {{
+            color: red;
+            font-weight: bold;
+        }}
+        .panel {{
+            overflow: hidden;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            table-layout: fixed;
+        }}
+        th, td {{
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+            overflow-wrap: break-word;
+            white-space: normal;
+            max-width: 200px;
+        }}
+        th {{
+            background-color: #eee;
+        }}
+        .step-pass {{
+            background-color: #c8e6c9;
+        }}
+        .step-fail {{
+            background-color: #ffcdd2;
+        }}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {{
+            const acc = document.getElementsByClassName("accordion");
+            for (let i = 0; i < acc.length; i++) {{
+                acc[i].addEventListener("click", function () {{
+                    this.classList.toggle("active");
+                    const panel = this.nextElementSibling;
+                    panel.style.display = (panel.style.display === "block") ? "none" : "block";
+                }});
+            }}
+
+            const ctx = document.getElementById("summaryChart").getContext("2d");
+            new Chart(ctx, {{
+                type: 'pie',
+                data: {{
+                    labels: ['Passed', 'Failed'],
+                    datasets: [{{
+                        label: 'Test Case Results',
+                        data: [{passed}, {failed}],
+                        backgroundColor: ['#4CAF50', '#F44336'],
+                        borderWidth: 1
+                    }}]
+                }},
+                options: {{
+                    responsive: false,
+                    plugins: {{
+                        legend: {{
+                            position: 'bottom'
+                        }}
+                    }}
+                }}
+            }});
+        }});
+    </script>
+</head>
+<body>
+    <h1>UDS Diagnostic Report</h1>
+    <div style="text-align:center; margin-bottom: 20px;">
+        <p><strong>Generated:</strong> {generated_time}</p>
+        <p><strong>CAN Log File:</strong> {log_filename}</p>
+        <p><strong>Total Test Cases:</strong> {total}</p>
+        <p style="color:green;"><strong>Passed:</strong> {passed}</p>
+        <p style="color:red;"><strong>Failed:</strong> {failed}</p>
+        <p><strong>Total Test Duration:</strong> {total_duration:.3f} seconds</p>
+    </div>
+    <canvas id="summaryChart" width="300" height="300" style="display: block; margin: 0 auto 30px;"></canvas>
+    {body}
+</body>
+</html>
+"""
+
+    with open(filename, "w") as f:
+        f.write(html_template.format(
+            body=body,
+            total=total,
+            passed=passed,
+            failed=failed,
+            generated_time=generated_time,
+            log_filename=log_filename,
+            total_duration=total_duration
+        ))
+
+    print(f"✅ Report generated successfully: {filename}")
+
+
+
+
+######from collections import defaultdict
+from datetime import datetime
+
+class ReportGenerator:
+    def __init__(self, filename):
+        self.filename = filename
+        self.test_cases = defaultdict(list)  # { tc_id: [ {step, desc, timestamp, type, status, fail_reason}, ... ] }
+        self.total_duration = 0
+
+    def add_result(self, tc_id, step, description, timestamp, msg_type, passed, failure_reason="-"):
+        self.test_cases[tc_id].append({
+            "step": step,
+            "desc": description,
+            "timestamp": timestamp,
+            "type": msg_type,
+            "status": "Pass" if passed else "Fail",
+            "fail_reason": failure_reason if not passed else "-"
+        })
+
+    def calculate_test_duration(self, tc_id):
+        timestamps = [entry['timestamp'] for entry in self.test_cases[tc_id] if entry['type'] == 'Request Sent']
+        response_times = [entry['timestamp'] for entry in self.test_cases[tc_id] if entry['type'] == 'Response Received']
+
+        if timestamps and response_times:
+            try:
+                start_time = datetime.fromtimestamp(float(timestamps[0]))
+                end_time = datetime.fromtimestamp(float(response_times[-1]))
+                return (end_time - start_time).total_seconds()
+            except Exception:
+                return 0
+        return 0
+
+    def generate_report(self):
+        total_duration = 0
+        body = ""
+        for tc_id, steps in self.test_cases.items():
+            test_case_duration = self.calculate_test_duration(tc_id)
+            total_duration += test_case_duration
+
+            body += f'<h3>{tc_id} - Duration: {test_case_duration:.3f} seconds</h3>\n'
+            body += '<table>\n<tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>\n'
+            for step in steps:
+                try:
+                    timestamp_str = datetime.fromtimestamp(float(step["timestamp"])).strftime("%H:%M:%S")
+                except Exception:
+                    timestamp_str = "Invalid"
+                body += f'<tr><td>{step["step"]}</td><td>{step["desc"]}</td><td>{timestamp_str}</td><td>{step["type"]}</td><td>{step["status"]}</td><td>{step["fail_reason"]}</td></tr>\n'
+            body += '</table><br>\n'
+
+        body += f'<h2>Total Test Duration: {total_duration:.3f} seconds</h2>\n'
+
+        with open(self.filename, "w") as f:
+            f.write(f"<html><body>{body}</body></html>")
+
+        return total_duration
+
+
+def convert_report(report):
+    grouped = defaultdict(list)
+    total_duration = 0
+    for entry in report:
+        grouped[entry['id']].append(entry)
+
+    test_cases = []
+    for tc_id, steps in grouped.items():
+        overall_status = "Pass"
+        step_entries = []
+        test_duration = 0
+
+        for i, step in enumerate(steps):
+            request_status = "Pass" if step["status"].lower() == "pass" else "Fail"
+            response_status = "Pass"
+            fail_reason = step.get("failure_reason", "-")
+
+            if step.get("response_timestamp") is None:
+                response_status = "Fail"
+                fail_reason = "No response received"
+
+            if response_status.lower() == "fail":
+                overall_status = "Fail"
+
+            description = step["description"]
+            if " - " in description:
+                description = description.split(" - ", 1)[1]
+
+            step_num = i + 1
+
+            try:
+                request_timestamp = datetime.fromtimestamp(float(step["timestamp"])).strftime("%H:%M:%S.%f")[:-3]
+            except Exception:
+                request_timestamp = "Invalid"
+
+            try:
+                response_timestamp = datetime.fromtimestamp(float(step["response_timestamp"])).strftime("%H:%M:%S.%f")[:-3] if step.get("response_timestamp") else "N/A"
+            except Exception:
+                response_timestamp = "Invalid"
+
+            if step.get("timestamp") and step.get("response_timestamp"):
+                try:
+                    request_time = datetime.fromtimestamp(float(step["timestamp"]))
+                    response_time = datetime.fromtimestamp(float(step["response_timestamp"]))
+                    duration = (response_time - request_time).total_seconds()
+                    test_duration += duration
+                except Exception:
+                    pass
+
+            step_entries.append({
+                "step": step_num,
+                "description": description,
+                "timestamp": request_timestamp,
+                "type": "Request Sent",
+                "status": request_status.capitalize(),
+                "reason": "-",
+                "rowspan": 2
+            })
+            step_entries.append({
+                "timestamp": response_timestamp,
+                "type": "Response Received",
+                "status": response_status.capitalize(),
+                "reason": fail_reason
+            })
+
+        test_cases.append({
+            "name": tc_id,
+            "status": overall_status,
+            "steps": step_entries,
+            "duration": test_duration
+        })
+        total_duration += test_duration
+
+    return test_cases, total_duration
+
+
+def generate_report(test_cases, total_duration, filename="UDS_Report.html", log_filename="N/A", generated_time=None):
+    if generated_time is None:
+        generated_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    body = ""
+    for test_case in test_cases:
+        result_class = "pass" if test_case["status"] == "Pass" else "fail"
+        body += f'<button class="accordion">▶ {test_case["name"]} - <span class="{result_class}">{test_case["status"]}</span></button>\n'
+        body += '<div class="panel" style="display: block;"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>\n'
+        for step in test_case["steps"]:
+            row_class = "step-pass" if step["status"] == "Pass" else "step-fail"
+            rowspan = f'rowspan="{step["rowspan"]}"' if "rowspan" in step else ""
+            body += f'<tr class="{row_class}">'
+            if "step" in step:
+                body += f'<td {rowspan}>{step["step"]}</td>'
                 body += f'<td {rowspan}>{step["description"]}</td>'
             body += f'<td>{step["timestamp"]}</td><td>{step["type"]}</td>'
             body += f'<td class="{step["status"].lower()}">{step["status"]}</td><td>{step.get("reason", "-")}</td></tr>\n'
