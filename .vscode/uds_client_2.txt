@@ -343,5 +343,28 @@ def start_logging(self, log_name_suffix=""):
     filename = f"CANLog_{log_name_suffix}_{timestamp}.asc"
     self.can_logger.start(filename=filename)
 
+#####
+
+
+def run_testcase(self, oled):
+    # Check disk space before logging
+    min_required = 50  # Minimum required space in MB
+    enough_space, free_mb = self.check_disk_space(min_required_mb=min_required)
+
+    if not enough_space:
+        warning_msg = f"Low Storage!\nOnly {free_mb}MB left.\nNeed {min_required}MB."
+        oled.display_text(warning_msg)
+        logging.warning(warning_msg)
+        time.sleep(4)
+        return  # Abort test case execution
+
+    # Show available memory in a visual way if sufficient
+    oled.display_text(f"✔ Storage OK\nFree: {free_mb} MB")
+    logging.info(f"Storage check passed: {free_mb} MB available")
+    time.sleep(2)  # Show storage status briefly before continuing
+
+    self.start_logging(log_name_suffix="Testcase")
+    
+    # The rest of your testcase execution code...
 
 
