@@ -281,4 +281,67 @@ def generate_report(test_cases, total_duration, filename="UDS_Report.html", log_
             total_duration=total_duration
         ))
 
+
     print(f"✅ Report generated successfully: {filename}")
+
+
+
+
+
+
+
+
+####
+
+
+
+can loggr
+
+
+    def start(self, filename=None):
+        """
+        Start CAN bus logging with ASCWriter attached to notifier.
+        Optionally accepts a custom filename for the log.
+        """
+        if self.notifier or self.writer:
+            self.stop()
+
+        os.makedirs(self.log_dir, exist_ok=True)
+
+        # Use provided filename or generate timestamped one
+        if filename:
+            self.log_path = os.path.join(self.log_dir, filename)
+        else:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            self.log_path = os.path.join(self.log_dir, f"can_log_{timestamp}.asc")
+
+        try:
+            self.file = open(self.log_path, 'w')
+
+            self.bus = can.interface.Bus(channel=self.channel, bustype=self.interface, fd=self.can_fd)
+
+            self.writer = ASCWriter(self.file)
+            self.notifier = can.Notifier(self.bus, [self.writer])
+
+            logging.info(f"CAN logging started: {self.log_path}")
+
+        except Exception as e:
+            logging.error(f"[CANLogger] Failed to start: {e}")
+
+
+
+#####
+
+
+self.start_logging(log_name_suffix="ECUInfo")
+
+self.start_logging(log_name_suffix="Testcase")
+
+
+def start_logging(self, log_name_suffix=""):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"CANLog_{log_name_suffix}_{timestamp}.asc"
+    self.can_logger.start(filename=filename)
+
+
+
