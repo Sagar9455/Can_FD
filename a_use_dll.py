@@ -6,7 +6,7 @@ arch = platform.architecture()[0]
 print(f"Python architecture: {arch}")
 
 # Set the DLL path (make sure it's correct)
-dll_path = r"E:\GenerateDLL\DLL_Generate_Math_Func\math_operations.dll"
+dll_path = r"/home/mobase/Can_FD/a_math_operations.dll"
 
 # Ensure that the DLL and Python architecture match (64-bit or 32-bit)
 if arch == '64bit':
