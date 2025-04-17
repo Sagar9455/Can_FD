@@ -1,4 +1,17 @@
-from collections import defaultdict
+import shutil  # At the top of the file
+
+def check_disk_space(self, min_required_mb=50):
+    """
+    Checks if there is at least `min_required_mb` of free space.
+    Returns (is_enough_space: bool, free_space_mb: int)
+    """
+    total, used, free = shutil.disk_usage("/")
+    free_mb = free // (1024 * 1024)  # Convert to MB
+    return (free_mb >= min_required_mb, free_mb)
+
+
+
+###from collections import defaultdict
 from datetime import datetime
 
 class ReportGenerator:
