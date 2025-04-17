@@ -1,3 +1,170 @@
+class ReportGenerator:
+    def __init__(self, filename):
+        self.filename = filename
+        self.test_cases = defaultdict(list)  # { tc_id: [ {step, desc, timestamp, type, status, fail_reason}, ... ] }
+        self.total_duration = 0
+
+    def add_result(self, tc_id, step, description, timestamp, msg_type, passed, failure_reason="-"):
+        self.test_cases[tc_id].append({
+            "step": step,
+            "desc": description,
+            "timestamp": timestamp,
+            "type": msg_type,
+            "status": "Pass" if passed else "Fail",
+            "fail_reason": failure_reason if not passed else "-"
+        })
+
+    def calculate_test_duration(self, tc_id):
+        timestamps = [entry['timestamp'] for entry in self.test_cases[tc_id] if entry['type'] == 'Request Sent']
+        response_times = [entry['timestamp'] for entry in self.test_cases[tc_id] if entry['type'] == 'Response Received']
+
+        if timestamps and response_times:
+            try:
+                start_time = datetime.fromtimestamp(float(timestamps[0]))
+                end_time = datetime.fromtimestamp(float(response_times[-1]))
+                return (end_time - start_time).total_seconds()
+            except Exception:
+                return 0
+        return 0
+
+    def generate_report(self, log_filename="N/A", generated_time=None):
+        if generated_time is None:
+            generated_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        total_duration = 0
+        body = ""
+
+        for tc_id, steps in self.test_cases.items():
+            test_case_duration = self.calculate_test_duration(tc_id)
+            total_duration += test_case_duration
+
+            body += f'<h3>{tc_id} - Duration: {test_case_duration:.3f} seconds</h3>\n'
+            body += '<table>\n<tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>\n'
+
+            for step in steps:
+                try:
+                    timestamp_str = datetime.fromtimestamp(float(step["timestamp"])).strftime("%H:%M:%S")
+                except Exception:
+                    timestamp_str = "Invalid"
+                body += f'<tr><td>{step["step"]}</td><td>{step["desc"]}</td><td>{timestamp_str}</td><td>{step["type"]}</td><td>{step["status"]}</td><td>{step["fail_reason"]}</td></tr>\n'
+
+            body += '</table><br>\n'
+
+        total = len(self.test_cases)
+        passed = sum(1 for tc in self.test_cases if tc["status"] == "Pass")
+        failed = total - passed
+
+        # Generate the pie chart dynamically
+        body += f'<canvas id="summaryChart" width="300" height="300" style="display: block; margin: 0 auto 30px;"></canvas>\n'
+        body += f'<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\n'
+        body += f'<script>\n'
+        body += f'const ctx = document.getElementById("summaryChart").getContext("2d");\n'
+        body += f'new Chart(ctx, {{\n'
+        body += f'    type: "pie",\n'
+        body += f'    data: {{\n'
+        body += f'        labels: ["Passed", "Failed"],\n'
+        body += f'        datasets: [{{\n'
+        body += f'            data: [{passed}, {failed}],\n'
+        body += f'            backgroundColor: ["#4CAF50", "#F44336"],\n'
+        body += f'            borderWidth: 1\n'
+        body += f'        }}]\n'
+        body += f'    }},\n'
+        body += f'    options: {{\n'
+        body += f'        responsive: false,\n'
+        body += f'        plugins: {{\n'
+        body += f'            legend: {{ position: "bottom" }}\n'
+        body += f'        }}\n'
+        body += f'    }}\n'
+        body += f'}});\n'
+        body += f'</script>\n'
+
+        # Write the final HTML report
+        html_template = f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>UDS Diagnostic Report</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }}
+        h1 {{
+            text-align: center;
+        }}
+        button.accordion {{
+            background-color: #ddd;
+            color: black;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }}
+        .pass {{
+            color: green;
+            font-weight: bold;
+        }}
+        .fail {{
+            color: red;
+            font-weight: bold;
+        }}
+        .panel {{
+            overflow: hidden;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            table-layout: fixed;
+        }}
+        th, td {{
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+            overflow-wrap: break-word;
+            white-space: normal;
+            max-width: 200px;
+        }}
+        th {{
+            background-color: #eee;
+        }}
+        .step-pass {{
+            background-color: #c8e6c9;
+        }}
+        .step-fail {{
+            background-color: #ffcdd2;
+        }}
+    </style>
+</head>
+<body>
+    <h1>UDS Diagnostic Report</h1>
+    <div style="text-align:center; margin-bottom: 20px;">
+        <p><strong>Generated:</strong> {generated_time}</p>
+        <p><strong>CAN Log File:</strong> {log_filename}</p>
+        <p><strong>Total Test Cases:</strong> {total}</p>
+        <p style="color:green;"><strong>Passed:</strong> {passed}</p>
+        <p style="color:red;"><strong>Failed:</strong> {failed}</p>
+        <p><strong>Total Test Duration:</strong> {total_duration:.3f} seconds</p>
+    </div>
+    {body}
+</body>
+</html>
+"""
+        with open(self.filename, "w") as f:
+            f.write(html_template)
+
+        print(f"✅ Report generated successfully: {self.filename}")
+#####
+
+
+
 def convert_report(report):
     grouped = defaultdict(list)
     total_duration = 0
