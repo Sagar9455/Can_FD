@@ -1,38 +1,67 @@
+import board
+import busio
+import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
 
 class OLEDDisplay:
-    def __init__(self, width=128, height=64):
-        # Init display, width and height
-        self.width = width
-        self.height = height
+    def __init__(self, config):
+        self.i2c = busio.I2C(board.SCL, board.SDA)
+        self.display = adafruit_ssd1306.SSD1306_I2C(config['width'], config['height'], self.i2c)
+        self.width = self.display.width
+        self.height = self.display.height
+        self.image = Image.new("1", (self.width, self.height))
+        self.draw = ImageDraw.Draw(self.image)
         self.font = ImageFont.load_default()
-        self.display = Adafruit_SSD1306.SSD1306_128_64(rst=None)
-        self.display.begin()
-        self.display.clear()
-        self.display.display()
+        self.clear()
 
-    def display_text(self, text):
-        # Create blank image for drawing.
-        image = Image.new('1', (self.width, self.height))
-        draw = ImageDraw.Draw(image)
+    def clear(self):
+        self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
+        self.display.image(self.image)
+        self.display.show()
 
-        # Word wrap logic
+    def display_text(self, text, line=0):
+        self.clear()
+        self.draw.text((0, line), text, font=self.font, fill=255)
+        self.display.image(self.image)
+        self.display.show()
+
+    def display_centered_text(self, text):
+        self.clear()
+        lines = text.split('\n')
+        line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
+        total_text_height = line_height * len(lines)
+        y_offset = (self.height - total_text_height) // 2
+
+        for i, line in enumerate(lines):
+            bbox = self.draw.textbbox((0, 0), line, font=self.font)
+            line_width = bbox[2] - bbox[0]
+            x = (self.width - line_width) // 2
+            y = y_offset + i * line_height
+            self.draw.text((x, y), line, font=self.font, fill=255)
+
+        self.display.image(self.image)
+        self.display.show()
+
+    def display_wrapped_text(self, text):
+        self.clear()
+        words = text.split()
         lines = []
-        words = text.split(' ')
         line = ""
         for word in words:
-            if draw.textlength(line + word, font=self.font) <= self.width:
-                line += word + " "
+            test_line = line + word + " "
+            if self.draw.textlength(test_line, font=self.font) <= self.width:
+                line = test_line
             else:
-                lines.append(line)
+                lines.append(line.strip())
                 line = word + " "
-        lines.append(line)
+        lines.append(line.strip())  # Add the last line
 
-        # Clear screen and draw text line by line
-        self.display.clear()
-        draw = ImageDraw.Draw(image)
-        for i, line in enumerate(lines[:int(self.height / 10)]):  # Limit lines to screen height
-            draw.text((0, i * 10), line.strip(), font=self.font, fill=255)
+        line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
+        max_lines = self.height // line_height
 
-        self.display.image(image)
-        self.display.display()
+        for i, line in enumerate(lines[:max_lines]):  # Show only lines that fit
+            y = i * line_height
+            self.draw.text((0, y), line, font=self.font, fill=255)
+
+        self.display.image(self.image)
+        self.display.show()
