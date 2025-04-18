@@ -1,123 +1,38 @@
-def run_testcase(self, oled):
-    self.start_logging()
-    grouped_cases = load_testcases()
-    report_entries = []
+from PIL import Image, ImageDraw, ImageFont
 
-    # Wall clock timer (sanity check)
-    run_start = datetime.now()
+class OLEDDisplay:
+    def __init__(self, width=128, height=64):
+        # Init display, width and height
+        self.width = width
+        self.height = height
+        self.font = ImageFont.load_default()
+        self.display = Adafruit_SSD1306.SSD1306_128_64(rst=None)
+        self.display.begin()
+        self.display.clear()
+        self.display.display()
 
-    # Relative time tracking
-    start_time = datetime.now()
-    first_request_time = None
-    last_response_time = None
+    def display_text(self, text):
+        # Create blank image for drawing.
+        image = Image.new('1', (self.width, self.height))
+        draw = ImageDraw.Draw(image)
 
-    with Client(self.conn, request_timeout=2, config=self.client_config) as client:
-        for tc_id, steps in grouped_cases.items():
-            logging.info(f"Running Test Case: {tc_id}")
-            for step in steps:
-                _, step_desc, service, subfunc, expected = step
-                try:
-                    service_int = int(service, 16)
-                    subfunc_int = int(subfunc, 16)
-                    expected_bytes = [int(b, 16) for b in expected.strip().split()]
-                    logging.info(f"{tc_id} - {step_desc}: SID={service}, Sub={subfunc}, Expected={expected_bytes}")
+        # Word wrap logic
+        lines = []
+        words = text.split(' ')
+        line = ""
+        for word in words:
+            if draw.textlength(line + word, font=self.font) <= self.width:
+                line += word + " "
+            else:
+                lines.append(line)
+                line = word + " "
+        lines.append(line)
 
-                    # Time before request
-                    request_time = datetime.now()
-                    if first_request_time is None:
-                        first_request_time = request_time
+        # Clear screen and draw text line by line
+        self.display.clear()
+        draw = ImageDraw.Draw(image)
+        for i, line in enumerate(lines[:int(self.height / 10)]):  # Limit lines to screen height
+            draw.text((0, i * 10), line.strip(), font=self.font, fill=255)
 
-                    response = None
-                    if service_int == 0x10:
-                        response = client.change_session(subfunc_int)
-                    elif service_int == 0x11:
-                        response = client.ecu_reset(subfunc_int)
-                    elif service_int == 0x22:
-                        response = client.read_data_by_identifier(subfunc_int)
-                    else:
-                        raise ValueError(f"Unsupported service: {service}")
-
-                    # Time after response
-                    response_time = datetime.now()
-                    last_response_time = response_time
-
-                    status = "Fail"
-                    failure_reason = "-"
-                    if response.positive:
-                        actual = list(response.original_payload)
-                        if actual[:len(expected_bytes)] == expected_bytes:
-                            status = "Pass"
-                            logging.info(f"{tc_id} {step_desc} -> PASS")
-                        else:
-                            failure_reason = f"Expected {expected_bytes}, got {actual}"
-                            logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason}")
-                    else:
-                        failure_reason = f"NRC: {hex(response.code)}"
-                        logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason}")
-                except Exception as e:
-                    response_time = datetime.now()
-                    last_response_time = response_time
-                    status = "Fail"
-                    failure_reason = str(e)
-                    logging.error(f"{tc_id} {step_desc} -> EXCEPTION - {failure_reason}")
-
-                # Display on OLED
-                oled.display_text(f"{tc_id}\n{step_desc[:20]}\n{status}")
-                time.sleep(2)
-                if status == "Fail":
-                    oled.display_text("FAIL")
-                    time.sleep(2)
-
-                # Relative timestamps for reporting
-                relative_request_time = f"{(request_time - start_time).total_seconds():.6f}"
-                relative_response_time = f"{(response_time - start_time).total_seconds():.6f}"
-
-                report_entries.append({
-                    "id": tc_id,
-                    "timestamp": relative_request_time,
-                    "response_timestamp": relative_response_time,
-                    "description": step_desc,
-                    "type": "Request Sent",
-                    "status": status,
-                    "failure_reason": failure_reason
-                })
-
-    # Final timestamp and duration calculations
-    run_end = datetime.now()
-
-    print("\n--- Timing Summary ---")
-    if first_request_time and last_response_time:
-        print(f"First Request Timestamp:  {first_request_time}")
-        print(f"Last Response Timestamp: {last_response_time}")
-        test_duration = (last_response_time - first_request_time).total_seconds()
-        print(f"Total Testcase Execution Time (from requests): {test_duration:.6f} seconds")
-    else:
-        print("Could not determine test duration accurately (no request/response timestamps).")
-
-    wall_duration = (run_end - run_start).total_seconds()
-    print(f"Actual Wall Clock Duration: {wall_duration:.6f} seconds")
-    print("------------------------\n")
-
-    # Report generation
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    report_dir = os.path.join(project_root, 'output', 'html_reports')
-    os.makedirs(report_dir, exist_ok=True)
-    report_filename = f"UDS_Report_{int(time.time())}.html"
-    report_path = os.path.join(report_dir, report_filename)
-
-    html_report = convert_report(report_entries)
-    full_log_path = self.can_logger.get_log_path() or "N/A"
-    can_log_file = os.path.basename(full_log_path)
-    report_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    generate_report(
-        test_cases=html_report,
-        filename=report_path,
-        log_filename=can_log_file,
-        generated_time=report_timestamp
-    )
-
-    oled.display_text("Report Done!\n" + report_filename[:16])
-    logging.info(f"Test report saved: {report_filename}")
-    self.stop_logging()
-    oled.display_text("Log Generated!\n")
+        self.display.image(image)
+        self.display.display()
