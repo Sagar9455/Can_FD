@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UDS Diagnostic Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+        }
+        button.accordion {
+            background-color: #ddd;
+            color: black;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .pass {
+            color: green;
+            font-weight: bold;
+        }
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+        .panel {
+            display: none;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+            max-width: 200px;
+        }
+        th {
+            background-color: #eee;
+        }
+        .step-pass {
+            background-color: #c8e6c9;
+        }
+        .step-fail {
+            background-color: #ffcdd2;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const acc = document.getElementsByClassName("accordion");
+            for (let i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    const panel = this.nextElementSibling;
+                    panel.style.display = (panel.style.display === "block") ? "none" : "block";
+                });
+            }
+
+            const ctx = document.getElementById("summaryChart").getContext("2d");
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Passed', 'Failed'],
+                    datasets: [{
+                        label: 'Test Case Results',
+                        data: [8, 2],
+                        backgroundColor: ['#4CAF50', '#F44336'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>UDS Diagnostic Report</h1>
+    <div style="text-align:center; margin-bottom: 20px;">
+        <p><strong>Generated:</strong> 2025-04-18 11:34:48</p>
+        <p><strong>CAN Log File:</strong> can_log_20250418_113339.asc</p>
+        <p><strong>Total Test Cases:</strong> 10</p>
+        <p style="color:green;"><strong>Passed:</strong> 8</p>
+        <p style="color:red;"><strong>Failed:</strong> 2</p>
+    </div>
+    <canvas id="summaryChart" width="300" height="300" style="display: block; margin: 0 auto 30px;"></canvas>
+    <button class="accordion">▶ TC_001 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>0.011339</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>0.063344</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>2.165825</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>2.209157</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">B-CAN Version Number</td><td>4.326860</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>4.365578</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_002 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>6.458952</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>6.507529</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>8.603906</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>8.650486</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">C-CAN Version Number</td><td>10.776111</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>10.814881</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_003 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>12.911709</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>12.952866</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>15.047938</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>15.107005</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">Part Number</td><td>17.222405</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>17.273753</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_004 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>19.369571</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>19.407478</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>21.504118</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>21.549703</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">SMK Software Version Number</td><td>23.658910</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>23.708489</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_005 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>25.802628</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>25.843725</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>27.942549</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>27.989545</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">BDC Version Identifier</td><td>30.116394</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>30.155046</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_006 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>32.277709</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>32.315917</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>34.410066</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>34.453546</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">H/W Verion</td><td>36.554356</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>36.598401</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_007 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>38.710350</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>38.755724</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>40.849544</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>40.891488</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="2">3</td><td rowspan="2">S/W Version</td><td>42.990779</td><td>Request Sent</td><td class="fail">Fail</td><td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td></tr>
+<tr class="step-fail"><td>43.051463</td><td>Response Received</td><td class="fail">Fail</td><td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td></tr>
+</table></div>
+<button class="accordion">▶ TC_008 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>47.244085</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>47.291901</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>49.392038</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>49.439710</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-fail"><td rowspan="2">3</td><td rowspan="2">BDC Platform Software Version Number</td><td>51.561592</td><td>Request Sent</td><td class="fail">Fail</td><td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td></tr>
+<tr class="step-fail"><td>51.621902</td><td>Response Received</td><td class="fail">Fail</td><td>Did not receive response in time. P2 timeout time has expired (timeout=0.050 sec)</td></tr>
+</table></div>
+<button class="accordion">▶ TC_009 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>55.802010</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>55.843685</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>57.969471</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>58.014240</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">Manufacturing Date</td><td>60.112493</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>60.156857</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ TC_010 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Diagnostic Session</td><td>62.253531</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>62.318620</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">2</td><td rowspan="2">Extended Session</td><td>64.427721</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>64.468767</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td rowspan="2">3</td><td rowspan="2">EOL</td><td>66.565702</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>66.618753</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+
+</body>
+</html>
