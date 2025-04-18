@@ -46,26 +46,29 @@ class OLEDDisplay:
         self.display.image(self.image)
         self.display.show()
 
-    def display_wrapped_text(self, text):
+     def display_wrapped_text(self, text):
         self.clear()
-        words = text.split()
         lines = []
-        line = ""
-        for word in words:
-            test_line = line + word + " "
-            if self.draw.textlength(test_line, font=self.font) <= self.width:
-                line = test_line
-            else:
-                lines.append(line.strip())
-                line = word + " "
-        lines.append(line.strip())  # Add the last line
+        for raw_line in text.split('\n'):
+            words = raw_line.split()
+            current_line = ""
+            for word in words:
+                test_line = current_line + word + " "
+                if self.draw.textlength(test_line, font=self.font) <= self.width:
+                    current_line = test_line
+                else:
+                    lines.append(current_line.strip())
+                    current_line = word + " "
+            if current_line:
+                lines.append(current_line.strip())
 
         line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
         max_lines = self.height // line_height
 
-        for i, line in enumerate(lines[:max_lines]):  # Show only lines that fit
+        for i, line in enumerate(lines[:max_lines]):
             y = i * line_height
             self.draw.text((0, y), line, font=self.font, fill=255)
 
         self.display.image(self.image)
         self.display.show()
+
