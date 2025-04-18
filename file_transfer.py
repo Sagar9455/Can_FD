@@ -1,10 +1,10 @@
-'''
+
 import os
 import shutil
 import time
 
-SOURCE_DIR = '/home/pi/data/'
-USB_MOUNT_BASE = '/media/pi/'
+SOURCE_DIR = '/home/mobase/Inte_Project/output'
+USB_MOUNT_BASE = '/media/mobase/HP_TOOLS/Mobase'
 
 def get_usb_mount_point():
     """Returns the path to the mounted USB if found, else None."""
@@ -72,3 +72,4 @@ def copy_files_to_usb():
         print("✅ All files copied successfully.")
     except Exception as e:
         print(f"Error copying files: {e}")
+'''
