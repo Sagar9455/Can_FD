@@ -1,27 +1,57 @@
-    def display_wrapped_text(self, text):
-        self.clear()
-        final_lines = []
-        
-        # Handle each line from the input separately
-        for paragraph in text.split('\n'):
-            words = paragraph.split()
-            current_line = ""
-            for word in words:
-                test_line = current_line + word + " "
-                if self.draw.textlength(test_line, font=self.font) <= self.width:
-                    current_line = test_line
-                else:
-                    final_lines.append(current_line.strip())
-                    current_line = word + " "
-            if current_line:
+def display_wrapped_text(self, text):
+    self.clear()
+    max_width = self.width
+    line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
+    max_lines = self.height // line_height
+
+    final_lines = []
+
+    # Handle each input line (split by \n) and wrap if necessary
+    for paragraph in text.split('\n'):
+        words = paragraph.split()
+        current_line = ""
+        for word in words:
+            test_line = current_line + word + " "
+            if self.draw.textlength(test_line, font=self.font) <= max_width:
+                current_line = test_line
+            else:
                 final_lines.append(current_line.strip())
+                current_line = word + " "
+        if current_line:
+            final_lines.append(current_line.strip())
 
-        line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
-        max_lines = self.height // line_height
+    # Only display as many lines as fit on the screen
+    for i, line in enumerate(final_lines[:max_lines]):
+        y = i * line_height
+        self.draw.text((0, y), line, font=self.font, fill=255)
 
-        for i, line in enumerate(final_lines[:max_lines]):
-            y = i * line_height
-            self.draw.text((0, y), line, font=self.font, fill=255)
+    self.display.image(self.image)
+    self.display.show()
 
-        self.display.image(self.image)
-        self.display.show()
+###
+
+import textwrap
+
+def display_text(self, text, line=0):
+    self.clear()
+    
+    # Calculate max characters per line based on font size
+    char_width, char_height = self.font.getsize("A")
+    max_chars_per_line = self.width // char_width
+    max_lines = self.height // char_height
+
+    # Wrap and split the text
+    wrapped_lines = []
+    for paragraph in text.split('\n'):
+        wrapped_lines.extend(textwrap.wrap(paragraph, width=max_chars_per_line))
+
+    # Limit the number of lines to fit the screen
+    wrapped_lines = wrapped_lines[:max_lines]
+
+    # Draw each line
+    for i, line_text in enumerate(wrapped_lines):
+        y = i * char_height
+        self.draw.text((0, y), line_text, font=self.font, fill=255)
+
+    self.display.image(self.image)
+    self.display.show()
