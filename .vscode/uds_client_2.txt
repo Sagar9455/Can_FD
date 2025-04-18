@@ -1,14 +1,12 @@
-from datetime import datetime
-import time
-import logging
-import os
-
 def run_testcase(self, oled):
     self.start_logging()
     grouped_cases = load_testcases()
     report_entries = []
 
-    # Start time reference for relative timestamps
+    # Wall clock timer (sanity check)
+    run_start = datetime.now()
+
+    # Relative time tracking
     start_time = datetime.now()
     first_request_time = None
     last_response_time = None
@@ -26,6 +24,8 @@ def run_testcase(self, oled):
 
                     # Time before request
                     request_time = datetime.now()
+                    if first_request_time is None:
+                        first_request_time = request_time
 
                     response = None
                     if service_int == 0x10:
@@ -39,10 +39,6 @@ def run_testcase(self, oled):
 
                     # Time after response
                     response_time = datetime.now()
-
-                    # Track first request and last response times
-                    if first_request_time is None:
-                        first_request_time = request_time
                     last_response_time = response_time
 
                     status = "Fail"
@@ -59,7 +55,8 @@ def run_testcase(self, oled):
                         failure_reason = f"NRC: {hex(response.code)}"
                         logging.warning(f"{tc_id} {step_desc} -> FAIL - {failure_reason}")
                 except Exception as e:
-                    response_time = datetime.now()  # Make sure we still capture response_time
+                    response_time = datetime.now()
+                    last_response_time = response_time
                     status = "Fail"
                     failure_reason = str(e)
                     logging.error(f"{tc_id} {step_desc} -> EXCEPTION - {failure_reason}")
@@ -71,7 +68,7 @@ def run_testcase(self, oled):
                     oled.display_text("FAIL")
                     time.sleep(2)
 
-                # Relative timestamps for CANoe-like report
+                # Relative timestamps for reporting
                 relative_request_time = f"{(request_time - start_time).total_seconds():.6f}"
                 relative_response_time = f"{(response_time - start_time).total_seconds():.6f}"
 
@@ -85,27 +82,33 @@ def run_testcase(self, oled):
                     "failure_reason": failure_reason
                 })
 
-    # Calculate total duration of test case execution
-    if first_request_time and last_response_time:
-        total_duration = (last_response_time - first_request_time).total_seconds()
-        print(f"Total Testcase Execution Time: {total_duration:.6f} seconds")
-        logging.info(f"Total Testcase Execution Time: {total_duration:.6f} seconds")
+    # Final timestamp and duration calculations
+    run_end = datetime.now()
 
-    # Determine report output folder and filename
+    print("\n--- Timing Summary ---")
+    if first_request_time and last_response_time:
+        print(f"First Request Timestamp:  {first_request_time}")
+        print(f"Last Response Timestamp: {last_response_time}")
+        test_duration = (last_response_time - first_request_time).total_seconds()
+        print(f"Total Testcase Execution Time (from requests): {test_duration:.6f} seconds")
+    else:
+        print("Could not determine test duration accurately (no request/response timestamps).")
+
+    wall_duration = (run_end - run_start).total_seconds()
+    print(f"Actual Wall Clock Duration: {wall_duration:.6f} seconds")
+    print("------------------------\n")
+
+    # Report generation
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     report_dir = os.path.join(project_root, 'output', 'html_reports')
     os.makedirs(report_dir, exist_ok=True)
     report_filename = f"UDS_Report_{int(time.time())}.html"
     report_path = os.path.join(report_dir, report_filename)
 
-    # Convert report
     html_report = convert_report(report_entries)
     full_log_path = self.can_logger.get_log_path() or "N/A"
     can_log_file = os.path.basename(full_log_path)
     report_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    print(f"Full path:{full_log_path}")
-    print(f"File name:{can_log_file}")
 
     generate_report(
         test_cases=html_report,
