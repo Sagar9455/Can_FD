@@ -1,36 +1,41 @@
-import textwrap
-
 def display_centered_text(self, text):
     self.clear()
+    
+    # Estimate font height
+    _, _, _, line_height = self.draw.textbbox((0, 0), "A", font=self.font)
+    max_lines = self.height // line_height
 
-    # Estimate character width using textbbox on "W"
-    bbox = self.draw.textbbox((0, 0), "W", font=self.font)
-    char_width = bbox[2] - bbox[0]
-    char_height = bbox[3] - bbox[1]
-
-    max_chars_per_line = self.width // char_width
-    max_lines = self.height // char_height
-
-    # Wrap long lines
+    # Split input into lines, then wrap each line if too long
+    raw_lines = text.split('\n')
     wrapped_lines = []
-    for paragraph in text.split('\n'):
-        wrapped = textwrap.wrap(paragraph, width=max_chars_per_line)
-        wrapped_lines.extend(wrapped)
+    for line in raw_lines:
+        words = line.split()
+        current_line = ""
+        for word in words:
+            test_line = f"{current_line} {word}".strip()
+            bbox = self.draw.textbbox((0, 0), test_line, font=self.font)
+            line_width = bbox[2] - bbox[0]
+            if line_width <= self.width:
+                current_line = test_line
+            else:
+                if current_line:
+                    wrapped_lines.append(current_line)
+                current_line = word
+        if current_line:
+            wrapped_lines.append(current_line)
 
-    # Trim lines to fit the screen
-    if len(wrapped_lines) > max_lines:
-        wrapped_lines = wrapped_lines[:max_lines]
+    # Trim if too many lines
+    wrapped_lines = wrapped_lines[:max_lines]
 
-    # Calculate Y offset for vertical centering
-    total_text_height = char_height * len(wrapped_lines)
-    y_offset = (self.height - total_text_height) // 2
+    # Center vertically
+    total_height = len(wrapped_lines) * line_height
+    y_offset = (self.height - total_height) // 2
 
-    # Draw each line centered
     for i, line in enumerate(wrapped_lines):
         bbox = self.draw.textbbox((0, 0), line, font=self.font)
         line_width = bbox[2] - bbox[0]
         x = (self.width - line_width) // 2
-        y = y_offset + i * char_height
+        y = y_offset + i * line_height
         self.draw.text((x, y), line, font=self.font, fill=255)
 
     self.display.image(self.image)
