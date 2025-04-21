@@ -1,3 +1,83 @@
+import os
+import shutil
+import time
+import logging
+
+class USBTransfer:
+    def __init__(self, oled):
+        self.oled = oled
+        self.log_folder = "/home/mobase/Can_FD/Report"
+        self.usb_root = "/media"  # Look under /media/<user>/<mount>
+        logging.info("USBTransfer initialized")
+
+    def show_progress_animation(self, base_msg, duration=3, interval=0.5):
+        steps = int(duration / interval)
+        for i in range(steps):
+            dots = '.' * ((i % 3) + 1)
+            self.oled.display_centered_text(f"{base_msg}{dots}")
+            time.sleep(interval)
+
+    def get_usb_mount_path(self):
+        logging.info(f"Scanning for USB under {self.usb_root}")
+        try:
+            for user_folder in os.listdir(self.usb_root):
+                user_path = os.path.join(self.usb_root, user_folder)
+                logging.debug(f"Checking user folder: {user_path}")
+                if os.path.isdir(user_path):
+                    for device in os.listdir(user_path):
+                        mount_path = os.path.join(user_path, device)
+                        logging.debug(f"Checking device mount: {mount_path}")
+                        if os.path.ismount(mount_path):
+                            logging.info(f"USB mount found at: {mount_path}")
+                            return mount_path
+        except Exception as e:
+            logging.error(f"Error during USB scanning: {str(e)}")
+        logging.warning("No USB mount found")
+        return None
+
+    def transfer_files_to_usb(self):
+        try:
+            self.oled.display_centered_text("Looking for USB...")
+            logging.info("Starting USB transfer process")
+            time.sleep(1)
+
+            usb_path = self.get_usb_mount_path()
+            if not usb_path:
+                self.oled.display_centered_text("No USB found!")
+                logging.warning("USB device not found")
+                time.sleep(2)
+                return
+
+            self.oled.display_centered_text("USB Found.\nTransferring...")
+            logging.info(f"USB detected at: {usb_path}")
+            self.show_progress_animation("Copying", duration=3)
+
+            destination = os.path.join(usb_path, "UDS_Report_Backup")
+            os.makedirs(destination, exist_ok=True)
+            logging.info(f"Copying files to: {destination}")
+
+            files_copied = 0
+            for filename in os.listdir(self.log_folder):
+                src_file = os.path.join(self.log_folder, filename)
+                if os.path.isfile(src_file):
+                    shutil.copy2(src_file, destination)
+                    logging.debug(f"Copied: {src_file} -> {destination}")
+                    files_copied += 1
+
+            self.oled.display_centered_text(f"Transfer Done\n{files_copied} files")
+            logging.info(f"File transfer complete: {files_copied} files copied")
+            time.sleep(2)
+
+        except Exception as e:
+            error_msg = f"Error during transfer: {str(e)}"
+            self.oled.display_centered_text(f"Error:\n{str(e)[:20]}")
+            logging.error(error_msg)
+            time.sleep(3)
+#####
+
+
+
+
 import requests
 
 # Change 'PC_IP_ADDRESS' to the actual IP address of the PC running the Flask server
