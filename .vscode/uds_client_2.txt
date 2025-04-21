@@ -1,61 +1,72 @@
-if not self.check_and_warn_storage(oled, min_required=50):
-    return
+import os
+import time
+import shutil
+import zipfile
+import psutil
 
-###
+# Progress Animation
+def show_progress_animation(display_text, base_msg, duration=3, interval=0.5):
+    steps = int(duration / interval)
+    for i in range(steps):
+        dots = '.' * ((i % 3) + 1)
+        display_text(f"{base_msg}{dots}")
+        time.sleep(interval)
 
-def check_and_warn_storage(self, oled, min_required=50):
-    enough_space, free_mb = self.check_disk_space(min_required_mb=min_required)
-    if not enough_space:
-        warning_msg = f"Low Storage!\nOnly {free_mb}MB left.\nNeed ≥{min_required}MB."
-        oled.display_centered_text(warning_msg)
-        logging.warning(f"{warning_msg} Stopping execution due to low disk space.")
+# Transfer files to USB
+def transfer_files_to_usb(display_text):
+    log_folder = "/home/mobase/Can_FD/Report"
+    usb_root = "/media/mobase"
+
+    try:
+        # Step 1: Check for USB mount
+        display_text("Looking for USB...")
+        time.sleep(2)
+        devices = [d for d in os.listdir(usb_root) if os.path.ismount(os.path.join(usb_root, d))]
+        if not devices:
+            display_text("No USB Found")
+            time.sleep(3)
+            return
+
+        usb_path = os.path.join(usb_root, devices[0])
+        zip_name = f"DiagnosticBackup_{int(time.time())}.zip"
+        zip_path = f"/tmp/{zip_name}"
+
+        if not os.path.exists(log_folder):
+            display_text("Log folder not found")
+            time.sleep(3)
+            return
+
+        # Step 2: Compress logs to ZIP
+        show_progress_animation(display_text, "Zipping files", duration=3)
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for root, _, files in os.walk(log_folder):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    arcname = os.path.relpath(file_path, log_folder)
+                    zipf.write(file_path, arcname)
+
+        zip_size = os.path.getsize(zip_path)
+
+        # Step 3: Check USB free space
+        usage = psutil.disk_usage(usb_path)
+        if usage.free < zip_size:
+            display_text("Not enough\nspace on USB")
+            os.remove(zip_path)
+            time.sleep(3)
+            return
+
+        # Step 4: Copy ZIP to USB
+        show_progress_animation(display_text, "Copying to USB", duration=3)
+        shutil.copy2(zip_path, usb_path)
+        os.remove(zip_path)
+
+        display_text("Transfer Complete!")
+        time.sleep(2)
+
+    except Exception as e:
+        display_text(f"Error:\n{str(e)[:20]}")
         time.sleep(4)
-        return False
-    oled.display_text(f"Storage OK\nFree: {free_mb} MB")
-    logging.info(f"Storage check passed: {free_mb} MB available")
-    time.sleep(2)
-    return True
 
-
-
-###oled.display_centered_text(f"{tc_id}\n{step_desc}\n{status}")
-
-
-
-from textwrap import wrap
-
-def display_centered_text(self, text):
-    self.clear()
-    wrapped_lines = []
-
-    # Automatically wrap each line based on pixel width
-    for line in text.split('\n'):
-        words = line.split()
-        current_line = ""
-        for word in words:
-            test_line = current_line + " " + word if current_line else word
-            bbox = self.draw.textbbox((0, 0), test_line, font=self.font)
-            line_width = bbox[2] - bbox[0]
-            if line_width <= self.width:
-                current_line = test_line
-            else:
-                wrapped_lines.append(current_line)
-                current_line = word
-        if current_line:
-            wrapped_lines.append(current_line)
-
-    # Now calculate vertical centering
-    line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
-    total_text_height = line_height * len(wrapped_lines)
-    y_offset = (self.height - total_text_height) // 2
-
-    # Draw each line centered
-    for i, line in enumerate(wrapped_lines):
-        bbox = self.draw.textbbox((0, 0), line, font=self.font)
-        line_width = bbox[2] - bbox[0]
-        x = (self.width - line_width) // 2
-        y = y_offset + i * line_height
-        self.draw.text((x, y), line, font=self.font, fill=255)
-
-    self.display.image(self.image)
-    self.display.show()
+# Import in your main code
+from Inputs.drivers.usb_transfer import transfer_files_to_usb
+transfer_files_to_usb(oled.display_centered_text)
