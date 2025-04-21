@@ -1,79 +1,247 @@
+import sys
 import os
 import time
-import shutil
-import zipfile
-import psutil
-from Inputs.drivers import oled  # import directly here
+import logging
+import RPi.GPIO as GPIO
+import shutil  # For checking disk space
 
-# Progress Animation
-def show_progress_animation(base_msg, duration=3, interval=0.5):
-    steps = int(duration / interval)
-    for i in range(steps):
-        dots = '.' * ((i % 3) + 1)
-        oled.display_centered_text(f"{base_msg}{dots}")
-        time.sleep(interval)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from drivers import oled_display, button_input, config_loader, uds_client, usb_transfer
+from drivers.report_generator import ReportGenerator
 
-# Transfer files to USB
-def transfer_files_to_usb():
-    log_folder = "/home/mobase/Can_FD/Report"
-    usb_root = "/media/mobase"
+print(sys.path)
 
-    try:
-        # Step 1: Check for USB mount
-        oled.display_centered_text("Looking for USB...")
-        time.sleep(2)
-        devices = [d for d in os.listdir(usb_root) if os.path.ismount(os.path.join(usb_root, d))]
-        if not devices:
-            oled.display_centered_text("No USB Found")
-            time.sleep(3)
-            return
+# Load config
+config = config_loader.load_config("config.json")
 
-        usb_path = os.path.join(usb_root, devices[0])
-        zip_name = f"DiagnosticBackup_{int(time.time())}.zip"
-        zip_path = f"/tmp/{zip_name}"
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.FileHandler("uds_debug.log"), logging.StreamHandler()]
+)
 
-        if not os.path.exists(log_folder):
-            oled.display_centered_text("Log folder not found")
-            time.sleep(3)
-            return
+# Bring up CAN interface 
+if config.get("can_interface", {}).get("bringup_on_startup", False):
+    bitrate = config["can_interface"].get("bitrate", 500000)
+    dbitrate = config["can_interface"].get("dbitrate", 1000000)
+    restart_ms = config["can_interface"].get("restart_ms", 1000)
+    os.system(f"sudo ip link set can0 down")
+    os.system(f"sudo ip link set can0 up type can bitrate {bitrate} dbitrate {dbitrate} restart-ms {restart_ms} berr-reporting on fd on")
+    os.system("sudo ifconfig can0 up")
+    logging.info("CAN interface can0 brought up")
 
-        # Step 2: Compress logs to ZIP
-        show_progress_animation("Zipping files", duration=3)
-        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            for root, _, files in os.walk(log_folder):
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    arcname = os.path.relpath(file_path, log_folder)
-                    zipf.write(file_path, arcname)
+# Setup OLED and buttons
+oled = oled_display.OLEDDisplay(config["display"])
+btn_map = config["gpio"]["buttons"]
+BTN_FIRST = btn_map["first"]
+BTN_SECOND = btn_map["second"]
+BTN_ENTER = btn_map["enter"]
+BTN_THANKS = btn_map["thanks"]
 
-        zip_size = os.path.getsize(zip_path)
+buttons = button_input.ButtonInput(list(btn_map.values()))
+uds = uds_client.UDSClient(config)
+usb = usb_transfer.USBTransfer(oled)  # USB transfer class
 
-        # Step 3: Check USB free space
-        usage = psutil.disk_usage(usb_path)
-        if usage.free < zip_size:
-            oled.display_centered_text("Not enough\nspace on USB")
-            os.remove(zip_path)
-            time.sleep(3)
-            return
+menu_combinations = config["menu_combinations"]
 
-        # Step 4: Copy ZIP to USB
-        show_progress_animation("Copying to USB", duration=3)
-        shutil.copy2(zip_path, usb_path)
-        os.remove(zip_path)
+# Function to display text on the OLED
+def show_text(text):
+    oled.clear()
+    oled.display_text(text)
 
-        oled.display_centered_text("Transfer Complete!")
-        time.sleep(2)
+# Function to check disk space
+def check_disk_space(min_required_mb=50):
+    total, used, free = shutil.disk_usage("/")
+    free_mb = free // (1024 * 1024)  # Convert to MB
+    return (free_mb >= min_required_mb, free_mb)
 
-    except Exception as e:
-        oled.display_centered_text(f"Error:\n{str(e)[:20]}")
-        time.sleep(4)
+min_required = 50
+enough_space, free_mb = check_disk_space(min_required_mb=min_required)
 
+if not enough_space:
+    warning_msg = f"Low Storage!\nOnly {free_mb}MB left.\nNeed {min_required}MB."
+    oled.display_text(warning_msg)
+    logging.warning(warning_msg)
+    time.sleep(4)
+else:
+    oled.display_text(f"Storage OK\nFree: {free_mb} MB")
+    logging.info(f"Storage check passed: {free_mb} MB available")
+    time.sleep(2)
 
+# Welcome screen (centered)
+oled.display_centered_text("Welcome\nto\nDiagnostics")
+time.sleep(2)
+
+# Prompt screen (centered)
+oled.display_centered_text("Select Option:")
+time.sleep(1)
+
+# Main loop
+while True:
+    show_text("- Read ECU Info\n- Run Test cases\n- ECU Updater\n- Transfer Files")
+
+    selected_sequence = []
+    variable = 0
+    varFinal = 0
+
+    # Combo input mode
+    while True:
+        if GPIO.input(BTN_FIRST) == GPIO.LOW:
+            selected_sequence.append(BTN_FIRST)
+            variable = (variable * 10) + 1
+            show_text(str(variable))
+            time.sleep(0.3)
+
+        if GPIO.input(BTN_SECOND) == GPIO.LOW:
+            selected_sequence.append(BTN_SECOND)
+            variable = (variable * 10) + 2
+            show_text(str(variable))
+            time.sleep(0.3)
+
+        if GPIO.input(BTN_ENTER) == GPIO.LOW:
+            varFinal = variable
+            variable = 0
+            selected_sequence.append(BTN_ENTER)
+            key = str(tuple(selected_sequence))
+            print(f"Captured sequence: {selected_sequence}")
+            print(f"key string used : {str(tuple(selected_sequence))}")
+            selected_option = menu_combinations.get(key, "Invalid Input")
+            show_text(f"{selected_option}")
+            time.sleep(0.5)
+
+            if selected_option == "ECU Information":
+                show_text("Fetching ECU Info...")
+                uds.get_ecu_information(oled)
+                show_text("Done")
+                time.sleep(2)
+
+            elif selected_option == "Testcase Execution":
+                show_text("Running Testcases...")
+                time.sleep(2)
+                uds.run_testcase(oled)
+                show_text("Done")
+                time.sleep(2)
+
+            elif selected_option == "Reserved1\nfor future versions":
+                show_text("Reserved1\nfor future versions")
+                time.sleep(2)
+                show_text("Done")
+                time.sleep(2)
+
+            elif selected_option == "Reserved2\nfor future versions":
+                show_text("Reserved2\nfor future versions")
+                time.sleep(2)
+                show_text("Done")
+                time.sleep(2)
+
+            elif selected_option.startswith("File Transfer"):
+                show_text("Transferring logs...")
+                time.sleep(2)
+                usb.transfer_files_to_usb()  # Call the transfer function
+                show_text("Done")
+                time.sleep(2)
+
+            elif selected_option == "Exit":
+                show_text("Exiting...")
+                time.sleep(1)
+                os.system("exit")
+
+            break  # exit sequence input loop
+
+        if GPIO.input(BTN_THANKS) == GPIO.LOW:
+            show_text("Shutting Down")
+            time.sleep(2)
+            GPIO.cleanup()
+            os.system("sudo poweroff")
+
+        time.sleep(0.1)
 ####
-from Inputs.drivers.usb_transfer import transfer_files_to_usb
 
-# Call directly with no arguments
-transfer_files_to_usb()
+
+
+import os
+import shutil
+import time
+
+class USBTransfer:
+    def __init__(self, oled):
+        self.oled = oled  # Store the oled display instance
+        self.log_folder = "/home/mobase/Can_FD/Report"  # Folder containing the log files
+        self.usb_root = "/media/mobase"  # Path where USB is mounted
+
+    # Progress Animation
+    def show_progress_animation(self, base_msg, duration=3, interval=0.5):
+        """
+        Displays a progress animation on the OLED screen.
+        """
+        steps = int(duration / interval)
+        for i in range(steps):
+            dots = '.' * ((i % 3) + 1)
+            self.oled.display_centered_text(f"{base_msg}{dots}")
+            time.sleep(interval)
+
+    # Check if USB is mounted
+    def check_usb_mount(self):
+        """
+        Checks if the USB drive is mounted.
+        """
+        if os.path.ismount(self.usb_root):
+            return True
+        return False
+
+    # Transfer files to USB
+    def transfer_files_to_usb(self):
+        """
+        Transfers log files from the local folder to the USB drive.
+        """
+        try:
+            # Check if USB is mounted
+            self.oled.display_centered_text("Looking for USB...")
+            time.sleep(2)
+
+            if not self.check_usb_mount():
+                self.oled.display_centered_text("USB not found.\nPlease connect USB.")
+                time.sleep(3)
+                return
+
+            # Proceed with the transfer
+            self.show_progress_animation("Transferring logs", duration=5)
+
+            # Create directory on USB if it doesn't exist
+            usb_log_folder = os.path.join(self.usb_root, "Logs")
+            if not os.path.exists(usb_log_folder):
+                os.makedirs(usb_log_folder)
+
+            # Transfer the files from the local log folder to USB
+            files_to_copy = os.listdir(self.log_folder)
+            if not files_to_copy:
+                self.oled.display_centered_text("No files to transfer.")
+                time.sleep(2)
+                return
+
+            # Transfer each file
+            for file_name in files_to_copy:
+                source_file = os.path.join(self.log_folder, file_name)
+                destination_file = os.path.join(usb_log_folder, file_name)
+                
+                # Check if the file exists in the destination
+                if os.path.exists(destination_file):
+                    self.oled.display_centered_text(f"File {file_name} exists.\nSkipping.")
+                    time.sleep(1)
+                    continue
+
+                # Perform the file transfer
+                shutil.copy(source_file, destination_file)
+                self.oled.display_centered_text(f"Transferred: {file_name}")
+                time.sleep(1)
+
+            self.oled.display_centered_text("Transfer Complete!")
+            time.sleep(2)
+
+        except Exception as e:
+            # In case of an error
+            self.oled.display_centered_text(f"Error: {str(e)[:20]}")
+            time.sleep(4)
 
 
 
