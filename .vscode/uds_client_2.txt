@@ -1,3 +1,19 @@
+import requests
+
+url = "http://192.168.1.100:5000/trigger"  # Replace with your Windows IP
+
+try:
+    response = requests.post(url)
+    if response.ok:
+        print("Response from CANoe:", response.json()["canoe_response"])
+    else:
+        print("Error:", response.status_code)
+except Exception as e:
+    print("Failed to connect:", e)
+####
+
+
+
 import sys
 import os
 import time
