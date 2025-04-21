@@ -19,70 +19,54 @@ class USBTransfer:
             time.sleep(interval)
 
     def get_usb_mount_path(self):
-        logging.info(f"Scanning for USB under {self.usb_root}")
+        logging.info(f"Looking for USB under: {self.usb_root}")
         try:
-            for user_folder in os.listdir(self.usb_root):
-                user_path = os.path.join(self.usb_root, user_folder)
-                logging.debug(f"Checking user folder: {user_path}")
+            for user in os.listdir(self.usb_root):
+                user_path = os.path.join(self.usb_root, user)
                 if os.path.isdir(user_path):
                     for device in os.listdir(user_path):
                         mount_path = os.path.join(user_path, device)
-                        logging.debug(f"Checking device mount: {mount_path}")
                         if os.path.ismount(mount_path):
                             logging.info(f"USB mount found at: {mount_path}")
                             return mount_path
         except Exception as e:
-            logging.error(f"Error during USB scanning: {str(e)}")
-        logging.warning("No USB mount found")
+            logging.error(f"Error while scanning USB: {e}")
         return None
 
-    def transfer_files_to_usb(self):
+    def transfer_outputs_folder(self):
         try:
             self.oled.display_centered_text("Looking for USB...")
-            logging.info("Starting USB transfer process")
+            logging.info("Starting transfer...")
             time.sleep(1)
 
             usb_path = self.get_usb_mount_path()
             if not usb_path:
                 self.oled.display_centered_text("No USB found!")
-                logging.warning("USB device not found")
+                logging.warning("No USB device mounted")
                 time.sleep(2)
                 return
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             backup_folder = os.path.join(usb_path, f"UDS_Backup_{timestamp}")
             os.makedirs(backup_folder, exist_ok=True)
-            logging.info(f"Backup folder created: {backup_folder}")
+            logging.info(f"Backup folder created on USB: {backup_folder}")
 
-            self.oled.display_centered_text("USB Found.\nTransferring...")
-            self.show_progress_animation("Copying", duration=3)
+            self.oled.display_centered_text("USB Found.\nCopying Data...")
+            self.show_progress_animation("Transferring", duration=3)
 
-            folders_to_copy = ["html_reports", "asc_logs"]
-            total_files = 0
+            destination = os.path.join(backup_folder, "Outputs")
+            shutil.copytree(self.outputs_folder, destination)
 
-            for folder_name in folders_to_copy:
-                src_path = os.path.join(self.outputs_folder, folder_name)
-                dest_path = os.path.join(backup_folder, folder_name)
-
-                if not os.path.exists(src_path):
-                    logging.warning(f"Source folder not found: {src_path}")
-                    continue
-
-                shutil.copytree(src_path, dest_path)
-                files_in_folder = sum(len(files) for _, _, files in os.walk(dest_path))
-                total_files += files_in_folder
-
-                logging.info(f"Copied '{folder_name}' to USB ({files_in_folder} files)")
-
-            self.oled.display_centered_text(f"Transfer Done\n{total_files} files")
-            logging.info(f"Transfer complete. Total files copied: {total_files}")
+            file_count = sum(len(files) for _, _, files in os.walk(destination))
+            self.oled.display_centered_text(f"Transfer Done\n{file_count} files")
+            logging.info(f"Transfer complete. Files copied: {file_count}")
             time.sleep(2)
 
         except Exception as e:
-            error_msg = f"Error during transfer: {str(e)}"
             self.oled.display_centered_text(f"Error:\n{str(e)[:20]}")
-            logging.error(error_msg)
+            logging.error(f"Error during USB transfer: {e}")
             time.sleep(3)
+
 
 #####
 
