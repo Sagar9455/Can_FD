@@ -2,12 +2,13 @@ import os
 import shutil
 import time
 import logging
+from datetime import datetime
 
 class USBTransfer:
     def __init__(self, oled):
         self.oled = oled
-        self.log_folder = "/home/mobase/Can_FD/Report"
-        self.usb_root = "/media"  # Look under /media/<user>/<mount>
+        self.outputs_folder = "/home/mobase/Can_FD/Outputs"
+        self.usb_root = "/media"
         logging.info("USBTransfer initialized")
 
     def show_progress_animation(self, base_msg, duration=3, interval=0.5):
@@ -48,24 +49,33 @@ class USBTransfer:
                 time.sleep(2)
                 return
 
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_folder = os.path.join(usb_path, f"UDS_Backup_{timestamp}")
+            os.makedirs(backup_folder, exist_ok=True)
+            logging.info(f"Backup folder created: {backup_folder}")
+
             self.oled.display_centered_text("USB Found.\nTransferring...")
-            logging.info(f"USB detected at: {usb_path}")
             self.show_progress_animation("Copying", duration=3)
 
-            destination = os.path.join(usb_path, "UDS_Report_Backup")
-            os.makedirs(destination, exist_ok=True)
-            logging.info(f"Copying files to: {destination}")
+            folders_to_copy = ["html_reports", "asc_logs"]
+            total_files = 0
 
-            files_copied = 0
-            for filename in os.listdir(self.log_folder):
-                src_file = os.path.join(self.log_folder, filename)
-                if os.path.isfile(src_file):
-                    shutil.copy2(src_file, destination)
-                    logging.debug(f"Copied: {src_file} -> {destination}")
-                    files_copied += 1
+            for folder_name in folders_to_copy:
+                src_path = os.path.join(self.outputs_folder, folder_name)
+                dest_path = os.path.join(backup_folder, folder_name)
 
-            self.oled.display_centered_text(f"Transfer Done\n{files_copied} files")
-            logging.info(f"File transfer complete: {files_copied} files copied")
+                if not os.path.exists(src_path):
+                    logging.warning(f"Source folder not found: {src_path}")
+                    continue
+
+                shutil.copytree(src_path, dest_path)
+                files_in_folder = sum(len(files) for _, _, files in os.walk(dest_path))
+                total_files += files_in_folder
+
+                logging.info(f"Copied '{folder_name}' to USB ({files_in_folder} files)")
+
+            self.oled.display_centered_text(f"Transfer Done\n{total_files} files")
+            logging.info(f"Transfer complete. Total files copied: {total_files}")
             time.sleep(2)
 
         except Exception as e:
@@ -73,6 +83,7 @@ class USBTransfer:
             self.oled.display_centered_text(f"Error:\n{str(e)[:20]}")
             logging.error(error_msg)
             time.sleep(3)
+
 #####
 
 
