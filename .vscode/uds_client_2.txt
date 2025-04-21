@@ -1,5 +1,21 @@
 import requests
 
+# Change 'PC_IP_ADDRESS' to the actual IP address of the PC running the Flask server
+pc_ip_address = "PC_IP_ADDRESS"  # Replace with the PC's IP address
+url = f"http://{pc_ip_address}:5000/trigger"
+
+# Send a POST request to the Flask server on the PC
+response = requests.post(url)
+
+# Print the response from the PC
+print("Response from PC:", response.json())
+
+192.168.10.220
+####
+
+
+import requests
+
 url = "http://192.168.1.100:5000/trigger"  # Replace with your Windows IP
 
 try:
