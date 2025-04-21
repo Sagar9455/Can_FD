@@ -1,14 +1,61 @@
-response = client.read_data_by_identifier(did)
-if response.positive:
-    values = response.service_data.values[did]
+if not self.check_and_warn_storage(oled, min_required=50):
+    return
 
-    if isinstance(values, (bytes, bytearray)):
-        hex_str = ' '.join(f"{b:02X}" for b in values)
-    elif isinstance(values, str):
-        hex_str = values
-    else:
-        hex_str = str(values)
+###
 
-    display_text = f"{label}\n{hex_str}"
-    oled.display_centered_text(display_text)
-    logging.info(f"[ECU Info] {label} ({did_hex}) = {hex_str}")
+def check_and_warn_storage(self, oled, min_required=50):
+    enough_space, free_mb = self.check_disk_space(min_required_mb=min_required)
+    if not enough_space:
+        warning_msg = f"Low Storage!\nOnly {free_mb}MB left.\nNeed ≥{min_required}MB."
+        oled.display_centered_text(warning_msg)
+        logging.warning(f"{warning_msg} Stopping execution due to low disk space.")
+        time.sleep(4)
+        return False
+    oled.display_text(f"Storage OK\nFree: {free_mb} MB")
+    logging.info(f"Storage check passed: {free_mb} MB available")
+    time.sleep(2)
+    return True
+
+
+
+###oled.display_centered_text(f"{tc_id}\n{step_desc}\n{status}")
+
+
+
+from textwrap import wrap
+
+def display_centered_text(self, text):
+    self.clear()
+    wrapped_lines = []
+
+    # Automatically wrap each line based on pixel width
+    for line in text.split('\n'):
+        words = line.split()
+        current_line = ""
+        for word in words:
+            test_line = current_line + " " + word if current_line else word
+            bbox = self.draw.textbbox((0, 0), test_line, font=self.font)
+            line_width = bbox[2] - bbox[0]
+            if line_width <= self.width:
+                current_line = test_line
+            else:
+                wrapped_lines.append(current_line)
+                current_line = word
+        if current_line:
+            wrapped_lines.append(current_line)
+
+    # Now calculate vertical centering
+    line_height = self.draw.textbbox((0, 0), "A", font=self.font)[3]
+    total_text_height = line_height * len(wrapped_lines)
+    y_offset = (self.height - total_text_height) // 2
+
+    # Draw each line centered
+    for i, line in enumerate(wrapped_lines):
+        bbox = self.draw.textbbox((0, 0), line, font=self.font)
+        line_width = bbox[2] - bbox[0]
+        x = (self.width - line_width) // 2
+        y = y_offset + i * line_height
+        self.draw.text((x, y), line, font=self.font, fill=255)
+
+    self.display.image(self.image)
+    self.display.show()
