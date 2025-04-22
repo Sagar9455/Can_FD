@@ -1,32 +1,32 @@
-# udp_server.py
-
-import socket
-
-# Server configuration
-IP = "127.0.0.1"
-PORT = 5005
-
-# Create UDP socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-server_socket.bind((IP, PORT))
-
-print(f"[Server] Listening on {IP}:{PORT}")
-
-while True:
-    data, addr = server_socket.recvfrom(1024)
-    print(f"[Server] Received from {addr}: {data.decode()}")
 # udp_client.py
 
 import socket
+import threading
 
-# Server configuration (where you want to send data)
-SERVER_IP = "127.0.0.1"
+# Replace this with your PC's actual IP address
+SERVER_IP = "192.168.x.x"   # Example: 192.168.1.10
 SERVER_PORT = 5005
 
-# Create UDP socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-print("[Client] Type message to send. Press Ctrl+C to exit.")
+# Function to send messages manually from the Raspberry Pi
+def send_message():
+    while True:
+        msg = input("[Client] Enter message to send: ")
+        # Send message to the PC
+        client_socket.sendto(msg.encode(), (SERVER_IP, SERVER_PORT))
+        print(f"[Client] Sent: {msg}")
+
+# Function to listen for incoming messages from the PC
+def listen_for_messages():
+    while True:
+        data, addr = client_socket.recvfrom(1024)
+        print(f"[Client] Received from {addr}: {data.decode()}")
+
+# Start both threads for listening and sending
+threading.Thread(target=send_message, daemon=True).start()
+threading.Thread(target=listen_for_messages, daemon=True).start()
+
+# Keep main thread alive
 while True:
-    msg = input("[Client] >> ")
-    client_socket.sendto(msg.encode(), (SERVER_IP, SERVER_PORT))
+    pass
