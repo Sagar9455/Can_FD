@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 # File paths
-input_path = 'your_file.cdd'         # Replace with your actual .cdd file path
+input_path = '/home/mobase/Can_FD/Sahithi/BDC_ver0.12_ver9.0.cdd'         # Replace with your actual .cdd file path
 output_path = 'output_results.xlsx'  # Output Excel file
 
 # List to collect results
