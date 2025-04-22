@@ -14,12 +14,14 @@ try:
         # Get the hex response from the server
         hex_response = data["canoe_response"]
         
-        # Convert hex (string like '0x7D4C3B2A19000000') back to an integer
+        # Debug: Print the raw response
+        print(f"Raw response from server: {hex_response}")
+
         if hex_response.startswith("0x"):
-            int_value = int(hex_response, 16)
-            print(f"✅ Converted value from hex: {int_value}")
+            # If it's a hex string, just print it as is
+            print(f"✅ Hexadecimal value from CANoe: {hex_response}")
         else:
-            print(f"❌ Invalid hex format: {hex_response}")
+            print(f"❌ Invalid format received: {hex_response}")
 
     else:
         print(f"❌ Failed with status code: {response.status_code}")
