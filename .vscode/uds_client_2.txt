@@ -10,3 +10,51 @@ sock.sendto(seed.encode(), (IP, PORT))
 
 key, _ = sock.recvfrom(1024)
 print("Received Key:", key.decode())
+####
+
+import socket
+import threading
+
+# Configuration
+SERVER_IP = "192.168.1.100"  # Replace with your PC's IP
+SERVER_PORT = 5005
+BUFFER_SIZE = 1024
+
+def receive_messages(sock):
+    """Continuously receive messages from the PC and print them."""
+    while True:
+        try:
+            data, addr = sock.recvfrom(BUFFER_SIZE)
+            message = data.decode(errors='replace')
+            print(f"\n[PC @{addr[0]}:{addr[1]}] {message}\n[You] ", end="", flush=True)
+        except Exception as e:
+            print(f"\n[Receive error] {e}\n[You] ", end="", flush=True)
+
+def main():
+    # 1. Create UDP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    # 2. Bind to an ephemeral port so the server can reply
+    sock.bind(("", 0))
+    local_port = sock.getsockname()[1]
+    print(f"UDP client bound to local port {local_port}")
+
+    # 3. Start the receiver thread
+    recv_thread = threading.Thread(target=receive_messages, args=(sock,), daemon=True)
+    recv_thread.start()
+
+    # 4. Main loop: send user input to the PC
+    while True:
+        try:
+            msg = input("[You] ")
+            if not msg:
+                continue
+            sock.sendto(msg.encode(), (SERVER_IP, SERVER_PORT))
+        except KeyboardInterrupt:
+            print("\nExiting...")
+            break
+
+    sock.close()
+
+if __name__ == "__main__":
+    main()
