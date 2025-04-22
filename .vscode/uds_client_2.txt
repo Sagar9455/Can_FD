@@ -1,21 +1,12 @@
-# udp_client.py (Raspberry Pi)
 import socket
-import threading
 
-SERVER_IP = '192.168.x.x'  # <-- Replace with Windows PC's IP
+IP = "PC_IP_ADDRESS"  # replace with your PC's IP
 PORT = 5005
-BUFFER_SIZE = 1024
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(('', PORT))
 
-def receive():
-    while True:
-        data, _ = sock.recvfrom(BUFFER_SIZE)
-        print(f"\n[PC] {data.decode()}\n[You] ", end='', flush=True)
+seed = input("Enter seed (8 hex digits): ")  # e.g. "12AB34CD"
+sock.sendto(seed.encode(), (IP, PORT))
 
-threading.Thread(target=receive, daemon=True).start()
-
-while True:
-    msg = input("[You] ")
-    sock.sendto(msg.encode(), (SERVER_IP, PORT))
+key, _ = sock.recvfrom(1024)
+print("Received Key:", key.decode())
