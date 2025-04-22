@@ -1,8 +1,8 @@
 import re
 import pandas as pd
 
-input_path = 'your_file.cdd'
-output_path = 'output_results.xlsx'
+input_path = '/home/mobase/Can_FD/Sahithi/BDC_ver0.12_ver9.0.cdd'
+output_path = 'output_results_01.xlsx'
 
 results = []
 
