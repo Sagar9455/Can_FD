@@ -1,29 +1,21 @@
-import requests
+# udp_client.py (Raspberry Pi)
+import socket
+import threading
 
-# Replace this with the actual IP address of your PC (Windows machine running Flask)
-PC_IP = "192.168.10.220"  # <- Example IP, replace with actual
-PORT = 5000
+SERVER_IP = '192.168.10.220'  # <-- Replace with Windows PC's IP
+PORT = 5005
+BUFFER_SIZE = 1024
 
-url = f"http://{PC_IP}:{PORT}/trigger"
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind(('', PORT))
 
-try:
-    response = requests.post(url)
-    if response.status_code == 200:
-        data = response.json()
+def receive():
+    while True:
+        data, _ = sock.recvfrom(BUFFER_SIZE)
+        print(f"\n[PC] {data.decode()}\n[You] ", end='', flush=True)
 
-        # Get the hex response from the server
-        hex_response = data["canoe_response"]
-        
-        # Debug: Print the raw response
-        print(f"Raw response from server: {hex_response}")
+threading.Thread(target=receive, daemon=True).start()
 
-        if hex_response.startswith("0x"):
-            # If it's a hex string, just print it as is
-            print(f"✅ Hexadecimal value from CANoe: {hex_response}")
-        else:
-            print(f"❌ Invalid format received: {hex_response}")
-
-    else:
-        print(f"❌ Failed with status code: {response.status_code}")
-except Exception as e:
-    print(f"❌ Error during request: {str(e)}")
+while True:
+    msg = input("[You] ")
+    sock.sendto(msg.encode(), (SERVER_IP, PORT))
