@@ -1,4 +1,3 @@
-###
 import requests
 
 # Replace this with the actual IP address of your PC (Windows machine running Flask)
@@ -11,27 +10,18 @@ try:
     response = requests.post(url)
     if response.status_code == 200:
         data = response.json()
-        print("✅ Response from PC/CANoe:", data["canoe_response"])
+
+        # Get the hex response from the server
+        hex_response = data["canoe_response"]
+        
+        # Convert hex (string like '0x7D4C3B2A19000000') back to an integer
+        if hex_response.startswith("0x"):
+            int_value = int(hex_response, 16)
+            print(f"✅ Converted value from hex: {int_value}")
+        else:
+            print(f"❌ Invalid hex format: {hex_response}")
+
     else:
-        print("❌ Failed with status code:", response.status_code)
+        print(f"❌ Failed with status code: {response.status_code}")
 except Exception as e:
-    print("❌ Error during request:", str(e))
-
-###
-
-
-
-
-import socket
-
-UDP_IP = "192.168.x.x"  # Replace with CANoe PC IP
-UDP_PORT = 5000
-
-message = b"Hello CAPL!"
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.sendto(message, (UDP_IP, UDP_PORT))
-
-# Receive reply
-data, _ = sock.recvfrom(1024)
-print("📬 Received from CANoe:", data.decode())
+    print(f"❌ Error during request: {str(e)}")
