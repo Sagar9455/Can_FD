@@ -1,12 +1,17 @@
-1,346 [DEBUG] Received 6 bytes : [5003003201f4]
-2025-04-23 12:18:21,347 [DEBUG] Received response from server
-2025-04-23 12:18:21,348 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-23 12:18:21,349 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-23 12:18:21,349 [INFO] Switched to Extended Session
-2025-04-23 12:18:21,349 [ERROR] -> SecurityAccess Error: Client.send_request() got an unexpected keyword argument 'subfunction'
-2025-04-23 12:18:21,350 [DEBUG] Stopping CanStack
-2025-04-23 12:18:21,350 [DEBUG] Main thread is exiting
-2025-04-23 12:18:21,396 [DEBUG] CanStack Stopped
-2025-04-23 12:18:21,396 [INFO] Connection closed
-2025-04-23 12:18:21,397 [INFO] UDS Client Closed
+import can
 
+# Set up the CAN bus (change channel and bustype as per your setup)
+bus = can.interface.Bus(channel='can0', bustype='socketcan')  # For Raspberry Pi
+
+# Define your CAN ID and raw data bytes
+can_id = 0x7DF  # Or whatever functional/physical ID you're using
+data = [0x02, 0x27, 0x01] + [0x00]*5  # 8 bytes total (padding to fill frame)
+
+# Create and send the CAN frame
+msg = can.Message(arbitration_id=can_id, data=data, is_extended_id=False)
+
+try:
+    bus.send(msg)
+    print("Message sent:", msg)
+except can.CanError as e:
+    print("Message not sent:", e)
