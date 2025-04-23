@@ -1,21 +1,11 @@
-from udsoncan.services import SecurityAccess
-
-try:
-    level = 0x11
-    seed_response = client.security_access.request_seed(level)
-    if seed_response.positive:
-        seed = seed_response.service_data.seed
-        logging.info(f"Seed: {seed.hex()}")
-
-        # Calculate key here (example placeholder)
-        key = b'\x12\x34\x56\x78'  # Replace with DLL or algorithm-generated key
-
-        key_response = client.security_access.send_key(level, key)
-        if key_response.positive:
-            logging.info("Key accepted, security access granted")
-        else:
-            logging.warning("Key rejected")
-    else:
-        logging.warning("Seed request failed")
-except Exception as e:
-    logging.error(f"Security Access failed: {e}")
+2025-04-23 11:46:22,765 [DEBUG] Received 6 bytes : [5003003201f4]
+2025-04-23 11:46:22,767 [DEBUG] Received response from server
+2025-04-23 11:46:22,767 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
+2025-04-23 11:46:22,768 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
+2025-04-23 11:46:22,769 [INFO] Switched to Extended Session
+2025-04-23 11:46:22,770 [ERROR] Security Access failed: 'Client' object has no attribute 'security_access'
+2025-04-23 11:46:22,771 [DEBUG] Stopping CanStack
+2025-04-23 11:46:22,773 [DEBUG] Main thread is exiting
+2025-04-23 11:46:22,815 [DEBUG] CanStack Stopped
+2025-04-23 11:46:22,815 [INFO] Connection closed
+2025-04-23 11:46:22,816 [INFO] UDS Client Closed
