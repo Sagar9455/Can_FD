@@ -1,11 +1,20 @@
-2025-04-23 11:46:22,765 [DEBUG] Received 6 bytes : [5003003201f4]
-2025-04-23 11:46:22,767 [DEBUG] Received response from server
-2025-04-23 11:46:22,767 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-23 11:46:22,768 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-23 11:46:22,769 [INFO] Switched to Extended Session
-2025-04-23 11:46:22,770 [ERROR] Security Access failed: 'Client' object has no attribute 'security_access'
-2025-04-23 11:46:22,771 [DEBUG] Stopping CanStack
-2025-04-23 11:46:22,773 [DEBUG] Main thread is exiting
-2025-04-23 11:46:22,815 [DEBUG] CanStack Stopped
-2025-04-23 11:46:22,815 [INFO] Connection closed
-2025-04-23 11:46:22,816 [INFO] UDS Client Closed
+elif service_int == 0x27:
+    # Step 1: Request Seed
+    response = client.security_access(subfunc_int)
+    if response.positive:
+        seed = response.service_data.seed
+        logging.info(f"{tc_id} {step_desc} -> Seed: {seed.hex()}")
+
+        # Step 2: Call external seed-to-key DLL or Python function
+        try:
+            key = self.calculate_key(seed, subfunc_int + 1)  # Subfunc+1 is usually the key request
+        except Exception as e:
+            raise Exception(f"Key Calculation Failed: {e}")
+
+        # Step 3: Send Key
+        response = client.security_access(subfunc_int + 1, key)
+        if not response.positive:
+            raise Exception(f"Key Response Failed: NRC={hex(response.code)}")
+
+    else:
+        raise Exception(f"Seed Request Failed: NRC={hex(response.code)}")
