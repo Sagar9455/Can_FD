@@ -1,167 +1,21 @@
-2025-04-23 11:30:41,081 [DEBUG] can config: {'fd': True, 'channel': 'can0', 'interface': 'socketcan'}
-2025-04-23 11:30:41,095 [INFO] Created a socket
-2025-04-23 11:30:41,095 [DEBUG] Binding socket to channel=can0
-2025-04-23 11:30:41,096 [DEBUG] Bound socket.
-2025-04-23 11:30:41,100 [DEBUG] Given rxfn is considered blocking
-2025-04-23 11:30:41,104 [DEBUG] Starting CanStack
-2025-04-23 11:30:41,106 [DEBUG] Main thread has started
-2025-04-23 11:30:41,109 [DEBUG] Relay thread has started
-2025-04-23 11:30:41,113 [INFO] Connection opened
-2025-04-23 11:30:41,114 [INFO] UDS Client Started
-2025-04-23 11:30:41,115 [INFO] TesterPresent<0x3e> - Sending TesterPresent request
-2025-04-23 11:30:41,116 [DEBUG] Sending request to server
-2025-04-23 11:30:41,117 [DEBUG] Sending 2 bytes : [3e00]
-2025-04-23 11:30:41,118 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-23 11:30:41,118 [DEBUG] Waiting for server response
-2025-04-23 11:30:41,120 [DEBUG] Tx: <7A0> (08) [ ]	 023e000000000000
-2025-04-23 11:30:41,121 [DEBUG] We've been asked to write a message to the bus
-2025-04-23 11:30:41,122 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 3e 00 00 00 00 00 00
-2025-04-23 11:30:41,133 [DEBUG] Rx: <7A8> (08) [p]	 027e00aaaaaaaaaa
-2025-04-23 11:30:41,134 [DEBUG] Received 2 bytes : [7e00]
-2025-04-23 11:30:41,135 [DEBUG] Received response from server
-2025-04-23 11:30:41,136 [INFO] Received positive response for service TesterPresent (0x3e) from server.
-2025-04-23 11:30:41,137 [INFO] Tester Present sent successfully
-2025-04-23 11:30:41,139 [INFO] DiagnosticSessionControl<0x10> - Switching session to defaultSession (0x01)
-2025-04-23 11:30:41,140 [DEBUG] Sending request to server
-2025-04-23 11:30:41,141 [DEBUG] Sending 2 bytes : [1001]
-2025-04-23 11:30:41,142 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-23 11:30:41,143 [DEBUG] Waiting for server response
-2025-04-23 11:30:41,145 [DEBUG] Tx: <7A0> (08) [ ]	 0210010000000000
-2025-04-23 11:30:41,146 [DEBUG] We've been asked to write a message to the bus
-2025-04-23 11:30:41,147 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 01 00 00 00 00 00
-2025-04-23 11:30:41,174 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
-2025-04-23 11:30:41,175 [DEBUG] Received 6 bytes : [5001003201f4]
-2025-04-23 11:30:41,176 [DEBUG] Received response from server
-2025-04-23 11:30:41,177 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-23 11:30:41,178 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-23 11:30:41,178 [INFO] Switched to Default Session
-2025-04-23 11:30:41,181 [INFO] DiagnosticSessionControl<0x10> - Switching session to extendedDiagnosticSession (0x03)
-2025-04-23 11:30:41,182 [DEBUG] Sending request to server
-2025-04-23 11:30:41,184 [DEBUG] Sending 2 bytes : [1003]
-2025-04-23 11:30:41,185 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-23 11:30:41,186 [DEBUG] Waiting for server response
-2025-04-23 11:30:41,187 [DEBUG] Tx: <7A0> (08) [ ]	 0210030000000000
-2025-04-23 11:30:41,188 [DEBUG] We've been asked to write a message to the bus
-2025-04-23 11:30:41,189 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 03 00 00 00 00 00
-2025-04-23 11:30:41,212 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
-2025-04-23 11:30:41,214 [DEBUG] Received 6 bytes : [5003003201f4]
-2025-04-23 11:30:41,216 [DEBUG] Received response from server
-2025-04-23 11:30:41,217 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-23 11:30:41,218 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-23 11:30:41,219 [INFO] Switched to Extended Session
-2025-04-23 11:30:41,220 [ERROR] Error in Extended Session: 'Client' object has no attribute 'security_access'
-2025-04-23 11:30:41,220 [DEBUG] Stopping CanStack
-2025-04-23 11:30:41,222 [DEBUG] Main thread is exiting
-2025-04-23 11:30:41,263 [DEBUG] CanStack Stopped
-2025-04-23 11:30:41,264 [INFO] Connection closed
-2025-04-23 11:30:41,264 [INFO] UDS Client Closed
-
-
-
-
-
-
-import udsoncan
-
 from udsoncan.services import SecurityAccess
-from udsoncan.connections import PythonIsoTpConnection
-from udsoncan.client import Client
-import udsoncan.configs
-import isotp
-import can
-import logging
-import os
-import time
 
-os.system('sudo ip link set can0 down')
-os.system('sudo ip link set can0 up type can bitrate 500000 dbitrate 1000000 restart-ms 1000 berr-reporting on fd on')  # Set bitrate to 500kbps
-os.system('sudo ifconfig can0 up')
+try:
+    level = 0x11
+    seed_response = client.security_access.request_seed(level)
+    if seed_response.positive:
+        seed = seed_response.service_data.seed
+        logging.info(f"Seed: {seed.hex()}")
 
+        # Calculate key here (example placeholder)
+        key = b'\x12\x34\x56\x78'  # Replace with DLL or algorithm-generated key
 
-# Logging setup
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
-
-# Define ISO-TP parameters for CAN FD with 11-bit identifiers
-isotp_params = {
-    'stmin': 32,
-    'blocksize': 8,
-    'wftmax': 0,
-    'tx_data_length': 8, 
-    'tx_padding': 0x00,
-    'rx_flowcontrol_timeout': 1000,
-    'rx_consecutive_frame_timeout': 1000,
-    'max_frame_size': 4095,
-    'can_fd': True,    
-    'bitrate_switch': True
-}
-
-# UDS Client Configuration
-config = dict(udsoncan.configs.default_client_config)
-config["ignore_server_timing_requirements"] = True
-#config["padding_byte"] = 0x00
-config["data_identifiers"] = {
-    0xF187: udsoncan.AsciiCodec(13),
-    0xF1AA: udsoncan.AsciiCodec(7),
-    0xF1B1: udsoncan.AsciiCodec(7),
-    0xF193: udsoncan.AsciiCodec(7) 
-}
-
-# Define CAN interface
-interface = "can0"
-
-# Create CAN bus interface
-bus = can.interface.Bus(channel=interface, bustype="socketcan", fd=True)
-bus.set_filters([{"can_id":0x7A8,"can_mask":0xFFF}])
-
-# Define ISO-TP addressing for 11-bit CAN IDs
-tp_addr = isotp.Address(isotp.AddressingMode.Normal_11bits, txid=0x7A0, rxid=0x7A8)
-
-# Create ISO-TP stack
-stack = isotp.CanStack(bus=bus, address=tp_addr, params=isotp_params)
-
-# Create UDS connection
-conn = PythonIsoTpConnection(stack)
-
-# Start UDS Client
-with Client(conn, request_timeout=5, config=config) as client:
-    logging.info("UDS Client Started")
-
-    # Tester Present (0x3E)
-    try:
-        client.tester_present()
-        logging.info("Tester Present sent successfully")
-    except Exception as e:
-        logging.warning(f"Tester Present failed: {e}")
-
-    # Default Session (0x10 0x01)
-    try:
-        response = client.change_session(0x01)
-        if response.positive:
-            logging.info("Switched to Default Session")
+        key_response = client.security_access.send_key(level, key)
+        if key_response.positive:
+            logging.info("Key accepted, security access granted")
         else:
-            logging.warning("Failed to switch to Default Session")
-    except Exception as e:
-        logging.error(f"Error in Default Session: {e}")
-
-    # Extended Session (0x10 0x03)
-    try:
-        response = client.change_session(0x03)
-        if response.positive:
-            logging.info("Switched to Extended Session")
-        else:
-            logging.warning("Failed to switch to Extended Session")
-    except Exception as e:
-        logging.error(f"Error in Extended Session: {e}")
-        
-    try:
-        level=0x11
-        response = client.security_access(level)
-        if response.positive:
-            seed=response.services_data.seed
-            logging.info(f"Seed:{seed.hex()}")
-                
-    except Exception as e:
-        logging.error(f"Error in Extended Session: {e}")
-      
- 
-logging.info("UDS Client Closed")
+            logging.warning("Key rejected")
+    else:
+        logging.warning("Seed request failed")
+except Exception as e:
+    logging.error(f"Security Access failed: {e}")
