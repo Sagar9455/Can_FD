@@ -1,20 +1,32 @@
 elif service_int == 0x27:
-    # Step 1: Request Seed
-    response = client.security_access(subfunc_int)
-    if response.positive:
-        seed = response.service_data.seed
-        logging.info(f"{tc_id} {step_desc} -> Seed: {seed.hex()}")
+    try:
+        security_level = (subfunc_int - 1) // 2 + 1  # Converts subfunc to level (e.g., 0x01 -> Level 1)
 
-        # Step 2: Call external seed-to-key DLL or Python function
-        try:
-            key = self.calculate_key(seed, subfunc_int + 1)  # Subfunc+1 is usually the key request
-        except Exception as e:
-            raise Exception(f"Key Calculation Failed: {e}")
+        # Step 1: Request Seed
+        response = client.security_access(subfunc_int)
+        if response.positive:
+            seed = response.service_data.seed
+            logging.info(f"{tc_id} {step_desc} -> Security Level {security_level} Seed: {seed.hex()}")
 
-        # Step 3: Send Key
-        response = client.security_access(subfunc_int + 1, key)
-        if not response.positive:
-            raise Exception(f"Key Response Failed: NRC={hex(response.code)}")
+            # Step 2: Call external DLL or socket for seed-to-key
+            try:
+                key = self.calculate_key(seed, subfunc_int + 1)
+                logging.info(f"{tc_id} {step_desc} -> Calculated Key for Level {security_level}: {key.hex()}")
+            except Exception as e:
+                raise Exception(f"{tc_id} {step_desc} -> Key Calculation Failed (Level {security_level}): {e}")
 
-    else:
-        raise Exception(f"Seed Request Failed: NRC={hex(response.code)}")
+            # Step 3: Send Key
+            key_response = client.security_access(subfunc_int + 1, key=key)
+            if not key_response.positive:
+                raise Exception(f"{tc_id} {step_desc} -> Key Response Failed (Level {security_level}): NRC={hex(key_response.code)}")
+            else:
+                logging.info(f"{tc_id} {step_desc} -> SecurityAccess Level {security_level} Successful")
+
+        else:
+            raise Exception(f"{tc_id} {step_desc} -> Seed Request Failed (Level {security_level}): NRC={hex(response.code)}")
+
+    except Exception as e:
+        # Handle and log the error, can also update step status here
+        logging.error(f"{tc_id} {step_desc} -> SecurityAccess Error: {e}")
+        step_result["status"] = "Fail"
+        step_result["failure_reason"] = str(e)
