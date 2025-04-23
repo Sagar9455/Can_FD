@@ -1,62 +1,3 @@
-2025-04-23 12:15:22,012 [DEBUG] can config: {'fd': True, 'channel': 'can0', 'interface': 'socketcan'}
-2025-04-23 12:15:22,024 [INFO] Created a socket
-2025-04-23 12:15:22,025 [DEBUG] Binding socket to channel=can0
-2025-04-23 12:15:22,026 [DEBUG] Bound socket.
-2025-04-23 12:15:22,030 [DEBUG] Given rxfn is considered blocking
-2025-04-23 12:15:22,034 [DEBUG] Starting CanStack
-2025-04-23 12:15:22,035 [DEBUG] Main thread has started
-2025-04-23 12:15:22,037 [DEBUG] Relay thread has started
-2025-04-23 12:15:22,038 [INFO] Connection opened
-2025-04-23 12:15:22,038 [INFO] UDS Client Started
-<class 'udsoncan.client.Client'>
-2025-04-23 12:15:22,039 [INFO] TesterPresent<0x3e> - Sending TesterPresent request
-2025-04-23 12:15:22,040 [DEBUG] Sending request to server
-2025-04-23 12:15:22,041 [DEBUG] Sending 2 bytes : [3e00]
-2025-04-23 12:15:22,041 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-23 12:15:22,041 [DEBUG] Waiting for server response
-2025-04-23 12:15:22,042 [DEBUG] Tx: <7A0> (08) [ ]	 023e000000000000
-2025-04-23 12:15:22,043 [DEBUG] We've been asked to write a message to the bus
-2025-04-23 12:15:22,043 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 3e 00 00 00 00 00 00
-2025-04-23 12:15:22,065 [DEBUG] Rx: <7A8> (08) [p]	 027e00aaaaaaaaaa
-2025-04-23 12:15:22,066 [DEBUG] Received 2 bytes : [7e00]
-2025-04-23 12:15:22,068 [DEBUG] Received response from server
-2025-04-23 12:15:22,068 [INFO] Received positive response for service TesterPresent (0x3e) from server.
-2025-04-23 12:15:22,069 [INFO] Tester Present sent successfully
-2025-04-23 12:15:22,070 [INFO] DiagnosticSessionControl<0x10> - Switching session to defaultSession (0x01)
-2025-04-23 12:15:22,070 [DEBUG] Sending request to server
-2025-04-23 12:15:22,071 [DEBUG] Sending 2 bytes : [1001]
-2025-04-23 12:15:22,072 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-23 12:15:22,072 [DEBUG] Waiting for server response
-2025-04-23 12:15:22,073 [DEBUG] Tx: <7A0> (08) [ ]	 0210010000000000
-2025-04-23 12:15:22,074 [DEBUG] We've been asked to write a message to the bus
-2025-04-23 12:15:22,074 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 01 00 00 00 00 00
-2025-04-23 12:15:22,094 [DEBUG] Rx: <7A8> (08) [p]	 065001003201f4aa
-2025-04-23 12:15:22,095 [DEBUG] Received 6 bytes : [5001003201f4]
-2025-04-23 12:15:22,097 [DEBUG] Received response from server
-2025-04-23 12:15:22,098 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-23 12:15:22,098 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-23 12:15:22,098 [INFO] Switched to Default Session
-2025-04-23 12:15:22,100 [INFO] DiagnosticSessionControl<0x10> - Switching session to extendedDiagnosticSession (0x03)
-2025-04-23 12:15:22,100 [DEBUG] Sending request to server
-2025-04-23 12:15:22,101 [DEBUG] Sending 2 bytes : [1003]
-2025-04-23 12:15:22,102 [DEBUG] Enqueuing a SendRequest for 2 bytes and TAT=Physical
-2025-04-23 12:15:22,102 [DEBUG] Waiting for server response
-2025-04-23 12:15:22,103 [DEBUG] Tx: <7A0> (08) [ ]	 0210030000000000
-2025-04-23 12:15:22,103 [DEBUG] We've been asked to write a message to the bus
-2025-04-23 12:15:22,104 [DEBUG] sending: Timestamp:        0.000000        ID: 07a0    S Rx     F BS       DL:  8    02 10 03 00 00 00 00 00
-2025-04-23 12:15:22,124 [DEBUG] Rx: <7A8> (08) [p]	 065003003201f4aa
-2025-04-23 12:15:22,125 [DEBUG] Received 6 bytes : [5003003201f4]
-2025-04-23 12:15:22,127 [DEBUG] Received response from server
-2025-04-23 12:15:22,128 [INFO] Received positive response for service DiagnosticSessionControl (0x10) from server.
-2025-04-23 12:15:22,129 [INFO] DiagnosticSessionControl<0x10> - Received new timing parameters. P2=0.050s and P2*=5.000s.  Using these value from now on.
-2025-04-23 12:15:22,130 [INFO] Switched to Extended Session
-2025-04-23 12:15:22,130 [ERROR] -> SecurityAccess Error: name 'Security_access' is not defined
-2025-04-23 12:15:22,131 [DEBUG] Stopping CanStack
-2025-04-23 12:15:22,131 [DEBUG] Main thread is exiting
-2025-04-23 12:15:22,175 [DEBUG] CanStack Stopped
-2025-04-23 12:15:22,175 [INFO] Connection closed
-2025-04-23 12:15:22,175 [INFO] UDS Client Closed
-
 import udsoncan
 from udsoncan.services import SecurityAccess
 from udsoncan.connections import PythonIsoTpConnection
@@ -68,10 +9,10 @@ import logging
 import os
 import time
 
+# Setup CAN interface and connection
 os.system('sudo ip link set can0 down')
 os.system('sudo ip link set can0 up type can bitrate 500000 dbitrate 1000000 restart-ms 1000 berr-reporting on fd on')  # Set bitrate to 500kbps
 os.system('sudo ifconfig can0 up')
-
 
 # Logging setup
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -93,7 +34,6 @@ isotp_params = {
 # UDS Client Configuration
 config = dict(udsoncan.configs.default_client_config)
 config["ignore_server_timing_requirements"] = True
-#config["padding_byte"] = 0x00
 config["data_identifiers"] = {
     0xF187: udsoncan.AsciiCodec(13),
     0xF1AA: udsoncan.AsciiCodec(7),
@@ -149,26 +89,24 @@ with Client(conn, request_timeout=5, config=config) as client:
     except Exception as e:
         logging.error(f"Error in Extended Session: {e}")
         
-     
+    # Security Access (0x27)
     try:
-        subfunc_int=0xF187
+        subfunc_int = 0xF187
         security_level = 0x11
         
         # Step 1: Request Seed
-        response = client.send_request(Security_access, subfunction=subfunc_int)
+        response = client.send_request(SecurityAccess, subfunction=subfunc_int)
         if response.positive:
             seed = response.service_data.seed
             logging.info(f"-> Security Level {security_level} Seed: {seed.hex()}")
 
             # Step 2: Call external DLL or socket for seed-to-key
-            try:
-                key = self.calculate_key(seed, subfunc_int + 1)
-                logging.info(f" -> Calculated Key for Level {security_level}: {key.hex()}")
-            except Exception as e:
-                raise Exception(f"-> Key Calculation Failed (Level {security_level}): {e}")
+            # For testing, you can hardcode a key:
+            key = b'\x01\x02\x03\x04\x05\x06\x07\x08'  # Replace with a valid key
+            logging.info(f" -> Hardcoded Key for Level {security_level}: {key.hex()}")
 
             # Step 3: Send Key
-            key_response = client.security_access(subfunc_int + 1, key=key)
+            key_response = client.send_request(SecurityAccess, subfunction=subfunc_int + 1, data=key)
             if not key_response.positive:
                 raise Exception(f"-> Key Response Failed (Level {security_level}): NRC={hex(key_response.code)}")
             else:
@@ -178,12 +116,7 @@ with Client(conn, request_timeout=5, config=config) as client:
             raise Exception(f" -> Seed Request Failed (Level {security_level}): NRC={hex(response.code)}")
 
     except Exception as e:
-        # Handle and log the error, can also update step status here
+        # Handle and log the error
         logging.error(f"-> SecurityAccess Error: {e}")
-        
 
-   
-    
-      
- 
 logging.info("UDS Client Closed")
