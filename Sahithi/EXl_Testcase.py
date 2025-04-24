@@ -1,8 +1,8 @@
 import pandas as pd
 
 # File paths
-excel_path = 'output_results.xlsx'  # Input Excel file
-txt_path = 'output_text.txt'        # Output text file
+excel_path = '/home/mobase/Can_FD/Sahithi/Diagnosticservice_CDD.xlsx'  # Input Excel file
+txt_path = 'output_text_01.txt'        # Output text file
 
 # Read the Excel file
 df = pd.read_excel(excel_path)

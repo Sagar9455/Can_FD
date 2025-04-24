@@ -1,0 +1,189 @@
+10 | DiagnosticSessionControl | 01 | DefaultSession | 50
+10 | DiagnosticSessionControl | 02 | Programming session | 50
+10 | DiagnosticSessionControl | 03 | Extended Session | 50
+11 | Ecu Reset | 01 | Hard Reset | 51
+11 | Ecu Reset | 03 | Soft Reset | 51
+27 | SecurityAccess - Request seed | 01 | RequestSeed | 67
+27 | SecurityAccess - Request seed | 02 | SendKey | 67
+27 | SecurityAccess - Request seed | 11 | equestSeed(ASK) | 67
+27 | SecurityAccess - Request seed | 12 | SendKey(ASK) | 67
+28 | CommunicationControl | 00 | EnableRxAndEnableTx | 68
+28 | CommunicationControl | 01 | EnableRxAndDisableTx | 68
+28 | CommunicationControl | 02 | DisableRxAndEnableTx | 68
+28 | CommunicationControl | 03 | DisableRxAndDisableTx | 68
+22 | Read Data By Identifier | D005 | RDBI - Logic Inputs Status | 62
+22 | Read Data By Identifier | D006 | RDBI - Analog Inputs/Outputs Status | 62
+22 | Read Data By Identifier | D007 | RDBI - Logic Outputs Status | 62
+22 | Read Data By Identifier | D008 | SMK Miscellaneous Function Status Byte Data | 62
+22 | Read Data By Identifier | D009 | SMK Miscellaneous Function Status Bit Data | 62
+22 | Read Data By Identifier | D00A | Access Control Status bit frame | 62
+22 | Read Data By Identifier | D00B | Access Control Status byte frame | 62
+22 | Read Data By Identifier | D00C | RDBI-SMK Configuration Bit Data | 62
+22 | Read Data By Identifier | D0A1 | SMK Sleep State Monitoring (Model) Byte Data | 62
+22 | Read Data By Identifier | D0A2 | SMK Sleep State Monitoring (Non-Model)  | 62
+22 | Read Data By Identifier | ED96 |  Byte Data SMK Sleep State Monitoring (Model) | 62
+22 | Read Data By Identifier | ED97 | SMK Sleep State Monitoring (Non-Model) | 62
+22 | Read Data By Identifier | D0B1 | SMK Sleep State Log (Model) Byte Data  | 62
+22 | Read Data By Identifier | D0B2 | SMK Sleep State Log (Non-Model) Byte Data  | 62
+22 | Read Data By Identifier | D0FA | RDBI - R&D RF Fix code (Leamt FOB ID) | 62
+22 | Read Data By Identifier | D0FB | RDBI - R&D RF Base code (Rolling Code) | 62
+22 | Read Data By Identifier | F1EF |  RXSWINDataldentifier | 62
+22 | Read Data By Identifier | 01 | xxx | 62
+22 | Read Data By Identifier | F100 | (B-CAN Ver)BodyCANDataBase Version NumBErDataldentifier  | 62
+22 | Read Data By Identifier | F101 | (C-CAN Ver)ChassisCANData Base Version NumBErDataldentifier  | 62
+22 | Read Data By Identifier | F120 | BDC Platform Software Version Number | 62
+22 | Read Data By Identifier | F187 | (Part Num) Vehicle Manufacturer Spare Part Num BErDataIdentifier Read | 62
+22 | Read Data By Identifier | F188 | Leamt FOBPart Number (HKMC Part Number)  | 62
+22 | Read Data By Identifier | F18B | ECUManufacturingDate | 62
+22 | Read Data By Identifier | F18C | ECUSerialNumberDataldentifier | 62
+22 | Read Data By Identifier | F193 | (HKMC IBU H/W Verion) System Supplier ECU Hardware Version Number  | 62
+22 | Read Data By Identifier | F191 | System Supplier ECU Hardware Version Number (HKMC H/W Version)  | 62
+22 | Read Data By Identifier | F195 | BDC Not Supported - System SupplierECUSoftware Version Number  | 62
+22 | Read Data By Identifier | F197 | System NameOrEngine Type Dataldentifier (ECUPartName) | 62
+22 | Read Data By Identifier | F1A0 | Software Version HKMCVehicle Manufacture Dataldentifier | 62
+22 | Read Data By Identifier | F1A1 | (LOT Track)ECUSupplierCode DataIdentifier | 62
+22 | Read Data By Identifier | F1B1 | ECUSoftware UNIT BDC Version Dataldentifier (ECU Manufacturer BDC S/W Ver) | 62
+22 | Read Data By Identifier | F1AA  | Vehicle Manufacturer SMKSoftware Version Number DataIdentifier  | 62
+22 | Read Data By Identifier | F1AC | Vehicle Manufacturer BCM Software Version NumberDataldentifier  | 62
+22 | Read Data By Identifier | F1AB | Vehicle Manufacturer TPMS Software Version NumberDataIdentifier | 62
+22 | Read Data By Identifier | F1BB | SIRENEcuInfoDataldentifier | 62
+22 | Read Data By Identifier | F1BC | UIPEcuInfoDataldentifier | 62
+22 | Read Data By Identifier | 1234 | xxx | 62
+22 | Read Data By Identifier | 12A7 | IMMO Current Data | 62
+22 | Read Data By Identifier | C002 | TPMS Sensor IDs Record Local Identifier | 62
+22 | Read Data By Identifier | C012 | TPMS Variant Code Record Local Identifier | 62
+22 | Read Data By Identifier | 03 | xxx | 62
+22 | Read Data By Identifier | D202 | BDC Calibration Read | 62
+22 | Read Data By Identifier | D002 | SMK Calibration | 62
+22 | Read Data By Identifier | D003 | SMK RDBI OptionRead | 62
+22 | Read Data By Identifier | F1DD | S/W Version Dataidentifier | 62
+22 | Read Data By Identifier | C013 | TPMS Software Version Record Local Identifier | 62
+22 | Read Data By Identifier | F1DE | Sub SW Version | 62
+22 | Read Data By Identifier | F1DF | RFIC SW Version | 62
+22 | Read Data By Identifier | 4111 | xxx | 62
+22 | Read Data By Identifier | B001 | User Option Record Local Identifier - DID #B001 hex  | 62
+22 | Read Data By Identifier | B002 | RKE Data Record Local Identifier - DID #B002 hex  | 62
+22 | Read Data By Identifier | B003 | Input Output Record Local Identifier - DID #B003 hex  | 62
+22 | Read Data By Identifier | B004 | Input Output Record Local Identifier - DID #B004 hex  | 62
+22 | Read Data By Identifier | B005 | Input Output Record Local Identifier - DID #B005 hex  | 62
+22 | Read Data By Identifier | B006 | Input Output Record Local Identifier - DID #B006 hex  | 62
+22 | Read Data By Identifier | B007 | Input Output Record Local Identifier - DID #B007 hex  | 62
+22 | Read Data By Identifier | B008 | Input Output Record Local Identifier - DID #B008 hex  | 62
+22 | Read Data By Identifier | B009 | Input Output Record Local Identifier - DID #B009 hex  | 62
+22 | Read Data By Identifier | B00A | Input Output Record Local Identifier - DID #B00A hex  | 62
+22 | Read Data By Identifier | B00B | Input Output Record Local Identifier - DID #BOOB hex | 62
+22 | Read Data By Identifier | B00C | Input Output Record Local Identifier - DID #B00C hex | 62
+22 | Read Data By Identifier | B00D | Input Output Record Local Identifier - DID #B00D hex | 62
+22 | Read Data By Identifier | B00E | Input Output Record Local Identifier - DID #B00E hex | 62
+22 | Read Data By Identifier | B00F | Input Output Record Local Identifier - DID #B00F hex | 62
+22 | Read Data By Identifier | B012 | Input Output Record Local Identifier - DID #B012 hex | 62
+22 | Read Data By Identifier | B013 | Input Output Record Local Identifier - DID #B013 hex | 62
+22 | Read Data By Identifier | BF01 | RDBI- PAS Sensor Data Local Identifier | 62
+22 | Read Data By Identifier | BF02 | RDBI- Read DDPROM Data Local Identifier | 62
+2E | Write Data By Identifier | F187  | (Part Num)VehicleManufacturerSparePartNumBErDataIdentifier Write | 6E
+2E | Write Data By Identifier | F18B | ECUManufacturingDate Write | 6E
+2E | Write Data By Identifier | F18C  | ECUSerialNumberDataldentifier Write | 6E
+2E | Write Data By Identifier | F191 | System Supplier ECU Hardware Version Number (HKMC H/W Version)  Write | 6E
+2E | Write Data By Identifier |  F193  | (HKMC IBU H/W Verion) System Supplier ECU Hardware Version Number  Write | 6E
+31 | Routine Control | 01 B1 11 | Start SMK Teaching Start | 71
+31 | Routine Control | 01 B1 12 | Enter PIN code Start | 71
+31 | Routine Control | 01 B1 13 | Start SMK Components Learning Procedure Start  | 71
+31 | Routine Control | 01 B1 17 | Request teaching 1st SMK FOB key Start  | 71
+31 | Routine Control | 01 B1 18 | Request teaching 2nd SMK FOB key Start  | 71
+31 | Routine Control | 01 B1 19 | Request teaching 3rd SMK FOB key Start  | 71
+31 | Routine Control | 01 B1 1B | Request teaching 4th SMK FOB key Start | 71
+31 | Routine Control | 01 B1 14 | EMS NEUTRALIZATION Start | 71
+31 | Routine Control | 01 B1 15 | SMK NEUTRALIZATION Start | 71
+31 | Routine Control | 01 B1 1C | SCU NEUTRALIZATION Start | 71
+31 | Routine Control | 01 B1 16 | ESCL NEUTRALIZATION Start | 71
+31 | Routine Control | 01 B1 1A | Read FOB Customer Part Number Start  | 71
+31 | Routine Control | 01 B1 91 | RSSI measurement check Start | 71
+31 | Routine Control | 01 01 00 | xxx | 71
+31 | Routine Control | 01 12A1 | Keyless Entry Code Save Start | 71
+31 | Routine Control | 02 12 A1 | RKE Code Save Stop | 71
+31 | Routine Control | 03 12 A1 | Read Saved RKE Number | 71
+31 | Routine Control | 01 01 03 | IMMO -start | 71
+31 | Routine Control | 01 12 A3 | Start User Password Teaching Start | 71
+31 | Routine Control | 01 12 A6 | Enter Old User Password Start | 71
+31 | Routine Control | 01 12A4 | Enter New User Password Start | 71
+31 | Routine Control | 01 12 A5 | Request User Password Teaching Start  | 71
+31 | Routine Control | 01 12 A8 | Start Limp Home for Immo Start  | 71
+31 | Routine Control | 01 12A9 | Start TP Teaching Start | 71
+31 | Routine Control | 01 12 AA | Enter Vehicle Specific Data Start  | 71
+31 | Routine Control | 01 12 AB | Request Teaching 1st TP Start  | 71
+31 | Routine Control | 01 12 AC | Request Teaching 2nd TP Start | 71
+31 | Routine Control | 01 12 AD | Request Teaching 3rd TP Start | 71
+31 | Routine Control | 01 12 AE | Request Teaching 4th TP Start | 71
+31 | Routine Control | 01 12 AF | Request Teaching 5th TP Start | 71
+31 | Routine Control | 01 12 B1 | Request Teaching 6th TP Start | 71
+31 | Routine Control | 01 12 B2 | Request Teaching 7th TP Start | 71
+31 | Routine Control | 01 12 B3 | Request Teaching 8th TP Start  | 71
+31 | Routine Control | 01 12 B4 | Start Immo Neutral Mode  | 71
+31 | Routine Control | 01 12 B5 | Start Request Immo Neutral Start | 71
+31 | Routine Control | 01 01 02 | Start | 71
+31 | Routine Control | 01 B1 99 | Initialization Start  | 71
+31 | Routine Control | 01 B1 93 | BDC FOB Virgin req Start  | 71
+31 | Routine Control | 01 11 11    | IMMO virgin code Start | 71
+31 | Routine Control | 01 B1 A0    | Start request(E@E Disable,FOB x)Start | 71
+31 | Routine Control | 01 01 01 | xxx | 71
+2F | IO Control | 13 | SMK | 6F
+2F | IO Control | 02 | Time Limited | 6F
+2F | IO Control | F025 | (Reserved) L_SSBRingILL_OUT | 6F
+2F | IO Control | F02A |  (Reserved)L_ESCLEnable_OUT | 6F
+2F | IO Control | F02B | (Reserved) L_ESCL(+)_OUT | 6F
+2F | IO Control | F021 |  L_SSBSymbolILL(+/-)_OUT | 6F
+2F | IO Control | F02D |  L_EVPowerOffReq_OUT | 6F
+2F | IO Control | F030 | L_IGN1RLY_OUT  | 6F
+2F | IO Control | F031 | L_IGN1/IGN2RLY_OUT | 6F
+2F | IO Control | F032 | L_ACCRLY_OUT | 6F
+2F | IO Control | F033 | L_IGN1/StarterRLY_OUT | 6F
+2F | IO Control | F03A | P_ExtemalBuzzer_OUT  | 6F
+2F | IO Control | 04 | Continuous | 6F
+2F | IO Control | F042 | V_OutsideHandleANTDRV | 6F
+2F | IO Control | F043 |  V_OutsideHandleANTAST | 6F
+2F | IO Control | F046 | V_InteriorANT1  | 6F
+2F | IO Control | F047 | V_InteriorANT2  | 6F
+2F | IO Control | F048 | V_Trunk InteriorANT3 | 6F
+2F | IO Control | F049 | V_RearBumperANT | 6F
+2F | IO Control | F04C | V_Front BumperANT | 6F
+2F | IO Control | F04A | V_Hat ShelfANT | 6F
+2F | IO Control | F050 | Check for L_ACCRLY_OUT | 6F
+2F | IO Control | F051 | Check for L_IGN1RLY_OUT  | 6F
+2F | IO Control | F052 | Check for L_IGN2RLY_OUT  | 6F
+2F | IO Control | 05 | One Time | 6F
+2F | IO Control | F062 | Check for DRV Antenna | 6F
+2F | IO Control | F063 | Check for AST Antenna | 6F
+2F | IO Control | F066 | Check for Interior1 Antenna | 6F
+2F | IO Control | F067 | Check for Interior2 Antenna | 6F
+2F | IO Control | F068 | Check for Interior3 Antenna | 6F
+2F | IO Control | F069 | Check for Rear Bumper Antenna | 6F
+2F | IO Control | F06C | Check for Front Bumper Antenna | 6F
+2F | IO Control | F081 | Check for ESCL | 6F
+2F | IO Control | F070 | V_ESCL(+)_OUT/COM_ESCL | 6F
+2F | IO Control | 00 | --BCM- | 6F
+2F | IO Control | B000 | Supported check DID B000 | 6F
+2F | IO Control | B003 | Security LED  | 6F
+2F | IO Control | B004 | RPAS Buzzer Output | 6F
+2F | IO Control | B005 | RPAS SW Indicator | 6F
+2F | IO Control | B006 | PAS SW Indicator | 6F
+2F | IO Control | B048 | Extemal Buzzer Output  | 6F
+2F | IO Control | B008 | Wiper Low RLY | 6F
+2F | IO Control | B009 | Wiper High RLY | 6F
+2F | IO Control | B00A | Rear Wiper RLY | 6F
+2F | IO Control | B020 | Supported Check DID B020 | 6F
+2F | IO Control | B025 | Puddle Lamp Output | 6F
+2F | IO Control | B028 | Key InterLock Solenoid | 6F
+2F | IO Control | B029 | ATM Solenoid | 6F
+2F | IO Control | B039 | Rear SBR Left Indicator | 6F
+2F | IO Control | B03A | Rear SBR Center Indicator | 6F
+2F | IO Control | B03B | Rear SBR Right Indicator | 6F
+2F | IO Control | B040  | Supported check DID B040 | 6F
+2F | IO Control | B049 | BCM Intemal Buzzer Output | 6F
+2F | IO Control | B057 | Key Hole illimumination | 6F
+2F | IO Control | B058 | Start Inhibit Relay | 6F
+2F | IO Control | B05B | Mirror Fold Operation | 6F
+2F | IO Control | B05C | Mirror Unfold Operation | 6F
+2F | IO Control | B060 | Supported check DID B060 | 6F
+2F | IO Control | B068 | Heated Washer Nozzle Output | 6F
+2F | IO Control | B071 | L_EMSEcuWakeUp_OUT  | 6F
+2F | IO Control | B079 | Wiper Power RLY | 6F
