@@ -1,15 +1,23 @@
-
-```python
 import socket
 
-IP = "PC_IP_ADDRESS"  # replace with your PC's IP
-PORT = 5005
+# Define the server details (match the C program's listening socket details)
+server_ip = '127.0.0.1'  # Change to the IP address of the machine running the C program
+server_port = 5005
 
+# Seed array as a string, simulating the seed array from Raspberry Pi
+seed = '575BF2C26E45C460'
+
+# Convert the seed into bytes (hex format)
+seed_bytes = bytes.fromhex(seed)
+
+# Create UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-seed = input("Enter seed (8 hex digits): ")  # e.g. "12AB34CD"
-sock.sendto(seed.encode(), (IP, PORT))
+# Send the seed to the C program
+sock.sendto(seed_bytes, (server_ip, server_port))
+print(f"Sent seed to {server_ip}:{server_port}")
 
-key, _ = sock.recvfrom(1024)
-print("Received Key:", key.decode())
-```
+# Receive the response (the generated key)
+response, _ = sock.recvfrom(1024)
+print(f"Received response from C program: {response.decode()}")
+sock.close()
