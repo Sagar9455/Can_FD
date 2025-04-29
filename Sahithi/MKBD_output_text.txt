@@ -1,0 +1,24 @@
+# TestCaseID,Step,ServiceID,SubFunction/ID,ExpectedResponse
+1 , DefaultSession , 0x10 , 0x01 , 0x50
+2 , Programming session , 0x10 , 0x02 , 0x50
+3 , Extended Session , 0x10 , 0x03 , 0x50
+10 , LocalRXSWINDataIdentifier , 0x22 , 0xF1EF , 0x62
+11 , BodyCANDataBaseVersionNumBErDataIdentifier , 0x22 , 0xF100 , 0x62
+12 , VehicleManufacturerSparePartNumBErDataIdentifier
+(HKMC Part Number) , 0x22 , 0xF187 , 0x62
+13 , ECUManufacturingDateDataIdentifier , 0x22 , 0xF18B , 0x62
+14 , ECUSerialNumberDataIdentifier , 0x22 , 0xF18C , 0x62
+15 , SystemSupplierECUHardwareVersionNumberDataIdentifier
+(HKMC H/W Version) , 0x22 , 0xF191 , 0x62
+16 , SystemSupplierECUHardwareVersionNumberDataIdentifier
+(Vendor H/W Version) , 0x22 , 0xF193 , 0x62
+17 , SystemSupplierECUSoftwareVersionNumbe DataIdentifier
+(HKMC IBU S/W Version) , 0x22 , 0xF195 , 0x62
+18 , SoftwareVersionHKMCVehicleManufactureDataIdentifier , 0x22 , 0xF1A0 , 0x62
+19 , ECUSupplierCodeDataIdentifier  , 0x22 , 0xF1A1 , 0x62
+20 , ECUSoftwareUNITnumberDataIdentifier
+(ECU Manufacturer S/W Module Number : 01h) , 0x22 , 0xF1B0 , 0x62
+21 , ECU Software UNIT1 Version Data Identifier , 0x22 , 0xF1B1 , 0x62
+22 , SystemNameOrEngineTypeDataIdentifier , 0x22 , 0xF197 , 0x62
+23 , ECUSoftwareUnit1IVDDataIdentifier , 0x22 , 0xF1C1 , 0x62
+24 , S/W Version Dataidentifier , 0x22 , 0xF1DD , 0x62

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UDS Diagnostic Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+        }
+        button.accordion {
+            background-color: #ddd;
+            color: black;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .pass {
+            color: green;
+            font-weight: bold;
+        }
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+        .panel {
+            display: none;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+            max-width: 200px;
+        }
+        th {
+            background-color: #eee;
+        }
+        .step-pass {
+            background-color: #c8e6c9;
+        }
+        .step-fail {
+            background-color: #ffcdd2;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const acc = document.getElementsByClassName("accordion");
+            for (let i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    const panel = this.nextElementSibling;
+                    panel.style.display = (panel.style.display === "block") ? "none" : "block";
+                });
+            }
+
+            const ctx = document.getElementById("summaryChart").getContext("2d");
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Passed', 'Failed'],
+                    datasets: [{
+                        label: 'Test Case Results',
+                        data: [4, 9],
+                        backgroundColor: ['#4CAF50', '#F44336'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>UDS Diagnostic Report</h1>
+    <div style="text-align:center; margin-bottom: 20px;">
+        <p><strong>Generated:</strong> 2025-04-29 16:03:28</p>
+        <p><strong>CAN Log File:</strong> CANLog_Testcase_20250429_160300.asc</p>
+        <p><strong>Total Test Cases:</strong> 13</p>
+        <p style="color:green;"><strong>Passed:</strong> 4</p>
+        <p style="color:red;"><strong>Failed:</strong> 9</p>
+        <p><strong>Test Duration:</strong> 27.913 seconds
+    </div>
+    <canvas id="summaryChart" width="300" height="300" style="display: block; margin: 0 auto 30px;"></canvas>
+    <button class="accordion">▶ 1 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">DefaultSession</td><td>0.008045</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>0.071932</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ 2 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">Programming session</td><td>2.184455</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>2.489455</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ 3 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">Extended Session</td><td>4.595273</td><td>Request Sent</td><td class="fail">Fail</td><td>NRC: 0x7e</td></tr>
+<tr class="step-fail"><td>4.618311</td><td>Response Received</td><td class="fail">Fail</td><td>NRC: 0x7e</td></tr>
+</table></div>
+<button class="accordion">▶ 10 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">LocalRXSWINDataIdentifier</td><td>6.751520</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1ef</td></tr>
+<tr class="step-fail"><td>6.752338</td><td>Response Received</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1ef</td></tr>
+</table></div>
+<button class="accordion">▶ 11 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">BodyCANDataBaseVersionNumBErDataIdentifier</td><td>8.853495</td><td>Request Sent</td><td class="fail">Fail</td><td>NRC: 0x31</td></tr>
+<tr class="step-fail"><td>8.868194</td><td>Response Received</td><td class="fail">Fail</td><td>NRC: 0x31</td></tr>
+</table></div>
+<button class="accordion">▶ 13 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECUManufacturingDateDataIdentifier</td><td>10.967908</td><td>Request Sent</td><td class="fail">Fail</td><td>NRC: 0x31</td></tr>
+<tr class="step-fail"><td>10.982443</td><td>Response Received</td><td class="fail">Fail</td><td>NRC: 0x31</td></tr>
+</table></div>
+<button class="accordion">▶ 14 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECUSerialNumberDataIdentifier</td><td>13.082546</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf18c</td></tr>
+<tr class="step-fail"><td>13.083105</td><td>Response Received</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf18c</td></tr>
+</table></div>
+<button class="accordion">▶ 18 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">SoftwareVersionHKMCVehicleManufactureDataIdentifier</td><td>15.180997</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1a0</td></tr>
+<tr class="step-fail"><td>15.181818</td><td>Response Received</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1a0</td></tr>
+</table></div>
+<button class="accordion">▶ 19 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECUSupplierCodeDataIdentifier</td><td>17.281235</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1a1</td></tr>
+<tr class="step-fail"><td>17.281995</td><td>Response Received</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1a1</td></tr>
+</table></div>
+<button class="accordion">▶ 21 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">ECU Software UNIT1 Version Data Identifier</td><td>19.381822</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>19.422883</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+<button class="accordion">▶ 22 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">SystemNameOrEngineTypeDataIdentifier</td><td>21.539394</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf197</td></tr>
+<tr class="step-fail"><td>21.541487</td><td>Response Received</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf197</td></tr>
+</table></div>
+<button class="accordion">▶ 23 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECUSoftwareUnit1IVDDataIdentifier</td><td>23.649669</td><td>Request Sent</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1c1</td></tr>
+<tr class="step-fail"><td>23.650377</td><td>Response Received</td><td class="fail">Fail</td><td>Actual data identifier configuration contains no definition for data identifier 0xf1c1</td></tr>
+</table></div>
+<button class="accordion">▶ 24 - <span class="pass">Pass</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-pass"><td rowspan="2">1</td><td rowspan="2">S/W Version Dataidentifier</td><td>25.749948</td><td>Request Sent</td><td class="pass">Pass</td><td>-</td></tr>
+<tr class="step-pass"><td>25.792175</td><td>Response Received</td><td class="pass">Pass</td><td>-</td></tr>
+</table></div>
+
+</body>
+</html>
