@@ -1,14 +1,14 @@
 import pandas as pd
 
 # File paths
-excel_path = 'output_results.xlsx'
-txt_path = 'output_text.txt'
+excel_path = 'MKBD_Diagnosticservice_List_02.xlsx'
+txt_path = 'bbb_output_text.txt'
 
 # Read the Excel file
 df = pd.read_excel(excel_path)
 
 # Select columns C-G (index 2 to 6)
-df_subset = df.iloc[:, 2:7]  # Columns C to G
+df_subset = df.iloc[:, [0,5,4,2,6]]  # Columns C to G
 
 # Function to insert '-' after the first column
 def format_row(row):
