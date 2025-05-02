@@ -1,23 +1,14 @@
-import socket
+[Unit]
+Description=UDS Diagnostic Tool
+After=network.target
 
-# Define the server details (match the C program's listening socket details)
-server_ip = '127.0.0.1'  # Change to the IP address of the machine running the C program
-server_port = 5005
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/YourProject/Application/main.py
+WorkingDirectory=/home/pi/YourProject
+StandardOutput=inherit
+StandardError=inherit
+Restart=on-failure
+User=pi
 
-# Seed array as a string, simulating the seed array from Raspberry Pi
-seed = '575BF2C26E45C460'
-
-# Convert the seed into bytes (hex format)
-seed_bytes = bytes.fromhex(seed)
-
-# Create UDP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-# Send the seed to the C program
-sock.sendto(seed_bytes, (server_ip, server_port))
-print(f"Sent seed to {server_ip}:{server_port}")
-
-# Receive the response (the generated key)
-response, _ = sock.recvfrom(1024)
-print(f"Received response from C program: {response.decode()}")
-sock.close()
+[Install]
+WantedBy=multi-user.target
