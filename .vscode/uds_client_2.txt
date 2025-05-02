@@ -1,45 +1,30 @@
-import sys
-import os
-
-base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))  # points to where the binary is
-config_path = os.path.join(base_dir, "config.json")
-
-config = config_loader.load_config(config_path)
-
-
-
-
-
-###
-
 # uds_tool.spec
-# Run: pyinstaller uds_tool.spec
 
 from PyInstaller.utils.hooks import collect_submodules
 import os
 
-project_dir = os.path.abspath(".")
-input_dir = os.path.join(project_dir, "input")
-application_dir = os.path.join(input_dir, "application")
-drivers_dir = os.path.join(input_dir, "drivers")
+base_path = os.path.abspath(".")
+application_path = os.path.join(base_path, "input", "application")
+drivers_path = os.path.join(base_path, "input", "drivers")
 
-# Collect all drivers as hidden imports
-hidden_drivers = collect_submodules("drivers")
+# Collect all Python files inside drivers as hidden imports
+hidden_imports = collect_submodules("drivers")
 
 a = Analysis(
-    [os.path.join(application_dir, "main.py")],
-    pathex=[application_dir, drivers_dir],
+    [os.path.join(application_path, "main.py")],
+    pathex=[application_path, drivers_path],
     binaries=[],
-    datas=[('config.json', '.')],  # Copy config.json to dist folder
-    hiddenimports=hidden_drivers,
+    datas=[
+        (os.path.join(application_path, "config.json"), "."),
+    ],
+    hiddenimports=hidden_imports,
     hookspath=[],
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zipped_data,
-          cipher=None)
+pyz = PYZ(a.pure, a.zipped_data, cipher=None)
 
 exe = EXE(
     pyz,
@@ -51,7 +36,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,  # Set to False if you don't want a terminal window
+    console=True,  # False if you don’t want terminal output
 )
 
 coll = COLLECT(
@@ -63,4 +48,3 @@ coll = COLLECT(
     upx=True,
     name='uds_tool'
 )
-
