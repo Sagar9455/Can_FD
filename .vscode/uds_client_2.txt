@@ -1,14 +1,11 @@
-[Unit]
-Description=UDS Diagnostic Tool
-After=network.target
 
-[Service]
-ExecStart=/usr/bin/python3 /home/pi/YourProject/Application/main.py
-WorkingDirectory=/home/pi/YourProject
-StandardOutput=inherit
-StandardError=inherit
-Restart=on-failure
-User=pi
-
-[Install]
-WantedBy=multi-user.target
+May 02 14:16:19 raspberrypi python3[630]:   File "/home/mobase/udsoncan/input/application/main.py", line 17, in <module>
+May 02 14:16:19 raspberrypi python3[630]:     config = config_loader.load_config("config.json")
+May 02 14:16:19 raspberrypi python3[630]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+May 02 14:16:19 raspberrypi python3[630]:   File "/home/mobase/udsoncan/input/drivers/config_loader.py", line 4, in load_config
+May 02 14:16:19 raspberrypi python3[630]:     with open(file_path, 'r') as file:
+May 02 14:16:19 raspberrypi python3[630]:          ^^^^^^^^^^^^^^^^^^^^
+May 02 14:16:19 raspberrypi python3[630]: FileNotFoundError: [Errno 2] No such file or directory: 'config.json'
+May 02 14:16:22 raspberrypi systemd[1]: autorun_sagar.service: Main process exited, code=exited, status=1/FAILURE
+May 02 14:16:22 raspberrypi systemd[1]: autorun_sagar.service: Failed with result 'exit-code'.
+May 02 14:16:22 raspberrypi systemd[1]: autorun_sagar.service: Consumed 4.428s CPU time.
