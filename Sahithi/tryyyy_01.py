@@ -2,8 +2,8 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 
 # File paths
-cdd_path = 'c0d9bceb-9bd0-43ff-8707-4e3a12232357.cdd'
-output_excel = 'cdd_services_with_subservices.xlsx'
+cdd_path = '/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd'
+output_excel = 'cdd_services_with_subservices__01.xlsx'
 
 # Parse CDD XML
 tree = ET.parse(cdd_path)
