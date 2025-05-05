@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 
 # Input/Output paths
-cdd_path = 'c0d9bceb-9bd0-43ff-8707-4e3a12232357.cdd'
+cdd_path = '/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd'
 output_excel = 'cdd_services_with_subservices.xlsx'
 
 # Parse the CDD file
@@ -31,10 +31,10 @@ for diag_service in root.findall('.//ns:DIAG-SERVICE', ns):
         sub_desc = sub_desc_tag.text if sub_desc_tag is not None else ''
 
         rows.append({
-            'Service ID-2': service_id,
-            'Service Description-3': service_desc,
-            'Sub service ID-4': sub_id,
-            'Sub Service Description-5': sub_desc
+            'Service ID': service_id,
+            'Service Description': service_desc,
+            'Sub service ID': sub_id,
+            'Sub Service Description': sub_desc
         })
 
 # Write to Excel
