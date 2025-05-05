@@ -1,13 +1,1 @@
-
- journalctl -u udemo.service -n 50 --no-pager
-May 02 17:41:40 raspberrypi (uds_tool)[3591]: udemo.service: Changing to the requested working directory failed: Not a directory
-May 02 17:41:40 raspberrypi (uds_tool)[3591]: udemo.service: Failed at step CHDIR spawning /opt/uds_tool/uds_tool: Not a directory
-May 02 17:41:40 raspberrypi systemd[1]: Started udemo.service - My Startup Script.
-May 02 17:41:40 raspberrypi systemd[1]: udemo.service: Main process exited, code=exited, status=200/CHDIR
-May 02 17:41:40 raspberrypi systemd[1]: udemo.service: Failed with result 'exit-code'.
-May 02 17:45:40 raspberrypi systemd[1]: Started udemo.service - My Startup Script.
-May 02 17:45:40 raspberrypi (uds_tool)[3727]: udemo.service: Changing to the requested working directory failed: Not a directory
-May 02 17:45:40 raspberrypi (uds_tool)[3727]: udemo.service: Failed at step CHDIR spawning /opt/uds_tool/uds_tool: Not a directory
-May 02 17:45:40 raspberrypi systemd[1]: udemo.service: Main process exited, code=exited, status=200/CHDIR
-May 02 17:45:40 raspberrypi systemd[1]: udemo.service: Failed with result 'exit-code'.
-
+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123
