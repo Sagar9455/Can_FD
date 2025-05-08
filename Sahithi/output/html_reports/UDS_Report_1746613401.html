@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UDS Diagnostic Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+        }
+        button.accordion {
+            background-color: #ddd;
+            color: black;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .pass {
+            color: green;
+            font-weight: bold;
+        }
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+        .panel {
+            display: none;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+            max-width: 200px;
+        }
+        th {
+            background-color: #eee;
+        }
+        .step-pass {
+            background-color: #c8e6c9;
+        }
+        .step-fail {
+            background-color: #ffcdd2;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const acc = document.getElementsByClassName("accordion");
+            for (let i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    const panel = this.nextElementSibling;
+                    panel.style.display = (panel.style.display === "block") ? "none" : "block";
+                });
+            }
+
+            const ctx = document.getElementById("summaryChart").getContext("2d");
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Passed', 'Failed'],
+                    datasets: [{
+                        label: 'Test Case Results',
+                        data: [0, 6],
+                        backgroundColor: ['#4CAF50', '#F44336'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>UDS Diagnostic Report</h1>
+    <div style="text-align:center; margin-bottom: 20px;">
+        <p><strong>Generated:</strong> 2025-05-07 15:53:21</p>
+        <p><strong>CAN Log File:</strong> CANLog_Testcase_20250507_155309.asc</p>
+        <p><strong>Total Test Cases:</strong> 6</p>
+        <p style="color:green;"><strong>Passed:</strong> 0</p>
+        <p style="color:red;"><strong>Failed:</strong> 6</p>
+        <p><strong>Test Duration:</strong> 12.810 seconds
+    </div>
+    <canvas id="summaryChart" width="300" height="300" style="display: block; margin: 0 auto 30px;"></canvas>
+    <button class="accordion">▶ TC_001 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">DefaultSession</td><td>0.053599</td><td>Request Sent</td><td class="fail">Fail</td><td>Unsupported service: 0x01</td></tr>
+<tr class="step-fail"><td>0.053669</td><td>Response Received</td><td class="fail">Fail</td><td>Unsupported service: 0x01</td></tr>
+</table></div>
+<button class="accordion">▶ TC_003 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">Extended Session</td><td>2.181211</td><td>Request Sent</td><td class="fail">Fail</td><td>Unsupported service: 0x03</td></tr>
+<tr class="step-fail"><td>2.181279</td><td>Response Received</td><td class="fail">Fail</td><td>Unsupported service: 0x03</td></tr>
+</table></div>
+<button class="accordion">▶ TC_007 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECUManufacturingDateDataIdentifier</td><td>4.298514</td><td>Request Sent</td><td class="fail">Fail</td><td>Unsupported service: 0xF18B</td></tr>
+<tr class="step-fail"><td>4.298576</td><td>Response Received</td><td class="fail">Fail</td><td>Unsupported service: 0xF18B</td></tr>
+</table></div>
+<button class="accordion">▶ TC_013 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECUSupplierCodeDataIdentifier</td><td>6.426620</td><td>Request Sent</td><td class="fail">Fail</td><td>Unsupported service: 0xF1A1</td></tr>
+<tr class="step-fail"><td>6.426692</td><td>Response Received</td><td class="fail">Fail</td><td>Unsupported service: 0xF1A1</td></tr>
+</table></div>
+<button class="accordion">▶ TC_015 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECU Software UNIT1 Version Data Identifier</td><td>8.553286</td><td>Request Sent</td><td class="fail">Fail</td><td>Unsupported service: 0xF1B1</td></tr>
+<tr class="step-fail"><td>8.553352</td><td>Response Received</td><td class="fail">Fail</td><td>Unsupported service: 0xF1B1</td></tr>
+</table></div>
+<button class="accordion">▶ TC_017 - <span class="fail">Fail</span></button>
+<div class="panel"><table><tr><th>Step</th><th>Description</th><th>Timestamp</th><th>Type</th><th>Status</th><th>Failure Reason</th></tr>
+<tr class="step-fail"><td rowspan="2">1</td><td rowspan="2">ECUSoftwareUnit1IVDDataIdentifier</td><td>10.672846</td><td>Request Sent</td><td class="fail">Fail</td><td>Unsupported service: 0xF1C1</td></tr>
+<tr class="step-fail"><td>10.672907</td><td>Response Received</td><td class="fail">Fail</td><td>Unsupported service: 0xF1C1</td></tr>
+</table></div>
+
+</body>
+</html>
