@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 input_path = '/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd'
-output_path = 'output_results_05.xlsx'
+output_path = 'Zaoutput_results_05.xlsx'
 
 # Step 1: Extract all shstaticref -> v mappings into a dictionary
 subservice_map = {}
