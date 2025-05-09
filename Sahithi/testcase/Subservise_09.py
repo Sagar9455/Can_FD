@@ -2,21 +2,25 @@ import re
 import pandas as pd
 
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "combined_service_subservice_06.xlsx"
+output_path = "combined_service_subservice_07.xlsx"
 
 # Step 1: Extract service info
 service_pattern = r'\(\$(\d{2})\)\s*(.*?)<\/TUV>'
-services = []
+results = []
 
 with open(cdd_file_path, 'r', encoding='utf-8') as file:
     for line in file:
         if '>($' in line:
             match = re.search(service_pattern, line)
             if match:
-                services.append({
-                    'ServiceID': f"0x{match.group(1)}",  # Keep the ID in hexadecimal format
-                    'Service_name': match.group(2).strip()
-                })
+                ServiceID = match.group(1)
+                Service_name = match.group(2)
+                results.append({'ServiceID': ServiceID, 'Service_name': Service_name})
+
+df = pd.DataFrame(results)
+df.to_excel(output_path, index=False)
+
+print(f"✅ Extracted data saved to: {output_path}")
 
 # Step 2: Extract subservice info with nearby ServiceID (assumes previous ServiceID applies)
 subservice_pattern = r"shstaticref='[^']*'\s+v='([^']*)'"
@@ -26,12 +30,12 @@ current_service = None
 with open(cdd_file_path, 'r', encoding='utf-8') as file:
     for line in file:
         # Update current service context if available
-        service_match = re.search(service_pattern, line)
-        if service_match:
-            current_service = {
-                'ServiceID': f"0x{service_match.group(1)}",  # Keep in hexadecimal format
-                'Service_name': service_match.group(2).strip()
-            }
+        #service_match = re.search(service_pattern, line)
+        #if service_match:
+          #  current_service = {
+           #   ''' 'ServiceID': f"0x{service_match.group(1)}",  # Keep in hexadecimal format
+          #      'Service_name': service_match.group(2).strip()
+           # }'''
 
         # Extract subservice IDs
         sub_match = re.search(subservice_pattern, line)
@@ -39,8 +43,8 @@ with open(cdd_file_path, 'r', encoding='utf-8') as file:
             val = int(sub_match.group(1))
             hex_val = f"0x{val:02X}"  # Keep subservice ID in hexadecimal format
             combined_data.append({
-                'ServiceID': current_service['ServiceID'],
-                'Service_name': current_service['Service_name'],
+                #'ServiceID': current_service['ServiceID'],
+               # 'Service_name': current_service['Service_name'],
                 'Subservice ID': hex_val
             })
 
