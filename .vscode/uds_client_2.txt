@@ -1,56 +1,30 @@
+× diag_tool.service - My Startup Script
+     Loaded: loaded (/etc/systemd/system/diag_tool.service; enabled; preset: enabled)
+     Active: failed (Result: exit-code) since Fri 2025-05-09 19:53:10 IST; 12s ago
+   Duration: 35ms
+    Process: 2128 ExecStart=/usr/bin/python3 /home/mobase/udsoncan/input/application/main.py (code=>
+   Main PID: 2128 (code=exited, status=200/CHDIR)
+        CPU: 8ms
 
-# -*- mode: python ; coding: utf-8 -*-
-import os
-from PyInstaller.utils.hooks import collect_submodules
+May 09 19:53:10 raspberrypi systemd[1]: Started diag_tool.service - My Startup Script.
+May 09 19:53:10 raspberrypi (python3)[2128]: diag_tool.service: Changing to the requested working d>
+May 09 19:53:10 raspberrypi (python3)[2128]: diag_tool.service: Failed at step CHDIR spawning /usr/>
+May 09 19:53:10 raspberrypi systemd[1]: diag_tool.service: Main process exited, code=exited, status>
+May 09 19:53:10 raspberrypi systemd[1]: diag_tool.service: Failed with result 'exit-code'.
+  GNU nano 7.2                    /etc/systemd/system/diag_tool.service                             
+[Unit]
+Description=My Startup Script
+After=network.target
 
-base_path = os.path.abspath(".")
-hidden_imports = collect_submodules("drivers")
-config_file=os.path.abspath("/home/mobase/Project_1/input/application/config.json")
+[Service]
+ExecStart=/usr/bin/python3 /home/mobase/udsoncan/input/application/main.py
+WorkingDirectory=/home/mobase/udsoncan/input/application/main.py
+StandardOutput=inherit
+StandardError=inherit
+Restart=no
+User=mobase
+Environment="PYTHONUNBUFFERED=1"
 
-a = Analysis(
-    ['input/application/main.py'],
-    pathex=[],
-    binaries=[],
-    datas=[('config.json','config.json')],
-    hiddenimports=hidden_imports,
-    hookspath=[],
-    hooksconfig={},
-    runtime_hooks=[],
-    excludes=[],
-    noarchive=False,
-    optimize=0,
-)
-pyz = PYZ(a.pure, a.zipped_data, cipher=None)
-
-exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.datas,
-    [],
-    exclude_binaries=True,
-    name='uds_tool',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=False,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-)
-
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    strip=False,
-    upx=True,
-    name='uds_tool'
-)
+[Install]
+WantedBy=multi-user.target
 
