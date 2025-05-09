@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "combined_service_subservice_11.xlsx"
+output_path = "combined_service_subservice_12.xlsx"
 
 # Step 1: Extract service info
 service_pattern = r'\(\$(\d{2})\)\s*(.*?)<\/TUV>'
@@ -51,7 +51,7 @@ with open(cdd_file_path, 'r', encoding='utf-8') as file:
             results.append({'Subservice_ID' : SubserviceID})  
 
 # Step 3: Write to Excel
-df = pd.DataFrame(combined_data)
+df = pd.DataFrame(results)
 df.to_excel(output_path, index=False)
 
 print(f"✅ Combined data written to '{output_path}' in a single sheet.")
