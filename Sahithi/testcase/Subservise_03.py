@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 input_path = '/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd'
-output_path = 'output_results_final.xlsx'
+output_path = 'zoutput_results_final_01.xlsx'
 
 # Step 1: Build shstaticref -> subservice ID (v) list mapping
 subservice_map = {}
