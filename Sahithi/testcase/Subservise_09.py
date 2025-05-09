@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "combined_service_subservice.xlsx"
+output_path = "combined_service_subservice_05.xlsx"
 
 # Step 1: Extract service info
 service_pattern = r'\(\$(\d{2})\)\s*(.*?)<\/TUV>'
