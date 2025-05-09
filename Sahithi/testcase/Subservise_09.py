@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "combined_service_subservice_07.xlsx"
+output_path = "combined_service_subservice_08.xlsx"
 
 # Step 1: Extract service info
 service_pattern = r'\(\$(\d{2})\)\s*(.*?)<\/TUV>'
@@ -17,8 +17,8 @@ with open(cdd_file_path, 'r', encoding='utf-8') as file:
                 Service_name = match.group(2)
                 results.append({'ServiceID': ServiceID, 'Service_name': Service_name})
 
-df = pd.DataFrame(results)
-df.to_excel(output_path, index=False)
+#df = pd.DataFrame(results)
+#df.to_excel(output_path, index=False)
 
 print(f"✅ Extracted data saved to: {output_path}")
 
@@ -43,8 +43,8 @@ with open(cdd_file_path, 'r', encoding='utf-8') as file:
             val = int(sub_match.group(1))
             hex_val = f"0x{val:02X}"  # Keep subservice ID in hexadecimal format
             combined_data.append({
-                #'ServiceID': current_service['ServiceID'],
-               # 'Service_name': current_service['Service_name'],
+                'ServiceID': results['ServiceID'],
+                'Service_name': results['Service_name'],
                 'Subservice ID': hex_val
             })
 
