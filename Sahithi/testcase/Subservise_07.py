@@ -1,46 +1,51 @@
 import re
 import pandas as pd
 
-# File paths
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "subserviceeee_02.xlsx"
+output_path = "combined_service_subservice.xlsx"
 
-# ---------- Part 1: Extract ServiceID and Service_name ----------
-service_results = []
+# Step 1: Extract service info
+service_pattern = r'\(\$(\d{2})\)\s*(.*?)<\/TUV>'
+services = []
 
-with open(cdd_file_path , 'r', encoding='utf-8') as file:
+with open(cdd_file_path, 'r', encoding='utf-8') as file:
     for line in file:
         if '>($' in line:
-            match = re.search(r'\(\$(\d{2})\)\s*(.*?)<\/TUV>', line)
+            match = re.search(service_pattern, line)
             if match:
-                service_results.append({
-                    'ServiceID': match.group(1),
-                    'Service_name': match.group(2)
+                services.append({
+                    'ServiceID': int(match.group(1), 16),  # Convert hex string to int
+                    'Service_name': match.group(2).strip()
                 })
 
-df_services = pd.DataFrame(service_results)
-
-# ---------- Part 2: Extract subservice IDs ----------
+# Step 2: Extract subservice info with nearby ServiceID (assumes previous ServiceID applies)
 subservice_pattern = r"shstaticref='[^']*'\s+v='([^']*)'"
-subservice_ids = []
+combined_data = []
+current_service = None
 
-with open(cdd_file_path, "r", encoding="utf-8") as file:
+with open(cdd_file_path, 'r', encoding='utf-8') as file:
     for line in file:
-        match = re.search(subservice_pattern, line)
-        if match:
-            decimal_val = int(match.group(1))
-            hex_val = f"0x{decimal_val:02X}"
-            subservice_ids.append(hex_val)
+        # Update current service context if available
+        service_match = re.search(service_pattern, line)
+        if service_match:
+            current_service = {
+                'ServiceID': int(service_match.group(1), 16),
+                'Service_name': service_match.group(2).strip()
+            }
 
-df_subservices = pd.DataFrame({
-    '': [''] * len(subservice_ids),
-    ' ': [''] * len(subservice_ids),
-    'subservice id': subservice_ids
-})
+        # Extract subservice IDs
+        sub_match = re.search(subservice_pattern, line)
+        if sub_match and current_service:
+            val = int(sub_match.group(1))
+            hex_val = f"0x{val:02X}"
+            combined_data.append({
+                'ServiceID': current_service['ServiceID'],
+                'Service_name': current_service['Service_name'],
+                'Subservice ID': hex_val
+            })
 
-# ---------- Write both DataFrames to different sheets ----------
-with pd.ExcelWriter(output_path) as writer:
-    df_services.to_excel(writer, sheet_name='Service Info', index=False)
-    df_subservices.to_excel(writer, sheet_name='Subservices', index=False)
+# Step 3: Write to Excel
+df = pd.DataFrame(combined_data)
+df.to_excel(output_path, index=False)
 
-print(f"✅ Both service and subservice data saved to '{output_path}' in two sheets.")
+print(f"✅ Combined data written to '{output_path}' in a single sheet.")
