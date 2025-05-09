@@ -3,7 +3,7 @@ import pandas as pd
 
 # File paths
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "subserviceeee_01.xlsx"
+output_path = "subserviceeee_02.xlsx"
 
 # ---------- Part 1: Extract ServiceID and Service_name ----------
 service_results = []
