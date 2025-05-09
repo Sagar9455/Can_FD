@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "combined_service_subservice_08.xlsx"
+output_path = "combined_service_subservice_09.xlsx"
 
 # Step 1: Extract service info
 service_pattern = r'\(\$(\d{2})\)\s*(.*?)<\/TUV>'
@@ -36,15 +36,21 @@ with open(cdd_file_path, 'r', encoding='utf-8') as file:
            #   ''' 'ServiceID': f"0x{service_match.group(1)}",  # Keep in hexadecimal format
           #      'Service_name': service_match.group(2).strip()
            # }'''
-
+        if '>($' in line:
+            match = re.search(service_pattern, line)
+            if match:
+                current_service = {
+                        'ServiceID' : match.group(1),
+                        'Service_name' : match.group(2)
+                }
         # Extract subservice IDs
         sub_match = re.search(subservice_pattern, line)
         if sub_match and current_service:
             val = int(sub_match.group(1))
             hex_val = f"0x{val:02X}"  # Keep subservice ID in hexadecimal format
             combined_data.append({
-                'ServiceID': results['ServiceID'],
-                'Service_name': results['Service_name'],
+                'ServiceID': current_service['ServiceID'],
+                'Service_name': current_service['Service_name'],
                 'Subservice ID': hex_val
             })
 
