@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
-output_path = "combined_service_subservice_03.xlsx"
+output_path = "combined_service_subservice_04.xlsx"
 
 # Step 1: Extract service info
 service_pattern = r'\(\$(\d{2})\)\s*(.*?)<\/TUV>'
@@ -13,10 +13,15 @@ with open(cdd_file_path, 'r', encoding='utf-8') as file:
         if '>($' in line:
             match = re.search(service_pattern, line)
             if match:
-                services.append({
-                    'ServiceID': int(match.group(1), 16),  # Convert hex string to int
-                    'Service_name': match.group(2).strip()
-                })
+               # services.append({
+                    #'ServiceID': int(match.group(1), 16),  # Convert hex string to int
+                   # 'Service_name': match.group(2).strip()
+                ServiceID = match.group(1)
+                Service_name = match.group(2)
+                services.append({'ServiceID': ServiceID, 'Service_name': Service_name})
+
+               # })
+                
 
 # Step 2: Extract subservice info with nearby ServiceID (assumes previous ServiceID applies)
 subservice_pattern = r"shstaticref='[^']*'\s+v='([^']*)'"
