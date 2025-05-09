@@ -2,7 +2,7 @@ import re
 import pandas as pd
 
 # Path to your .cdd file
-cdd_file_path = "your_file.cdd"
+cdd_file_path = "/home/mobase/Can_FD/Sahithi/KY_MKBD_Diagnostic_Rev01.cdd"
 
 # Regex to extract decimal subservice id from lines with shstaticref
 pattern = r"shstaticref='[^']*'\s+v='([^']*)'"
